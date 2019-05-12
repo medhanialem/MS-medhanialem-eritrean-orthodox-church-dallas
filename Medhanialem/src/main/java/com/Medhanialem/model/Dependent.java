@@ -1,4 +1,4 @@
-package com.Medhanialem.model;
+/*package com.Medhanialem.model;
 
 import java.io.Serializable;
 
@@ -63,3 +63,4 @@ public class Dependent implements Serializable {
 				+ dependentBaptismName + ", memberId=" + memberId + "]";
 	}
 }
+*/

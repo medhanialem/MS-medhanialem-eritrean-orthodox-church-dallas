@@ -21,7 +21,6 @@ import com.Medhanialem.exception.ResourceNotFoundException;
 import com.Medhanialem.model.Member;
 import com.Medhanialem.repository.MemberRepository;
 
-
 @RestController
 public class MemberController {
 
@@ -44,7 +43,7 @@ public class MemberController {
 
 	// Get one Member
 	@GetMapping("/members/{id}")
-	public Member getNote(@PathVariable(value = "id") Long memberid) {
+	public Member getMember(@PathVariable(value = "id") Long memberid) {
 
 		return memberRepository.findById(memberid)
 				.orElseThrow(() -> new ResourceNotFoundException("Member", "id", memberid));
@@ -52,25 +51,28 @@ public class MemberController {
 
 	// Update a Member
 	@PutMapping("/members/{id}")
-	public Member updateNote(@PathVariable(value = "id") Long memId, @Valid @RequestBody Member memberDetails) {
+	public Member updateMember(@PathVariable(value = "id") Long memId, @Valid @RequestBody Member memberDetails) {
 
-		Member member = memberRepository.findById(memId)
-				.orElseThrow(() -> new ResourceNotFoundException("Member", "id", memId));
+		/*
+		 * Member member = memberRepository.findById(memId) .orElseThrow(() -> new
+		 * ResourceNotFoundException("Member", "id", memId));
+		 * 
+		 * member.setFirstName(memberDetails.getFirstName());
+		 * member.setHomePhone(memberDetails.getHomePhone());
+		 * 
+		 * Member updatedMember = memberRepository.save(member);
+		 */
 
-		member.setFirstName(memberDetails.getFirstName());
-		member.setHomePhone(memberDetails.getHomePhone());
-
-		Member updatedMember = memberRepository.save(member);
-		return updatedMember;
+		return memberRepository.save(memberDetails);
 	}
 
 	// Delete a Member
 	@DeleteMapping("/members/{id}")
-	public ResponseEntity<?> deleteNote(@PathVariable(value = "id") Long memId) {
-		Member note = memberRepository.findById(memId)
+	public ResponseEntity<?> deleteMember(@PathVariable(value = "id") Long memId) {
+		Member member = memberRepository.findById(memId)
 				.orElseThrow(() -> new ResourceNotFoundException("Member", "id", memId));
-
-		memberRepository.delete(note);
+		member.setStatus(false);
+		// memberRepository.delete(member);
 
 		return ResponseEntity.ok().build();
 	}

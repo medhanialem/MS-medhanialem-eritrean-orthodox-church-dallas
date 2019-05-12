@@ -72,14 +72,22 @@ public class Member implements Serializable {
 	@NotBlank
 	private String zipCode;
 
+	private Boolean status;
+
+	private int superId;
+
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreatedDate
 	private Date registrationDate;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "dependents_id", nullable = false)
-	Set<Dependent> dependents=new HashSet<>();
+	/*
+	 * @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval =
+	 * true)
+	 * 
+	 * @JoinColumn(name = "dependents_id", nullable = false) Set<Dependent>
+	 * dependents=new HashSet<>();
+	 */
 
 	public String getFirstName() {
 		return firstName;
@@ -168,7 +176,7 @@ public class Member implements Serializable {
 	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -185,12 +193,20 @@ public class Member implements Serializable {
 		this.memberId = memberId;
 	}
 
-	public Set<Dependent> getDependents() {
-		return dependents;
+	public Boolean getStatus() {
+		return status;
 	}
 
-	public void setDependents(Set<Dependent> dependents) {
-		this.dependents = dependents;
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
+	public int getSuperId() {
+		return superId;
+	}
+
+	public void setSuperId(int superId) {
+		this.superId = superId;
 	}
 
 	@Override
@@ -198,6 +214,6 @@ public class Member implements Serializable {
 		return "Member [id=" + id + ", memberId=" + memberId + ", firstName=" + firstName + ", secondName=" + secondName
 				+ ", middleName=" + middleName + ", email=" + email + ", homePhone=" + homePhone + ", workPhone="
 				+ workPhone + ", adress=" + adress + ", city=" + city + ", state=" + state + ", zipCode=" + zipCode
-				+ ", registrationDate=" + registrationDate + ", dependents=" + dependents + "]";
+				+ ", registrationDate=" + registrationDate + ", status=" + status + "]";
 	}
 }
