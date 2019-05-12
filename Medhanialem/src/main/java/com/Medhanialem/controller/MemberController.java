@@ -72,7 +72,7 @@ public class MemberController {
 		Member member = memberRepository.findById(memId)
 				.orElseThrow(() -> new ResourceNotFoundException("Member", "id", memId));
 		member.setStatus(false);
-		// memberRepository.delete(member);
+		 memberRepository.save(member);
 
 		return ResponseEntity.ok().build();
 	}
