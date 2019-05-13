@@ -33,10 +33,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "Members")
+@Table(name = "membershistory")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "registrationDate" }, allowGetters = true)
-public class Member implements Serializable {
+public class Memberhistory implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -77,15 +77,24 @@ public class Member implements Serializable {
 	private Boolean status;
 
 	private int superId;
-
+	
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreatedDate
 	private Date registrationDate;
 	
-	@OneToOne(fetch = FetchType.EAGER)
+	@Column(nullable = false, updatable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@CreatedDate
+	private Date updatedDate;
+	
+	private String action;
+	
+	private String updatedBy;
+	
+/*	@OneToOne(fetch = FetchType.LAZY)
     @MapsId
-    private User user;
+    private User user;*/
 
 	public String getFirstName() {
 		return firstName;
@@ -107,13 +116,13 @@ public class Member implements Serializable {
 		this.churchId = churchId;
 	}
 
-	public User getUser() {
+/*	public User getUser() {
 		return user;
 	}
 
 	public void setUser(User user) {
 		this.user = user;
-	}
+	}*/
 
 	public void setSecondName(String secondName) {
 		this.secondName = secondName;
@@ -223,11 +232,37 @@ public class Member implements Serializable {
 		this.superId = superId;
 	}
 
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
 	@Override
 	public String toString() {
-		return "Member [id=" + id + ", memberId=" + churchId + ", firstName=" + firstName + ", secondName=" + secondName
-				+ ", middleName=" + middleName + ", email=" + email + ", homePhone=" + homePhone + ", workPhone="
-				+ workPhone + ", adress=" + adress + ", city=" + city + ", state=" + state + ", zipCode=" + zipCode
-				+ ", registrationDate=" + registrationDate + ", status=" + status + "]";
+		return "Memberhistory [id=" + id + ", churchId=" + churchId + ", firstName=" + firstName + ", secondName="
+				+ secondName + ", middleName=" + middleName + ", email=" + email + ", homePhone=" + homePhone
+				+ ", workPhone=" + workPhone + ", adress=" + adress + ", city=" + city + ", state=" + state
+				+ ", zipCode=" + zipCode + ", status=" + status + ", superId=" + superId + ", registrationDate="
+				+ registrationDate + ", updatedDate=" + updatedDate + ", action=" + action + ", updatedBy=" + updatedBy
+				+ "]";
 	}
 }

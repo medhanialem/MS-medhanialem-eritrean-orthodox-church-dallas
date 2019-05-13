@@ -1,5 +1,6 @@
 package com.Medhanialem.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Medhanialem.exception.ResourceNotFoundException;
 import com.Medhanialem.model.Member;
+import com.Medhanialem.model.Memberhistory;
+import com.Medhanialem.model.User;
+import com.Medhanialem.repository.MemberHistRepository;
 import com.Medhanialem.repository.MemberRepository;
 
 @RestController
@@ -28,11 +32,39 @@ public class MemberController {
 
 	@Autowired
 	MemberRepository memberRepository;
+	
+	@Autowired
+	MemberHistRepository memberHistRepository;
 
 	@PostMapping("/members")
-	public Member createMember(@Valid @RequestBody Member member) {
+	public Member createMember(@Valid @RequestBody Member memberDetails) {
 
-		return memberRepository.save(member);
+		Member savedMember = memberRepository.save(memberDetails);
+		
+		if(null!=savedMember) {
+			
+			Memberhistory memberhistory = new Memberhistory();
+			memberhistory.setFirstName(memberDetails.getFirstName());
+			memberhistory.setMiddleName(memberDetails.getMiddleName());
+			memberhistory.setSecondName(memberDetails.getSecondName());
+			memberhistory.setEmail(memberDetails.getEmail());
+			memberhistory.setHomePhone(memberDetails.getHomePhone());
+			memberhistory.setWorkPhone(memberDetails.getWorkPhone());
+			memberhistory.setChurchId(memberDetails.getChurchId());
+			memberhistory.setCity(memberDetails.getCity());
+			memberhistory.setAdress(memberDetails.getAdress());
+			memberhistory.setState(memberDetails.getState());
+			memberhistory.setZipCode(memberDetails.getZipCode());
+			memberhistory.setRegistrationDate(memberDetails.getRegistrationDate());
+			memberhistory.setStatus(memberDetails.getStatus());
+			memberhistory.setSuperId(memberDetails.getSuperId());
+			memberhistory.setUpdatedDate(new Date());
+			memberhistory.setUpdatedBy("Admin to be set from login session");
+			memberhistory.setAction("New Member saved");
+			
+			memberHistRepository.save(memberhistory);
+			}
+		return savedMember;
 	}
 
 	// Get All Members
@@ -62,8 +94,40 @@ public class MemberController {
 		 * 
 		 * Member updatedMember = memberRepository.save(member);
 		 */
-
-		return memberRepository.save(memberDetails);
+		Member updatedMember = memberRepository.save(memberDetails);
+		
+		if(null!=updatedMember) {
+			
+			Memberhistory memberhistory = new Memberhistory();
+			memberhistory.setFirstName(memberDetails.getFirstName());
+			memberhistory.setMiddleName(memberDetails.getMiddleName());
+			memberhistory.setSecondName(memberDetails.getSecondName());
+			memberhistory.setEmail(memberDetails.getEmail());
+			memberhistory.setHomePhone(memberDetails.getHomePhone());
+			memberhistory.setWorkPhone(memberDetails.getWorkPhone());
+			memberhistory.setChurchId(memberDetails.getChurchId());
+			memberhistory.setCity(memberDetails.getCity());
+			memberhistory.setAdress(memberDetails.getAdress());
+			memberhistory.setState(memberDetails.getState());
+			memberhistory.setZipCode(memberDetails.getZipCode());
+			memberhistory.setRegistrationDate(memberDetails.getRegistrationDate());
+			memberhistory.setStatus(memberDetails.getStatus());
+			memberhistory.setSuperId(memberDetails.getSuperId());
+			memberhistory.setUpdatedDate(new Date());
+			memberhistory.setUpdatedBy("Admin to be set from login session");
+			memberhistory.setAction("Member updated");
+		
+		/*User user =new User();
+		user.setId(memberDetails.getUser().getId());
+		user.setUsername(memberDetails.getUser().getUsername());
+		user.setPassword(memberDetails.getUser().getPassword());
+		user.setRole(memberDetails.getUser().getRole());
+		memberhistory.setUser(user);*/
+		
+		memberHistRepository.save(memberhistory);
+		}
+		
+		return updatedMember;
 	}
 
 	// Delete a Member
