@@ -17,7 +17,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -40,7 +42,7 @@ public class Member implements Serializable {
 	private Long id;
 
 	@NotBlank
-	private String memberId;
+	private String churchId;
 
 	@NotBlank
 	private String firstName;
@@ -80,6 +82,10 @@ public class Member implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreatedDate
 	private Date registrationDate;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    private User user;
 
 	/*
 	 * @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval =
@@ -99,6 +105,22 @@ public class Member implements Serializable {
 
 	public String getSecondName() {
 		return secondName;
+	}
+
+	public String getChurchId() {
+		return churchId;
+	}
+
+	public void setChurchId(String churchId) {
+		this.churchId = churchId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public void setSecondName(String secondName) {
@@ -186,11 +208,11 @@ public class Member implements Serializable {
 	}
 
 	public String getMemberId() {
-		return memberId;
+		return churchId;
 	}
 
 	public void setMemberId(String memberId) {
-		this.memberId = memberId;
+		this.churchId = memberId;
 	}
 
 	public Boolean getStatus() {
@@ -211,7 +233,7 @@ public class Member implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Member [id=" + id + ", memberId=" + memberId + ", firstName=" + firstName + ", secondName=" + secondName
+		return "Member [id=" + id + ", memberId=" + churchId + ", firstName=" + firstName + ", secondName=" + secondName
 				+ ", middleName=" + middleName + ", email=" + email + ", homePhone=" + homePhone + ", workPhone="
 				+ workPhone + ", adress=" + adress + ", city=" + city + ", state=" + state + ", zipCode=" + zipCode
 				+ ", registrationDate=" + registrationDate + ", status=" + status + "]";
