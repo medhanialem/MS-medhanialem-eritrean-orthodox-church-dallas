@@ -2,7 +2,8 @@ server:
   port: 8091
 spring:
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:medhanealem}
+    #url: jdbc:mysql://${MYSQL_HOST:medhanie-alem-dallas-church-1.cgiucr5gojbw.us-east-2.rds.amazonaws.com}:${MYSQL_PORT:3306}/${MYSQL_DB:medhanie_alem_dallas}
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:medhanie_alem_dallas}
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:root}
   jpa:
@@ -10,7 +11,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 twilio:
   account_sid: AC9cc1e126bb1a1c3a7c095353a1f4532d
   auth_token: 7f968a8278ccd29f71d2aa1c95780f31

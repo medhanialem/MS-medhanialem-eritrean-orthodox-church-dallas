@@ -1,11 +1,9 @@
-package com.Medhanialem.model.payment;
-
-public enum Tiername {
-
-	MEMBERSHIP,
-	WEDDING,
-	BAPTISM,
-	RENT,
-	OTHER
-	
-}
+/*
+ * package com.Medhanialem.model.payment;
+ * 
+ * public enum Tiername {
+ * 
+ * TIEROne, TIERTwo, TIERThree
+ * 
+ * }
+ */
