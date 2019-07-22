@@ -108,9 +108,21 @@ public class Member implements Serializable {
 	@MapsId
 	private User user;
 	
-	@OneToOne(cascade = { CascadeType.ALL })
-	@JoinColumn(name = "membershippaymentlookupfee_id", nullable = false)
-	private MembershipPaymentLookupFee membershippaymentlookupfee;
+	public Long getLastpaymentReference() {
+		return lastpaymentReference;
+	}
+
+	public void setLastpaymentReference(Long lastpaymentReference) {
+		this.lastpaymentReference = lastpaymentReference;
+	}
+
+
+	/*
+	 * @OneToOne(cascade = { CascadeType.ALL })
+	 * 
+	 * @JoinColumn(name = "membershippaymentlookupfee_id")
+	 */
+	private Long lastpaymentReference;
 
 	public String getFirstName() {
 		return firstName;
@@ -224,13 +236,7 @@ public class Member implements Serializable {
 		this.id = id;
 	}
 
-	public String getMemberId() {
-		return churchId;
-	}
 
-	public void setMemberId(String memberId) {
-		this.churchId = memberId;
-	}
 
 	public Boolean getStatus() {
 		return status;
@@ -248,16 +254,6 @@ public class Member implements Serializable {
 		this.superId = superId;
 	}
 	
-	
-
-
-	public MembershipPaymentLookupFee getMembershippaymentlookupfee() {
-		return membershippaymentlookupfee;
-	}
-
-	public void setMembershippaymentlookupfee(MembershipPaymentLookupFee membershippaymentlookupfee) {
-		this.membershippaymentlookupfee = membershippaymentlookupfee;
-	}
 
 	@Override
 	public String toString() {

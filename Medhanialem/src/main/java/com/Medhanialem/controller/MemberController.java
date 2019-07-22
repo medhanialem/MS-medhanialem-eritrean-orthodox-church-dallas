@@ -33,8 +33,9 @@ public class MemberController {
 	 */
 
 	@PostMapping("/addmember")
-	public Member createMember(@Valid @RequestBody Member memberDetails) {
+	public Member createMember( @RequestBody Member memberDetails) {
 
+	//	memberDetails.setMembershippaymentlookupfee(membershippaymentlookupfee);
 		Member savedMember = memberRepository.save(memberDetails);
 
 		/*
