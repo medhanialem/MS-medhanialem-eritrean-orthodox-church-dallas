@@ -4,7 +4,6 @@ package com.Medhanialem.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -12,23 +11,20 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.Medhanialem.model.payment.MembershipPaymentLookupFee;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "Members")
+@Table(name = "Member")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "registrationDate" }, allowGetters = true)
 public class Member implements Serializable {
@@ -44,10 +40,10 @@ public class Member implements Serializable {
 	private String firstName;
 
 	@NotBlank
-	private String secondName;
+	private String middleName;
 
 	@NotBlank
-	private String middleName;
+	private String lastName;
 
 	@NotBlank
 	private String email;
@@ -88,7 +84,6 @@ public class Member implements Serializable {
 		this.createdAt = createdAt;
 	}
     
-	
 	private int tier;
 
 	@Column(nullable = false, updatable = false)
@@ -108,22 +103,6 @@ public class Member implements Serializable {
 	@MapsId
 	private User user;
 	
-	public Long getLastpaymentReference() {
-		return lastpaymentReference;
-	}
-
-	public void setLastpaymentReference(Long lastpaymentReference) {
-		this.lastpaymentReference = lastpaymentReference;
-	}
-
-
-	/*
-	 * @OneToOne(cascade = { CascadeType.ALL })
-	 * 
-	 * @JoinColumn(name = "membershippaymentlookupfee_id")
-	 */
-	private Long lastpaymentReference;
-
 	public String getFirstName() {
 		return firstName;
 	}
@@ -132,9 +111,7 @@ public class Member implements Serializable {
 		this.firstName = firstName;
 	}
 
-	public String getSecondName() {
-		return secondName;
-	}
+
 
 	public String getChurchId() {
 		return churchId;
@@ -152,16 +129,20 @@ public class Member implements Serializable {
 		this.user = user;
 	}
 
-	public void setSecondName(String secondName) {
-		this.secondName = secondName;
-	}
-
 	public String getMiddleName() {
 		return middleName;
 	}
 
 	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -236,8 +217,6 @@ public class Member implements Serializable {
 		this.id = id;
 	}
 
-
-
 	public Boolean getStatus() {
 		return status;
 	}
@@ -253,13 +232,13 @@ public class Member implements Serializable {
 	public void setSuperId(int superId) {
 		this.superId = superId;
 	}
-	
 
 	@Override
 	public String toString() {
-		return "Member [id=" + id + ", memberId=" + churchId + ", firstName=" + firstName + ", secondName=" + secondName
-				+ ", middleName=" + middleName + ", email=" + email + ", homePhone=" + homePhone + ", workPhone="
+		return "Member [id=" + id + ", churchId=" + churchId + ", firstName=" + firstName + ", secondName=" + lastName
+				+ ", middleName=" + lastName + ", email=" + email + ", homePhone=" + homePhone + ", workPhone="
 				+ workPhone + ", adress=" + adress + ", city=" + city + ", state=" + state + ", zipCode=" + zipCode
-				+ ", registrationDate=" + registrationDate + ", status=" + status + "]";
+				+ ", status=" + status + ", tier=" + tier + ", createdAt=" + createdAt + ", superId=" + superId
+				+ ", registrationDate=" + registrationDate + ", user=" + user + "]";
 	}
 }

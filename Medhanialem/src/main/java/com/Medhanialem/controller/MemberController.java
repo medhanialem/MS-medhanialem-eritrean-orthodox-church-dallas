@@ -1,9 +1,9 @@
 
 package com.Medhanialem.controller;
 
-import java.util.List;
 
-import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Medhanialem.exception.ResourceNotFoundException;
 import com.Medhanialem.model.Member;
+import com.Medhanialem.model.Memberhistory;
+import com.Medhanialem.repository.MemberHistRepository;
 import com.Medhanialem.repository.MemberRepository;
 
 @RestController
@@ -28,40 +30,44 @@ public class MemberController {
 	@Autowired
 	MemberRepository memberRepository;
 
-	/*
-	 * @Autowired MemberHistRepository memberHistRepository;
-	 */
+	
+	@Autowired 
+	MemberHistRepository memberHistRepository;
+	 
 
 	@PostMapping("/addmember")
-	public Member createMember( @RequestBody Member memberDetails) {
+	public Member createMember(@RequestBody Member memberDetails) {
 
-	//	memberDetails.setMembershippaymentlookupfee(membershippaymentlookupfee);
 		Member savedMember = memberRepository.save(memberDetails);
-
-		/*
-		 * if (null != savedMember) {
-		 * 
-		 * Memberhistory memberhistory = new Memberhistory();
-		 * memberhistory.setFirstName(memberDetails.getFirstName());
-		 * memberhistory.setMiddleName(memberDetails.getMiddleName());
-		 * memberhistory.setSecondName(memberDetails.getSecondName());
-		 * memberhistory.setEmail(memberDetails.getEmail());
-		 * memberhistory.setHomePhone(memberDetails.getHomePhone());
-		 * memberhistory.setWorkPhone(memberDetails.getWorkPhone());
-		 * memberhistory.setChurchId(memberDetails.getChurchId());
-		 * memberhistory.setCity(memberDetails.getCity());
-		 * memberhistory.setAdress(memberDetails.getAdress());
-		 * memberhistory.setState(memberDetails.getState());
-		 * memberhistory.setZipCode(memberDetails.getZipCode());
-		 * memberhistory.setRegistrationDate(memberDetails.getRegistrationDate());
-		 * memberhistory.setStatus(memberDetails.getStatus());
-		 * memberhistory.setSuperId(memberDetails.getSuperId());
-		 * memberhistory.setUpdatedDate(new Date());
-		 * memberhistory.setUpdatedBy("Admin to be set from login session");
-		 * memberhistory.setAction("New Member saved");
-		 * 
-		 * memberHistRepository.save(memberhistory); }
-		 */
+		
+		  
+		  if (null != savedMember) { 
+		  Memberhistory memberhistory = new Memberhistory();
+		  memberhistory.setFirstName(memberDetails.getFirstName());
+		  memberhistory.setMiddleName(memberDetails.getMiddleName());
+		  memberhistory.setLastName(memberDetails.getLastName());
+		  memberhistory.setEmail(memberDetails.getEmail());
+		  memberhistory.setHomePhone(memberDetails.getHomePhone());
+		  memberhistory.setWorkPhone(memberDetails.getWorkPhone());
+		  memberhistory.setChurchId(memberDetails.getChurchId());
+		  memberhistory.setCity(memberDetails.getCity());
+		  memberhistory.setAdress(memberDetails.getAdress());
+		  memberhistory.setState(memberDetails.getState());
+		  memberhistory.setZipCode(memberDetails.getZipCode());
+		  memberhistory.setRegistrationDate(memberDetails.getRegistrationDate());
+		  memberhistory.setStatus(memberDetails.getStatus());
+		  memberhistory.setSuperId(memberDetails.getSuperId());
+		  if(null !=savedMember.getUser()) {
+			  memberhistory.setUsername(savedMember.getUser().getUsername());
+			  memberhistory.setPassword(savedMember.getUser().getPassword());
+			  memberhistory.setRole(savedMember.getUser().getRole());
+		  }
+		  memberhistory.setUpdatedDate(new Date());
+		  memberhistory.setUpdatedBy("Admin to be set from login session");
+		  memberhistory.setAction("New Member saved");
+		  memberHistRepository.save(memberhistory); 
+		  }
+		 
 		return savedMember;
 	}
 

@@ -2,26 +2,26 @@
 package com.Medhanialem.model.payment;
 
 import java.util.Date;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.Medhanialem.model.Member;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -34,8 +34,10 @@ public class Payment {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
-	private String memberId;
+	@ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "member_id")
+	private Member member;
 
 	@NotNull
 	private double total;
@@ -45,17 +47,6 @@ public class Payment {
 	@CreatedDate
 	private Date paymentDate;
 
-	@OneToMany(mappedBy = "payment", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	private Set<PaymentJournal> journals;
-
-	public Set<PaymentJournal> getJournals() {
-		return journals;
-	}
-
-	public void setJournals(Set<PaymentJournal> journals) {
-		this.journals = journals;
-	}
-
 	public Long getId() {
 		return id;
 	}
@@ -64,12 +55,12 @@ public class Payment {
 		this.id = id;
 	}
 
-	public String getMemberId() {
-		return memberId;
+	public Member getMember() {
+		return member;
 	}
 
-	public void setMemberId(String memberId) {
-		this.memberId = memberId;
+	public void setMember(Member member) {
+		this.member = member;
 	}
 
 	public double getTotal() {
@@ -90,7 +81,7 @@ public class Payment {
 
 	@Override
 	public String toString() {
-		return "Payment [id=" + id + ", memberId=" + memberId + ", total=" + total + ", paymentDate=" + paymentDate
-				+ "]";
+		return "Payment [id=" + id + ", member=" + member + ", total=" + total + ", paymentDate=" + paymentDate + "]";
 	}
+
 }

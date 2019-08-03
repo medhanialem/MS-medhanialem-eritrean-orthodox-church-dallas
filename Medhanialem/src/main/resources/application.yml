@@ -16,3 +16,7 @@ twilio:
   account_sid: AC9cc1e126bb1a1c3a7c095353a1f4532d
   auth_token: 7f968a8278ccd29f71d2aa1c95780f31
   trial_number: 14692511070
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE

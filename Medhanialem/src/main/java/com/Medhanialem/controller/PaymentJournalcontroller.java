@@ -1,8 +1,10 @@
 package com.Medhanialem.controller;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Medhanialem.controller.model.payment.Paymentreq;
+import com.Medhanialem.exception.ResourceNotFoundException;
 import com.Medhanialem.model.Member;
 import com.Medhanialem.model.payment.MembershipPaymentLookupFee;
 import com.Medhanialem.model.payment.Payment;
 import com.Medhanialem.model.payment.PaymentJournal;
 import com.Medhanialem.repository.MemberRepository;
 import com.Medhanialem.repository.MemberShipPaymentLookUpfeeRepository;
+import com.Medhanialem.repository.PaymentJournalRepository;
 import com.Medhanialem.repository.PaymentRepository;
 
 @RestController
@@ -29,6 +33,9 @@ public class PaymentJournalcontroller {
 
 	@Autowired
 	PaymentRepository paymentRepository;
+	
+	@Autowired
+	PaymentJournalRepository paymentJournalRepository;
 
 	@Autowired
 	MemberShipPaymentLookUpfeeRepository memberShipPaymentLookUpfee;
@@ -38,21 +45,40 @@ public class PaymentJournalcontroller {
 
 		Member member = memberRepository.findById(id).get();
 
-		Long lookUpId = member.getLastpaymentReference();
 
-		if (lookUpId == 0) {
-
-			int year = LocalDate.fromDateFields(member.getRegistrationDate()).getMonthOfYear();
-			int month = LocalDate.fromDateFields(member.getRegistrationDate()).getYear();
-
-			MembershipPaymentLookupFee membershipPaymentLookupFee = memberShipPaymentLookUpfee
-					.getIdbymonthAndyear(month, year);
-			lookUpId = membershipPaymentLookupFee.getId();
-		}
 		int year = LocalDate.now().getYear();
 
 		int month = LocalDate.now().getMonthOfYear();
+		
+		
+		List<PaymentJournal> journallist = paymentJournalRepository.getAllJournals(id);
+		
+		List<MembershipPaymentLookupFee> list=new ArrayList<>();
+		
+		if(null!=journallist && !journallist.isEmpty()) {
+			 list = journallist.stream().map(m -> m.getPaymentLookupfee()).collect(Collectors.toList());
+		}
+		
+	//	if(list.isEmpty() ) {throw new ResourceNotFoundException(null,"","");}
+		 Long lookUpId;
+		 
+		if(null==journallist || journallist.isEmpty()) {
+			int yearr = LocalDate.fromDateFields(member.getRegistrationDate()).getMonthOfYear();
+			int mon = LocalDate.fromDateFields(member.getRegistrationDate()).getYear();
 
+			MembershipPaymentLookupFee membershipPaymentLookupFee = memberShipPaymentLookUpfee.getIdbymonthAndyear(mon, yearr);
+			 lookUpId = membershipPaymentLookupFee.getId();
+		
+		}else {
+		
+		   Comparator<MembershipPaymentLookupFee> paymentlookup_year_month_Comparator = Comparator.comparing(MembershipPaymentLookupFee::getYear)
+		        .thenComparing(MembershipPaymentLookupFee::getMonth);
+		   
+		     Collections.sort(list,paymentlookup_year_month_Comparator);
+		   
+		    lookUpId =  list.get(list.size()-1).getId();
+		}
+		
 		return memberShipPaymentLookUpfee.findpaylookUpfees(lookUpId, year, month);
 
 	}
@@ -65,13 +91,15 @@ public class PaymentJournalcontroller {
 		List<MembershipPaymentLookupFee> unpaidMonths = getPaymentInformation(id);
 
 		Payment payment = new Payment();
-		payment.setMemberId(request.getMemberId());
+		payment.setMember(member);
 		payment.setTotal(request.getTotal());
-		Long lastId = null;
-		Set<PaymentJournal> paymentJournals = new HashSet<>();
 
+		payment = paymentRepository.save(payment);
+		
 		for (MembershipPaymentLookupFee lookUp : unpaidMonths) {
-
+            Member newmember = new Member();
+            newmember = member;
+            
 			PaymentJournal journal = new PaymentJournal();
 
 			double monthly = 0.0;
@@ -85,26 +113,31 @@ public class PaymentJournalcontroller {
 				monthly = lookUp.getTeir4Amount();
 			}
 			journal.setAmount(monthly);
-			journal.setMembershipId(payment.getMemberId());
+			
 
 			journal.setPaymentLookupfee(lookUp);
 			journal.setPayment(payment);
-
-			member.setLastpaymentReference(lookUp.getId());
-
-			paymentJournals.add(journal);
-
+			journal.setMember(newmember);
+			
+			
+			paymentJournalRepository.save(journal);
+			
 			sum = sum + monthly;
 			if (sum >= request.getTotal()) {
 				break;
 			}
 		}
-
-		payment.setJournals(paymentJournals);
-
-		memberRepository.save(member);
-		paymentRepository.save(payment);
-
+	}
+	
+	@GetMapping("/getAlljournals/{id}")
+	public List<PaymentJournal> getAllJournals(@PathVariable(value = "id") Long id) {
+		List<PaymentJournal> list =  paymentJournalRepository.getAllJournals(id);
+		
+		if(null == list || list.isEmpty()) {
+			throw new ResourceNotFoundException("","No payment info for Member","");
+		}
+		 
+		return list;
 	}
 
 }

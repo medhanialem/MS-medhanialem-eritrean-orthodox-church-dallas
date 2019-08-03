@@ -17,12 +17,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.Medhanialem.model.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -40,8 +41,10 @@ public class PaymentJournal implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
-	private String membershipId;
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+	private Member member;
 
 	@NotNull
 	private double amount;
@@ -52,11 +55,11 @@ public class PaymentJournal implements Serializable {
 	private Date createdAt;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "paymentLookupfee_id", nullable = false)
+	@JoinColumn(name = "paymentlookupfee_id", nullable = false)
 	private MembershipPaymentLookupFee paymentLookupfee;
 
-	
-	@ManyToOne
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
@@ -71,12 +74,12 @@ public class PaymentJournal implements Serializable {
 		this.id = id;
 	}
 
-	public String getMembershipId() {
-		return membershipId;
+	public Member getMember() {
+		return member;
 	}
 
-	public void setMembershipId(String membershipId) {
-		this.membershipId = membershipId;
+	public void setMember(Member member) {
+		this.member = member;
 	}
 
 	public double getAmount() {
@@ -113,7 +116,7 @@ public class PaymentJournal implements Serializable {
 
 	@Override
 	public String toString() {
-		return "PaymentJournal [id=" + id + ", membershipId=" + membershipId + ", amount=" + amount + "]";
+		return "PaymentJournal [id=" + id + ", member=" + member + ", amount=" + amount + ", createdAt=" + createdAt
+				+ ", paymentLookupfee=" + paymentLookupfee + ", payment=" + payment + "]";
 	}
-
 }
