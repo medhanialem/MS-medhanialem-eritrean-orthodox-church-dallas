@@ -1,4 +1,4 @@
-
+  
 package com.Medhanialem.controller;
 
 
@@ -30,7 +30,6 @@ public class MemberController {
 	@Autowired
 	MemberRepository memberRepository;
 
-	
 	@Autowired 
 	MemberHistRepository memberHistRepository;
 	 
@@ -57,11 +56,7 @@ public class MemberController {
 		  memberhistory.setRegistrationDate(memberDetails.getRegistrationDate());
 		  memberhistory.setStatus(memberDetails.getStatus());
 		  memberhistory.setSuperId(memberDetails.getSuperId());
-		  if(null !=savedMember.getUser()) {
-			  memberhistory.setUsername(savedMember.getUser().getUsername());
-			  memberhistory.setPassword(savedMember.getUser().getPassword());
-			  memberhistory.setRole(savedMember.getUser().getRole());
-		  }
+		  
 		  memberhistory.setUpdatedDate(new Date());
 		  memberhistory.setUpdatedBy("Admin to be set from login session");
 		  memberhistory.setAction("New Member saved");

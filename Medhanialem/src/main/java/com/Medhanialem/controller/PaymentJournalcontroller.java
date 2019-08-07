@@ -3,6 +3,7 @@ package com.Medhanialem.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Medhanialem.controller.model.payment.Journal;
+import com.Medhanialem.controller.model.payment.PaymentResponse;
 import com.Medhanialem.controller.model.payment.Paymentreq;
 import com.Medhanialem.exception.ResourceNotFoundException;
 import com.Medhanialem.model.Member;
@@ -138,6 +141,61 @@ public class PaymentJournalcontroller {
 		}
 		 
 		return list;
+	}
+	
+	@GetMapping("/getallpayment")
+	public List<PaymentResponse> getAllPayment() {
+		
+		List<Member> memberList = memberRepository.findAll();
+		
+		List<PaymentResponse> list = new ArrayList<>();
+		
+		for(Member member : memberList) {
+			PaymentResponse response = new PaymentResponse();
+			response.setFirstName(member.getFirstName());
+			response.setMiddleName(member.getMiddleName());
+			response.setLastName(member.getLastName());
+			response.setMobile(member.getHomePhone());
+			response.setMemberId(member.getId());
+			response.setTier(member.getTier());
+			response.setMemberSince(member.getRegistrationDate());
+			
+			List<Journal> journals = getPaymentJournals(member.getId());
+			response.setJournalList(journals);
+			
+			
+			list.add(response);
+			
+		}
+			 
+		return list;
+	}
+
+	private List<Journal> getPaymentJournals(Long id) {
+		
+		List<PaymentJournal> list =  paymentJournalRepository.getAllJournals(id);
+		
+		List<Journal> journallist = new ArrayList<>();
+		
+		for(PaymentJournal pjournal: list) {
+			
+			Journal journal = new Journal();
+			
+		//	journal.setTier(pjournal.);
+			
+			journal.setMonth(pjournal.getPaymentLookupfee().getMonth());
+			journal.setYear(pjournal.getPaymentLookupfee().getYear());
+			journal.setFee(pjournal.getAmount());
+			journallist.add(journal);
+		}
+		Comparator<Journal> journal_year_month_Comparator = Comparator.comparing(Journal::getYear)
+		        .thenComparing(Journal::getMonth);
+		   
+		     Collections.sort(journallist,journal_year_month_Comparator);
+		
+		return journallist;
+		
+		
 	}
 
 }

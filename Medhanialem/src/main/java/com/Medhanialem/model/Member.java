@@ -7,12 +7,9 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "Member")
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = { "registrationDate" }, allowGetters = true)
+@JsonIgnoreProperties(value = { "createdAt" }, allowGetters = true)
 public class Member implements Serializable {
 
 	@Id
@@ -93,15 +90,7 @@ public class Member implements Serializable {
 
 	private int superId;
 
-	@Column(nullable = false, updatable = false)
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@CreatedDate
 	private Date registrationDate;
-
-	@OneToOne(fetch = FetchType.EAGER)
-	@MapsId
-	private User user;
 	
 	public String getFirstName() {
 		return firstName;
@@ -111,22 +100,12 @@ public class Member implements Serializable {
 		this.firstName = firstName;
 	}
 
-
-
 	public String getChurchId() {
 		return churchId;
 	}
 
 	public void setChurchId(String churchId) {
 		this.churchId = churchId;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public String getMiddleName() {
@@ -239,6 +218,6 @@ public class Member implements Serializable {
 				+ ", middleName=" + lastName + ", email=" + email + ", homePhone=" + homePhone + ", workPhone="
 				+ workPhone + ", adress=" + adress + ", city=" + city + ", state=" + state + ", zipCode=" + zipCode
 				+ ", status=" + status + ", tier=" + tier + ", createdAt=" + createdAt + ", superId=" + superId
-				+ ", registrationDate=" + registrationDate + ", user=" + user + "]";
+				+ ", registrationDate=" + registrationDate + "]";
 	}
 }
