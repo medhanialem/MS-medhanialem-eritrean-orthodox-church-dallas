@@ -13,7 +13,7 @@ import com.Medhanialem.model.payment.PaymentJournal;
 @Repository
 public interface PaymentJournalRepository extends JpaRepository<PaymentJournal, Long> {
 	
-		@Query(value = "SELECT * FROM medhanie_alem_dallas.payment_journal where member_id=:id",
+		@Query(value = "SELECT * FROM medhanie_alem_dallas.paymentjournal where member_id=:id",
 		 nativeQuery=true )
 	List<PaymentJournal> getAllJournals(@Param("id") Long id );
 

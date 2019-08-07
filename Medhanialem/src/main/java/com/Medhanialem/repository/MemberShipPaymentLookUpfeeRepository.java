@@ -15,11 +15,11 @@ import com.Medhanialem.model.payment.MembershipPaymentLookupFee;
 @Repository
 public interface MemberShipPaymentLookUpfeeRepository extends JpaRepository<MembershipPaymentLookupFee,Long> {
 	
-	@Query(value = "SELECT * FROM medhanie_alem_dallas.membership_payment_lookup_fee WHERE `id` > :id  and year <= :year and month <= :month", 
+	@Query(value = "SELECT * FROM medhanie_alem_dallas.membershippaymentlookupfee WHERE `id` > :id  and year <= :year and month <= :month", 
 			  nativeQuery = true)
 	List<MembershipPaymentLookupFee> findpaylookUpfees(@Param(value = "id") Long id,@Param(value = "year") int year,@Param(value = "month") int month);
 
-	@Query(value = "SELECT * FROM medhanie_alem_dallas.membership_payment_lookup_fee where year = :year and month = :month", 
+	@Query(value = "SELECT * FROM medhanie_alem_dallas.membershippaymentlookupfee where year = :year and month = :month", 
 			  nativeQuery = true)
 	MembershipPaymentLookupFee getIdbymonthAndyear(@Param(value = "year") int year,@Param(value = "month") int month);
 
