@@ -2,15 +2,15 @@ package com.Medhanialem.controller.model.payment;
 
 public class Journal {
 
-	private int tier;
+	private boolean paid;
 	private int month;
 	private int year;
 	private double fee;
-	public int getTier() {
-		return tier;
+	public boolean getPaid() {
+		return paid;
 	}
-	public void setTier(int tier) {
-		this.tier = tier;
+	public void setPaid(boolean paid) {
+		this.paid = paid;
 	}
 	public int getMonth() {
 		return month;

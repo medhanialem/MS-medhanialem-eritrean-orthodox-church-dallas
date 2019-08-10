@@ -1,34 +1,23 @@
-
 package com.Medhanialem.model;
+
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -36,23 +25,97 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "membershistory")
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = { "registrationDate" }, allowGetters = true)
+@JsonIgnoreProperties(value = { "actionDate", "updatedDate"}, allowGetters = true)
 public class Memberhistory implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	private Long memberId;
 
 	@NotBlank
 	private String churchId;
 
 	@NotBlank
 	private String firstName;
+
+	@NotBlank
+	private String middleName;
+
+	@NotBlank
+	private String lastName;
+
+	@NotBlank
+	private String homePhoneNo;
+
+	@NotBlank
+	private String workPhoneNo;
+
+	@NotBlank
+	@Column(length = 50, unique = true)
+	private String email;
+
+	@NotBlank
+	private String streetAdress;
+
+	private String appartmentNo;
+
+	@NotBlank
+	private String city;
+
+	@NotBlank
+	private String state;
+
+	@NotBlank
+	private String zipcode;
+
+	private Date registrationDate;
+
+	private int superId;
+
+	@Column(nullable = false, updatable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@CreatedDate
+	private Date createdDate;
+
+	private String createdBy;
+
+	@Column(nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@LastModifiedDate
+	private Date updatedDate;
+
+	private String updatedBy;
+
+	private int tier;
+
+	private String status="ACTIVE";
+	
+	@Column(nullable = false, updatable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@CreatedDate
+	private Date actionDate;
+	
+	private String actionBy;
+	
+	private String action;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getChurchId() {
+		return churchId;
+	}
+
+	public void setChurchId(String churchId) {
+		this.churchId = churchId;
+	}
 
 	public String getFirstName() {
 		return firstName;
@@ -78,94 +141,21 @@ public class Memberhistory implements Serializable {
 		this.lastName = lastName;
 	}
 
-	@NotBlank
-	private String middleName;
-
-	@NotBlank
-	private String lastName;
-
-	@NotBlank
-	private String email;
-
-	@NotBlank
-	private String homePhone;
-
-	@NotBlank
-	private String workPhone;
-
-	@NotBlank
-	private String adress;
-
-	@NotBlank
-	private String city;
-
-	@NotBlank
-	private String state;
-
-	@NotBlank
-	private String zipCode;
-
-	private Boolean status;
-
-	private int superId;
-
-	@Column(nullable = false, updatable = false)
-
-	@Temporal(TemporalType.TIMESTAMP)
-
-	@CreatedDate
-	private Date registrationDate;
-
-	@Column(nullable = false, updatable = false)
-
-	@Temporal(TemporalType.TIMESTAMP)
-
-	@CreatedDate
-	private Date updatedDate;
-
-	private String action;
-
-	private String updatedBy;
-	
-	public String getUsername() {
-		return username;
+	public String getHomePhoneNo() {
+		return homePhoneNo;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setHomePhoneNo(String homePhoneNo) {
+		this.homePhoneNo = homePhoneNo;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getWorkPhoneNo() {
+		return workPhoneNo;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setWorkPhoneNo(String workPhoneNo) {
+		this.workPhoneNo = workPhoneNo;
 	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	private String username;
-	
-	private String password;
-	
-	private String role;
-
-	public String getChurchId() {
-		return churchId;
-	}
-
-	public void setChurchId(String churchId) {
-		this.churchId = churchId;
-	}
-
-
 
 	public String getEmail() {
 		return email;
@@ -175,28 +165,20 @@ public class Memberhistory implements Serializable {
 		this.email = email;
 	}
 
-	public String getHomePhone() {
-		return homePhone;
+	public String getStreetAdress() {
+		return streetAdress;
 	}
 
-	public void setHomePhone(String homePhone) {
-		this.homePhone = homePhone;
+	public void setStreetAdress(String streetAdress) {
+		this.streetAdress = streetAdress;
 	}
 
-	public String getWorkPhone() {
-		return workPhone;
+	public String getAppartmentNo() {
+		return appartmentNo;
 	}
 
-	public void setWorkPhone(String workPhone) {
-		this.workPhone = workPhone;
-	}
-
-	public String getAdress() {
-		return adress;
-	}
-
-	public void setAdress(String adress) {
-		this.adress = adress;
+	public void setAppartmentNo(String appartmentNo) {
+		this.appartmentNo = appartmentNo;
 	}
 
 	public String getCity() {
@@ -215,12 +197,12 @@ public class Memberhistory implements Serializable {
 		this.state = state;
 	}
 
-	public String getZipCode() {
-		return zipCode;
+	public String getZipcode() {
+		return zipcode;
 	}
 
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 
 	public Date getRegistrationDate() {
@@ -231,36 +213,28 @@ public class Memberhistory implements Serializable {
 		this.registrationDate = registrationDate;
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getMemberId() {
-		return churchId;
-	}
-
-	public void setMemberId(String memberId) {
-		this.churchId = memberId;
-	}
-
-	public Boolean getStatus() {
-		return status;
-	}
-
-	public void setStatus(Boolean status) {
-		this.status = status;
-	}
-
 	public int getSuperId() {
 		return superId;
 	}
 
 	public void setSuperId(int superId) {
 		this.superId = superId;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public Date getUpdatedDate() {
@@ -271,14 +245,6 @@ public class Memberhistory implements Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-	public String getAction() {
-		return action;
-	}
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
 	public String getUpdatedBy() {
 		return updatedBy;
 	}
@@ -287,13 +253,52 @@ public class Memberhistory implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	@Override
-	public String toString() {
-		return "Memberhistory [id=" + id + ", churchId=" + churchId + ", firstName=" + firstName + ", secondName="
-				+ lastName + ", middleName=" + lastName + ", email=" + email + ", homePhone=" + homePhone
-				+ ", workPhone=" + workPhone + ", adress=" + adress + ", city=" + city + ", state=" + state
-				+ ", zipCode=" + zipCode + ", status=" + status + ", superId=" + superId + ", registrationDate="
-				+ registrationDate + ", updatedDate=" + updatedDate + ", action=" + action + ", updatedBy=" + updatedBy
-				+ "]";
+	public int getTier() {
+		return tier;
 	}
+
+	public void setTier(int tier) {
+		this.tier = tier;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Long getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(Long memberId) {
+		this.memberId = memberId;
+	}
+
+	public Date getActionDate() {
+		return actionDate;
+	}
+
+	public void setActionDate(Date actionDate) {
+		this.actionDate = actionDate;
+	}
+
+	public String getActionBy() {
+		return actionBy;
+	}
+
+	public void setActionBy(String actionBy) {
+		this.actionBy = actionBy;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
 }

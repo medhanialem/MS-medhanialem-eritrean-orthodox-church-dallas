@@ -16,6 +16,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -23,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "Member")
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = { "createdAt" }, allowGetters = true)
+@JsonIgnoreProperties(value = { "createdDate", "updatedDate" }, allowGetters = true)
 public class Member implements Serializable {
 
 	@Id
@@ -43,16 +44,19 @@ public class Member implements Serializable {
 	private String lastName;
 
 	@NotBlank
+	private String homePhoneNo;
+
+	@NotBlank
+	private String workPhoneNo;
+
+	@NotBlank
+	@Column(length = 50, unique = true)
 	private String email;
 
 	@NotBlank
-	private String homePhone;
+	private String streetAdress;
 
-	@NotBlank
-	private String workPhone;
-
-	@NotBlank
-	private String adress;
+	private String appartmentNo;
 
 	@NotBlank
 	private String city;
@@ -61,43 +65,36 @@ public class Member implements Serializable {
 	private String state;
 
 	@NotBlank
-	private String zipCode;
+	private String zipcode;
 
-	private Boolean status;
+	private Date registrationDate;
 
-	public int getTier() {
-		return tier;
-	}
-
-	public void setTier(int tier) {
-		this.tier = tier;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-    
-	private int tier;
+	private int superId;
 
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreatedDate
-	private Date createdAt;
+	private Date createdDate;
 
-	private int superId;
+	private String createdBy;
 
-	private Date registrationDate;
-	
-	public String getFirstName() {
-		return firstName;
+	@Column(nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@LastModifiedDate
+	private Date updatedDate;
+
+	private String updatedBy;
+
+	private int tier;
+
+	private String status="ACTIVE";
+
+	public Long getId() {
+		return id;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getChurchId() {
@@ -106,6 +103,14 @@ public class Member implements Serializable {
 
 	public void setChurchId(String churchId) {
 		this.churchId = churchId;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 	public String getMiddleName() {
@@ -124,6 +129,22 @@ public class Member implements Serializable {
 		this.lastName = lastName;
 	}
 
+	public String getHomePhoneNo() {
+		return homePhoneNo;
+	}
+
+	public void setHomePhoneNo(String homePhoneNo) {
+		this.homePhoneNo = homePhoneNo;
+	}
+
+	public String getWorkPhoneNo() {
+		return workPhoneNo;
+	}
+
+	public void setWorkPhoneNo(String workPhoneNo) {
+		this.workPhoneNo = workPhoneNo;
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -132,28 +153,20 @@ public class Member implements Serializable {
 		this.email = email;
 	}
 
-	public String getHomePhone() {
-		return homePhone;
+	public String getStreetAdress() {
+		return streetAdress;
 	}
 
-	public void setHomePhone(String homePhone) {
-		this.homePhone = homePhone;
+	public void setStreetAdress(String streetAdress) {
+		this.streetAdress = streetAdress;
 	}
 
-	public String getWorkPhone() {
-		return workPhone;
+	public String getAppartmentNo() {
+		return appartmentNo;
 	}
 
-	public void setWorkPhone(String workPhone) {
-		this.workPhone = workPhone;
-	}
-
-	public String getAdress() {
-		return adress;
-	}
-
-	public void setAdress(String adress) {
-		this.adress = adress;
+	public void setAppartmentNo(String appartmentNo) {
+		this.appartmentNo = appartmentNo;
 	}
 
 	public String getCity() {
@@ -172,12 +185,12 @@ public class Member implements Serializable {
 		this.state = state;
 	}
 
-	public String getZipCode() {
-		return zipCode;
+	public String getZipcode() {
+		return zipcode;
 	}
 
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 
 	public Date getRegistrationDate() {
@@ -188,22 +201,6 @@ public class Member implements Serializable {
 		this.registrationDate = registrationDate;
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Boolean getStatus() {
-		return status;
-	}
-
-	public void setStatus(Boolean status) {
-		this.status = status;
-	}
-
 	public int getSuperId() {
 		return superId;
 	}
@@ -212,12 +209,62 @@ public class Member implements Serializable {
 		this.superId = superId;
 	}
 
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public int getTier() {
+		return tier;
+	}
+
+	public void setTier(int tier) {
+		this.tier = tier;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
-		return "Member [id=" + id + ", churchId=" + churchId + ", firstName=" + firstName + ", secondName=" + lastName
-				+ ", middleName=" + lastName + ", email=" + email + ", homePhone=" + homePhone + ", workPhone="
-				+ workPhone + ", adress=" + adress + ", city=" + city + ", state=" + state + ", zipCode=" + zipCode
-				+ ", status=" + status + ", tier=" + tier + ", createdAt=" + createdAt + ", superId=" + superId
-				+ ", registrationDate=" + registrationDate + "]";
+		return "Member [id=" + id + ", churchId=" + churchId + ", firstName=" + firstName + ", middleName=" + middleName
+				+ ", lastName=" + lastName + ", homePhoneNo=" + homePhoneNo + ", workPhoneNo=" + workPhoneNo
+				+ ", email=" + email + ", streetAdress=" + streetAdress + ", appartmentNo=" + appartmentNo + ", city="
+				+ city + ", state=" + state + ", zipcode=" + zipcode + ", registrationDate=" + registrationDate
+				+ ", superId=" + superId + ", createdDate=" + createdDate + ", createdBy=" + createdBy
+				+ ", updatedDate=" + updatedDate + ", updatedBy=" + updatedBy + ", tier=" + tier + ", status=" + status
+				+ "]";
 	}
 }
