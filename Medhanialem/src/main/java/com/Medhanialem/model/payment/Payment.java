@@ -25,7 +25,7 @@ import com.Medhanialem.model.Member;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "payment")
+@Table(name = "Receipt")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "paymentDate" }, allowGetters = true)
 public class Payment {
@@ -36,7 +36,7 @@ public class Payment {
 
 	@ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinColumn(name = "member_id")
+	@JoinColumn(name = "memberId")
 	private Member member;
 
 	@NotNull

@@ -10,6 +10,8 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,6 +21,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.Medhanialem.model.payment.Tier;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -70,6 +73,16 @@ public class Member implements Serializable {
 	private Date registrationDate;
 
 	private int superId;
+	
+	public int getPaymentlookupId() {
+		return paymentlookupId;
+	}
+
+	public void setPaymentlookupId(int paymentlookupId) {
+		this.paymentlookupId = paymentlookupId;
+	}
+
+	private int paymentlookupId;
 
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -85,7 +98,9 @@ public class Member implements Serializable {
 
 	private String updatedBy;
 
-	private int tier;
+	@OneToOne
+    @JoinColumn(name = "tierId")
+	private Tier tier;
 
 	private String status="ACTIVE";
 
@@ -241,11 +256,13 @@ public class Member implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public int getTier() {
+
+
+	public Tier getTier() {
 		return tier;
 	}
 
-	public void setTier(int tier) {
+	public void setTier(Tier tier) {
 		this.tier = tier;
 	}
 
@@ -263,8 +280,8 @@ public class Member implements Serializable {
 				+ ", lastName=" + lastName + ", homePhoneNo=" + homePhoneNo + ", workPhoneNo=" + workPhoneNo
 				+ ", email=" + email + ", streetAdress=" + streetAdress + ", appartmentNo=" + appartmentNo + ", city="
 				+ city + ", state=" + state + ", zipcode=" + zipcode + ", registrationDate=" + registrationDate
-				+ ", superId=" + superId + ", createdDate=" + createdDate + ", createdBy=" + createdBy
-				+ ", updatedDate=" + updatedDate + ", updatedBy=" + updatedBy + ", tier=" + tier + ", status=" + status
-				+ "]";
+				+ ", superId=" + superId + ", paymentlookupId=" + paymentlookupId + ", createdDate=" + createdDate
+				+ ", createdBy=" + createdBy + ", updatedDate=" + updatedDate + ", updatedBy=" + updatedBy + ", tier="
+				+ tier + ", status=" + status + "]";
 	}
 }

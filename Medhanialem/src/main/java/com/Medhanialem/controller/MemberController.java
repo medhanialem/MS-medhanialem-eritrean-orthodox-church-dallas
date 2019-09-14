@@ -34,7 +34,7 @@ public class MemberController {
 	@Autowired
 	MemberHistRepository memberHistRepository;
 
-	@PostMapping("/addmember")
+	@PostMapping("/members")
 	public Member createMember(@RequestBody Member memberDetails) {
 
 		Member savedMember = memberRepository.save(memberDetails);
@@ -125,7 +125,7 @@ public class MemberController {
 			memberhistory.setRegistrationDate(memberDetails.getRegistrationDate()); 
 			memberhistory.setStatus(memberDetails.getStatus()); 
 			memberhistory.setSuperId(memberDetails.getSuperId()); 
-			memberhistory.setTier(memberDetails.getTier());
+	//		memberhistory.setTier(memberDetails.getTier());
 			memberhistory.setUpdatedDate(memberDetails.getUpdatedDate());
 			memberhistory.setCreatedDate(memberDetails.getCreatedDate());
 				

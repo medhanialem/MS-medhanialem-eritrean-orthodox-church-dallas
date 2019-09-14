@@ -10,6 +10,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,10 +21,11 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.Medhanialem.model.payment.Tier;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "membershistory")
+@Table(name = "Membershistory")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "actionDate", "updatedDate"}, allowGetters = true)
 public class Memberhistory implements Serializable {
@@ -52,8 +54,6 @@ public class Memberhistory implements Serializable {
 	@NotBlank
 	private String workPhoneNo;
 
-	@NotBlank
-	@Column(length = 50, unique = true)
 	private String email;
 
 	@NotBlank
@@ -88,7 +88,8 @@ public class Memberhistory implements Serializable {
 
 	private String updatedBy;
 
-	private int tier;
+	@OneToOne
+	private Tier tier;
 
 	private String status="ACTIVE";
 	
@@ -253,11 +254,11 @@ public class Memberhistory implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public int getTier() {
+	public Tier getTier() {
 		return tier;
 	}
 
-	public void setTier(int tier) {
+	public void setTier(Tier tier) {
 		this.tier = tier;
 	}
 

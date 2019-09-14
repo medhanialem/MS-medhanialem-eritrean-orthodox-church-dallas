@@ -17,11 +17,11 @@ public interface MemberShipPaymentLookUpfeeRepository extends JpaRepository<Memb
 //			  nativeQuery = true)
 //	List<MembershipPaymentLookupFee> findpaylookUpfees(@Param(value = "id") Long id,@Param(value = "year") int year,@Param(value = "month") int month);
 	
-	@Query(value = "SELECT * FROM medhanie_alem_dallas.membershippaymentlookupfee WHERE `id` > :id  and id <= :currentId", 
+	@Query(value = "SELECT * FROM test_db.PaymentLookupe WHERE `id` > :id  and id <= :currentId", 
 			  nativeQuery = true)
 	List<MembershipPaymentLookupFee> findpaylookUpfees(@Param(value = "id") Long id,@Param(value = "currentId") Long currentId);
 
-	@Query(value = "SELECT * FROM medhanie_alem_dallas.membershippaymentlookupfee where year = :year and month = :month", 
+	@Query(value = "SELECT * FROM test_db.PaymentLookup where year = :year and month = :month", 
 			  nativeQuery = true)
 	MembershipPaymentLookupFee getIdbymonthAndyear(@Param(value = "year") int year,@Param(value = "month") int month);
 

@@ -1,22 +1,21 @@
 package com.Medhanialem.controller.model.payment;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class Paymentreq {
 	
-	@NotBlank
-	private String memberId;
+	
+	private int monthsTopay;
 
 	@NotNull
 	private double total;
 
-	public String getMemberId() {
-		return memberId;
+	public int getMonthsTopay() {
+		return monthsTopay;
 	}
 
-	public void setMemberId(String memberId) {
-		this.memberId = memberId;
+	public void setMonthsTopay(int monthsTopay) {
+		this.monthsTopay = monthsTopay;
 	}
 
 	public double getTotal() {

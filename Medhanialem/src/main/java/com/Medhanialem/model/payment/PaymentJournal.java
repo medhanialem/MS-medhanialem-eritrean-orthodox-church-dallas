@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "PaymentJournal")
+@Table(name = "PaymentLog")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "paymentDate" }, allowGetters = true)
 public class PaymentJournal implements Serializable {
@@ -43,7 +43,7 @@ public class PaymentJournal implements Serializable {
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "memberId")
 	private Member member;
 
 	@NotNull
@@ -55,12 +55,12 @@ public class PaymentJournal implements Serializable {
 	private Date createdAt;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "paymentlookupfee_id", nullable = false)
+	@JoinColumn(name = "paymentLookupId", nullable = false)
 	private MembershipPaymentLookupFee paymentLookupfee;
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
+    @JoinColumn(name = "receiptId")
     private Payment payment;
 
 	public PaymentJournal() {

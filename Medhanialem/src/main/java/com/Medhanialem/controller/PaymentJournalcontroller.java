@@ -111,15 +111,12 @@ public class PaymentJournalcontroller {
 			PaymentJournal journal = new PaymentJournal();
 
 			double monthly = 0.0;
-			if (member.getTier() == 1) {
-				monthly = lookUp.getTeir1Amount();
-			} else if (member.getTier() == 2) {
-				monthly = lookUp.getTeir2Amount();
-			} else if (member.getTier() == 3) {
-				monthly = lookUp.getTeir3Amount();
-			} else {
-				monthly = lookUp.getTeir4Amount();
-			}
+			/*
+			 * if (member.getTier() == 1) { monthly = lookUp.getTeir1Amount(); } else if
+			 * (member.getTier() == 2) { monthly = lookUp.getTeir2Amount(); } else if
+			 * (member.getTier() == 3) { monthly = lookUp.getTeir3Amount(); } else { monthly
+			 * = lookUp.getTeir4Amount(); }
+			 */
 			journal.setAmount(monthly);
 
 			journal.setPaymentLookupfee(lookUp);
@@ -161,7 +158,7 @@ public class PaymentJournalcontroller {
 			response.setLastName(member.getLastName());
 			response.setMobile(member.getHomePhoneNo());
 			response.setMemberId(member.getId());
-			response.setTier(member.getTier());
+	//		response.setTier(member.getTier());
 			response.setMemberSince(member.getRegistrationDate());
 
 			List<Journal> journals = getPaymentJournals(member);
@@ -210,15 +207,14 @@ public class PaymentJournalcontroller {
 			journal.setPaid(false);
 
 			double monthly = 0.0;
-			if (member.getTier() == 1) {
-				monthly = monthJournal.getTeir1Amount();
-			} else if (member.getTier() == 2) {
-				monthly = monthJournal.getTeir2Amount();
-			} else if (member.getTier() == 3) {
-				monthly = monthJournal.getTeir3Amount();
-			} else {
-				monthly = monthJournal.getTeir4Amount();
-			}
+			/*
+			 * if (member.getTier() == 1) { monthly = monthJournal.getTeir1Amount(); } else
+			 * if (member.getTier() == 2) { monthly = monthJournal.getTeir2Amount(); } else
+			 * if (member.getTier() == 3) { monthly = monthJournal.getTeir3Amount(); } else
+			  }
+			 */
+			 monthly = monthJournal.getAmount();
+			 
 			journal.setFee(monthly);
 
 			journallist.add(journal);
