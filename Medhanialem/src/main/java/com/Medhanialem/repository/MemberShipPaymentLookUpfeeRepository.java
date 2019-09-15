@@ -25,4 +25,7 @@ public interface MemberShipPaymentLookUpfeeRepository extends JpaRepository<Memb
 			  nativeQuery = true)
 	MembershipPaymentLookupFee getIdbymonthAndyear(@Param(value = "year") int year,@Param(value = "month") int month);
 
+	@Query(value= "SELECT * FROM test_db.PaymentLookup where year = :year", nativeQuery = true)
+	List<MembershipPaymentLookupFee> getPaymentLookupInfo(@Param(value = "year")Long year);
+
 }

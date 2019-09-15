@@ -43,6 +43,11 @@ public class PaymentJournalcontroller {
 	@Autowired
 	MemberShipPaymentLookUpfeeRepository memberShipPaymentLookUpfee;
 
+	@GetMapping("/getpaymentlookupinfo/{year}")
+	public List<MembershipPaymentLookupFee> getPaymentLookupInfo(@PathVariable(value = "year") Long year) {
+		return memberShipPaymentLookUpfee.getPaymentLookupInfo(year);
+	}
+
 	@GetMapping("/getpaymentinfo/{id}")
 	public List<MembershipPaymentLookupFee> getPaymentInformation(@PathVariable(value = "id") Long id) {
 
@@ -105,8 +110,8 @@ public class PaymentJournalcontroller {
 		payment = paymentRepository.save(payment);
 
 		for (MembershipPaymentLookupFee lookUp : unpaidMonths) {
-//            Member newmember = new Member();
-//            newmember = member;
+			// Member newmember = new Member();
+			// newmember = member;
 
 			PaymentJournal journal = new PaymentJournal();
 
@@ -158,7 +163,7 @@ public class PaymentJournalcontroller {
 			response.setLastName(member.getLastName());
 			response.setMobile(member.getHomePhoneNo());
 			response.setMemberId(member.getId());
-	//		response.setTier(member.getTier());
+			// response.setTier(member.getTier());
 			response.setMemberSince(member.getRegistrationDate());
 
 			List<Journal> journals = getPaymentJournals(member);
@@ -211,10 +216,10 @@ public class PaymentJournalcontroller {
 			 * if (member.getTier() == 1) { monthly = monthJournal.getTeir1Amount(); } else
 			 * if (member.getTier() == 2) { monthly = monthJournal.getTeir2Amount(); } else
 			 * if (member.getTier() == 3) { monthly = monthJournal.getTeir3Amount(); } else
-			  }
+			 * }
 			 */
-			 monthly = monthJournal.getAmount();
-			 
+			monthly = monthJournal.getAmount();
+
 			journal.setFee(monthly);
 
 			journallist.add(journal);
