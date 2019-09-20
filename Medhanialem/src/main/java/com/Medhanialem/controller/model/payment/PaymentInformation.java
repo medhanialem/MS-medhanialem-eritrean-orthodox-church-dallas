@@ -3,7 +3,7 @@ package com.Medhanialem.controller.model.payment;
 import java.util.Date;
 import java.util.List;
 
-public class PaymentInformaiton {
+public class PaymentInformation {
 
 	private Long memberId;
 	private String churchId;
@@ -12,7 +12,7 @@ public class PaymentInformaiton {
 	private String lastName;
 	private String homePhoneNo;
 	private Date registrationDate;
-	private int tier;
+	private Long tier;
 
 	private List<PaymentLogs> paymentLogs;
 
@@ -48,11 +48,11 @@ public class PaymentInformaiton {
 		this.lastName = lastName;
 	}
 
-	public int getTier() {
+	public Long getTier() {
 		return tier;
 	}
 
-	public void setTier(int tier) {
+	public void setTier(Long tier) {
 		this.tier = tier;
 	}
 

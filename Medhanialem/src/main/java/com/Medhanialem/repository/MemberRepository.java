@@ -9,4 +9,5 @@ import com.Medhanialem.model.Member;
  @Repository 
  public interface MemberRepository extends JpaRepository<Member,Long>{
 
+
 }

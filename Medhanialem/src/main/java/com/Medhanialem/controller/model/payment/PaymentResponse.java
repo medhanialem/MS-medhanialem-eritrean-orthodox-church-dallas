@@ -14,7 +14,7 @@ public class PaymentResponse {
             private Date memberSince;
             private int tier;
 	
-	        private List<Journal> journalList;
+	        private List<PaymentLogs> journalList;
 
 			public Long getMemberId() {
 				return memberId;
@@ -72,13 +72,13 @@ public class PaymentResponse {
 				this.tier = tier;
 			}
 
-			public List<Journal> getJournalList() {
+			public List<PaymentLogs> getJournalList() {
 				return journalList;
 			}
 
-			public void setJournalList(List<Journal> journalList) {
+			public void setJournalList(List<PaymentLogs> journalList) {
 				this.journalList = journalList;
 			}
-	        
-	        
+
+  
 }

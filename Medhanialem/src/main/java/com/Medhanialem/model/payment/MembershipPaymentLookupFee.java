@@ -46,14 +46,6 @@ public class MembershipPaymentLookupFee {
 	@OneToOne
 	@JoinColumn(name = "tierId")
 	private Tier tier;
-	
-	public Tier getTier() {
-		return tier;
-	}
-
-	public void setTier(Tier tier) {
-		this.tier = tier;
-	}
 
 	public double getAmount() {
 		return Amount;
@@ -73,13 +65,6 @@ public class MembershipPaymentLookupFee {
 	@NotNull 
 	private double Amount;
 	
-	public Tier getTierId() {
-		return tier;
-	}
-
-	public void setTierId(Tier tierId) {
-		this.tier = tierId;
-	}
 
 	@NotNull 
 	private int revision;
@@ -133,6 +118,14 @@ public class MembershipPaymentLookupFee {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public Tier getTier() {
+		return tier;
+	}
+
+	public void setTier(Tier tier) {
+		this.tier = tier;
 	}
 
 	public Date getUpdatedAt() {
