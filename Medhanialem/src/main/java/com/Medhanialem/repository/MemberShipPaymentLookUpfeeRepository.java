@@ -27,5 +27,8 @@ public interface MemberShipPaymentLookUpfeeRepository extends JpaRepository<Paym
 
 	@Query(value= "SELECT * FROM test_db.PaymentLookup where year = :year", nativeQuery = true)
 	List<PaymentLookup> getPaymentLookupInfo(@Param(value = "year")Long year);
+	
+	@Query(value= "SELECT * FROM test_db.PaymentLookup where year = :year and tierId = :tier", nativeQuery = true)
+	List<PaymentLookup> getPaymentLookupInfoByTier(@Param(value = "year")Long year, @Param(value = "tier")Long tier);
 
 }
