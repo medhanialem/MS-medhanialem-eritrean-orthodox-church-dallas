@@ -7,12 +7,18 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Medhanialem.controller.model.payment.MonthlyPaid;
 import com.Medhanialem.controller.model.payment.PaymentInformation;
 import com.Medhanialem.controller.model.payment.PaymentLogs;
+import com.Medhanialem.controller.model.payment.Paymentrequest;
 import com.Medhanialem.model.Member;
-import com.Medhanialem.model.payment.MembershipPaymentLookupFee;
+import com.Medhanialem.model.payment.PaymentLookup;
+import com.Medhanialem.model.payment.Payment;
+import com.Medhanialem.model.payment.PaymentJournal;
 import com.Medhanialem.model.payment.PaymentlogDTO;
 import com.Medhanialem.repository.MemberRepository;
 import com.Medhanialem.repository.MemberShipPaymentLookUpfeeRepository;
@@ -39,53 +45,40 @@ public class PaymentJournalcontroller {
 	MemberShipPaymentLookUpfeeRepository memberShipPaymentLookUpfee;
 
 	@GetMapping("/getpaymentlookupinfo/{year}")
-	public List<MembershipPaymentLookupFee> getPaymentLookupInfo(@PathVariable(value = "year") Long year) {
+	public List<PaymentLookup> getPaymentLookupInfo(@PathVariable(value = "year") Long year) {
 		return memberShipPaymentLookUpfee.getPaymentLookupInfo(year);
 	}
 
 
 	// This API will be used to post payment to DB
 
-//	@PostMapping("/pay/{id}")
-//	public void paymonthlyfee(@PathVariable(value = "id") Long id, @RequestBody Paymentreq request) {
-//		double sum = 0;
-//		Member member = memberRepository.findById(id).get();
-//
-//		List<MembershipPaymentLookupFee> unpaidMonths = getPaymentInformation(id);
-//
-//		Payment payment = new Payment();
-//		payment.setMember(member);
-//		payment.setTotal(request.getTotal());
-//
-//		payment = paymentRepository.save(payment);
-//
-//		for (MembershipPaymentLookupFee lookUp : unpaidMonths) {
-//			// Member newmember = new Member();
-//			// newmember = member;
-//
-//			PaymentJournal journal = new PaymentJournal();
-//
-//			double monthly = 0.0;
-//			/*
-//			 * if (member.getTier() == 1) { monthly = lookUp.getTeir1Amount(); } else if
-//			 * (member.getTier() == 2) { monthly = lookUp.getTeir2Amount(); } else if
-//			 * (member.getTier() == 3) { monthly = lookUp.getTeir3Amount(); } else { monthly
-//			 * = lookUp.getTeir4Amount(); }
-//			 */
-//			journal.setAmount(monthly);
-//
-//			journal.setPaymentLookupfee(lookUp);
-//			journal.setPayment(payment);
-//			journal.setMember(member);
-//
-//			paymentJournalRepository.save(journal);
-//
-//			sum = sum + monthly;
-//			if (sum >= request.getTotal()) {
-//				break;
-//			}
-//		}
-//	}
+	@PostMapping("/pay")
+	public void paymonthlyfee( @RequestBody Paymentrequest paymentRequest) {
+		
+		Member member = memberRepository.findById(paymentRequest.getMemberId()).get();
+
+		Payment payment = new Payment();
+		payment.setMember(member);
+		payment.setTotal(paymentRequest.getTotal());
+	
+		payment = paymentRepository.save(payment);
+
+		for (MonthlyPaid monthlypaid : paymentRequest.getPayments()) {
+			
+
+			PaymentJournal paymentJournal = new PaymentJournal();
+
+		
+			paymentJournal.setAmount(monthlypaid.getAmount());
+
+			
+			paymentJournal.setPayment(payment);
+			paymentJournal.setMember(member);
+			paymentJournal.setPaymentLookupfee(memberShipPaymentLookUpfee.findById(monthlypaid.getPaymentLookupId()).get());
+
+			paymentJournalRepository.save(paymentJournal);
+		}
+	}
 
 
 	

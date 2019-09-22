@@ -56,7 +56,7 @@ public class PaymentJournal implements Serializable {
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "paymentLookupId", nullable = false)
-	private MembershipPaymentLookupFee paymentLookupfee;
+	private PaymentLookup paymentLookupfee;
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -98,11 +98,11 @@ public class PaymentJournal implements Serializable {
 		this.createdAt = createdAt;
 	}
 
-	public MembershipPaymentLookupFee getPaymentLookupfee() {
+	public PaymentLookup getPaymentLookupfee() {
 		return paymentLookupfee;
 	}
 
-	public void setPaymentLookupfee(MembershipPaymentLookupFee paymentLookupfee) {
+	public void setPaymentLookupfee(PaymentLookup paymentLookupfee) {
 		this.paymentLookupfee = paymentLookupfee;
 	}
 

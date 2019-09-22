@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "PaymentLookup") 
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "createdAt" }, allowGetters = true)
-public class MembershipPaymentLookupFee {
+public class PaymentLookup {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
