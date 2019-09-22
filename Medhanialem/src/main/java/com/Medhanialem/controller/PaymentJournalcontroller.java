@@ -46,6 +46,24 @@ public class PaymentJournalcontroller {
 	@Autowired
 	MemberShipPaymentLookUpfeeRepository memberShipPaymentLookUpfee;
 
+	@GetMapping("/getpaymentlookupinfo/{year}/{tier}")
+	public List<PaymentLookUps> getPaymentLookupInfoByTier(@PathVariable(value = "year") Long year,
+			@PathVariable(value = "tier") Long tier) {
+		List<PaymentLookup> pList = memberShipPaymentLookUpfee.getPaymentLookupInfoByTier(year, tier);
+		List<PaymentLookUps> plookupsList = new ArrayList<>();
+		for (PaymentLookup pLookUp : pList) {
+			if (pLookUp.getTier().getId() == tier) {
+				PaymentLookUps paymentLookUp = new PaymentLookUps();
+				paymentLookUp.setPaymentLookupId(pLookUp.getId());
+				paymentLookUp.setMonth(pLookUp.getMonth());
+				paymentLookUp.setYear(pLookUp.getYear());
+				paymentLookUp.setAmount(pLookUp.getAmount());
+				plookupsList.add(paymentLookUp);
+			}
+		}
+		return plookupsList;
+	}
+
 	@GetMapping("/getpaymentlookupinfo/{year}")
 	public List<PaymentLookupResponseByYear> getPaymentLookupInfo(@PathVariable(value = "year") Long year) {
 		List<PaymentLookup> mplfList = memberShipPaymentLookUpfee.getPaymentLookupInfo(year);
