@@ -32,7 +32,8 @@ public class Member implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Column(name="id")
+	private Long memberId;
 
 	@NotBlank
 	private String churchId;
@@ -46,18 +47,19 @@ public class Member implements Serializable {
 	@NotBlank
 	private String lastName;
 
-	@NotBlank
+	//@NotBlank
 	private String homePhoneNo;
 
-	@NotBlank
+	//@NotBlank
 	private String workPhoneNo;
 
 	@NotBlank
 	@Column(length = 50, unique = true)
 	private String email;
 
-	@NotBlank
-	private String streetAdress;
+	//@NotBlank
+	@Column(name="streetAdress")
+	private String streetAddress;
 
 	private String appartmentNo;
 
@@ -67,12 +69,13 @@ public class Member implements Serializable {
 	@NotBlank
 	private String state;
 
-	@NotBlank
-	private String zipcode;
+	//@NotBlank
+	@Column(name="zipcode")
+	private String zipCode;
 
 	private Date registrationDate;
 
-	private int superId;
+	private long superId;
 	
 	public int getPaymentlookupId() {
 		return paymentlookupId;
@@ -103,14 +106,6 @@ public class Member implements Serializable {
 	private Tier tier;
 
 	private String status="ACTIVE";
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getChurchId() {
 		return churchId;
@@ -169,11 +164,11 @@ public class Member implements Serializable {
 	}
 
 	public String getStreetAdress() {
-		return streetAdress;
+		return streetAddress;
 	}
 
 	public void setStreetAdress(String streetAdress) {
-		this.streetAdress = streetAdress;
+		this.streetAddress = streetAdress;
 	}
 
 	public String getAppartmentNo() {
@@ -201,11 +196,11 @@ public class Member implements Serializable {
 	}
 
 	public String getZipcode() {
-		return zipcode;
+		return zipCode;
 	}
 
 	public void setZipcode(String zipcode) {
-		this.zipcode = zipcode;
+		this.zipCode = zipcode;
 	}
 
 	public Date getRegistrationDate() {
@@ -216,13 +211,7 @@ public class Member implements Serializable {
 		this.registrationDate = registrationDate;
 	}
 
-	public int getSuperId() {
-		return superId;
-	}
 
-	public void setSuperId(int superId) {
-		this.superId = superId;
-	}
 
 	public Date getCreatedDate() {
 		return createdDate;
@@ -257,6 +246,37 @@ public class Member implements Serializable {
 	}
 
 
+	public Long getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(Long memberId) {
+		this.memberId = memberId;
+	}
+
+	public String getStreetAddress() {
+		return streetAddress;
+	}
+
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public long getSuperId() {
+		return superId;
+	}
+
+	public void setSuperId(long superId) {
+		this.superId = superId;
+	}
 
 	public Tier getTier() {
 		return tier;
@@ -276,12 +296,14 @@ public class Member implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Member [id=" + id + ", churchId=" + churchId + ", firstName=" + firstName + ", middleName=" + middleName
-				+ ", lastName=" + lastName + ", homePhoneNo=" + homePhoneNo + ", workPhoneNo=" + workPhoneNo
-				+ ", email=" + email + ", streetAdress=" + streetAdress + ", appartmentNo=" + appartmentNo + ", city="
-				+ city + ", state=" + state + ", zipcode=" + zipcode + ", registrationDate=" + registrationDate
-				+ ", superId=" + superId + ", paymentlookupId=" + paymentlookupId + ", createdDate=" + createdDate
-				+ ", createdBy=" + createdBy + ", updatedDate=" + updatedDate + ", updatedBy=" + updatedBy + ", tier="
-				+ tier + ", status=" + status + "]";
+		return "Member [memberId=" + memberId + ", churchId=" + churchId + ", firstName=" + firstName + ", middleName="
+				+ middleName + ", lastName=" + lastName + ", homePhoneNo=" + homePhoneNo + ", workPhoneNo="
+				+ workPhoneNo + ", email=" + email + ", streetAddress=" + streetAddress + ", appartmentNo="
+				+ appartmentNo + ", city=" + city + ", state=" + state + ", zipCode=" + zipCode + ", registrationDate="
+				+ registrationDate + ", superId=" + superId + ", paymentlookupId=" + paymentlookupId + ", createdDate="
+				+ createdDate + ", createdBy=" + createdBy + ", updatedDate=" + updatedDate + ", updatedBy=" + updatedBy
+				+ ", tier=" + tier + ", status=" + status + "]";
 	}
+
+
 }

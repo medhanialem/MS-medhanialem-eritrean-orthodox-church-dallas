@@ -48,15 +48,15 @@ public class Memberhistory implements Serializable {
 	@NotBlank
 	private String lastName;
 
-	@NotBlank
+	//@NotBlank
 	private String homePhoneNo;
 
-	@NotBlank
+	//@NotBlank
 	private String workPhoneNo;
 
 	private String email;
 
-	@NotBlank
+	//@NotBlank
 	private String streetAdress;
 
 	private String appartmentNo;
@@ -67,12 +67,12 @@ public class Memberhistory implements Serializable {
 	@NotBlank
 	private String state;
 
-	@NotBlank
+	//@NotBlank
 	private String zipcode;
 
 	private Date registrationDate;
 
-	private int superId;
+	private long superId;
 
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -214,11 +214,11 @@ public class Memberhistory implements Serializable {
 		this.registrationDate = registrationDate;
 	}
 
-	public int getSuperId() {
+	public long getSuperId() {
 		return superId;
 	}
 
-	public void setSuperId(int superId) {
+	public void setSuperId(long superId) {
 		this.superId = superId;
 	}
 

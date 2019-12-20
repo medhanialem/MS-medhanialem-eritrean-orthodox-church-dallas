@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,8 @@ import com.Medhanialem.model.Member;
 import com.Medhanialem.model.Memberhistory;
 import com.Medhanialem.repository.MemberHistRepository;
 import com.Medhanialem.repository.MemberRepository;
+import com.Medhanialem.repository.TierRepository;
+
 
 @RestController
 public class MemberController {
@@ -34,9 +37,10 @@ public class MemberController {
 	@Autowired
 	MemberHistRepository memberHistRepository;
 
+	 @CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("/members")
 	public Member createMember(@RequestBody Member memberDetails) {
-
+		 
 		Member savedMember = memberRepository.save(memberDetails);
 
 		if (null != savedMember) {
@@ -63,7 +67,9 @@ public class MemberController {
 
 		return savedMember;
 	}
+	
 
+	 @CrossOrigin(origins = "http://localhost:4200")
 	// Get All Members
 	@GetMapping("/members")
 	public List<Member> getAllMembers() {

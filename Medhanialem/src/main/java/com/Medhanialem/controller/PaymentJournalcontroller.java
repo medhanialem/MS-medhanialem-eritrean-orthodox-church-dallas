@@ -133,13 +133,13 @@ public class PaymentJournalcontroller {
 		for (Member member : memberList) {
 			PaymentInformation response = new PaymentInformation();
 
-			response.setMemberId(member.getId());
+			response.setMemberId(member.getMemberId());
 			response.setChurchId(member.getChurchId());
 			response.setFirstName(member.getFirstName());
 			response.setMiddleName(member.getMiddleName());
 			response.setLastName(member.getLastName());
 			response.setHomePhoneNo(member.getHomePhoneNo());
-			response.setMemberId(member.getId());
+			response.setMemberId(member.getMemberId());
 			response.setTier(member.getTier().getId());
 			response.setRegistrationDate(member.getRegistrationDate());
 
@@ -159,7 +159,7 @@ public class PaymentJournalcontroller {
 
 		for (PaymentlogDTO paymentdto : listPaymentdto) {
 
-			if (paymentdto.getMemberId().equals(member.getId())) {
+			if (paymentdto.getMemberId().equals(member.getMemberId())) {
 
 				PaymentLogs paylog = new PaymentLogs();
 
