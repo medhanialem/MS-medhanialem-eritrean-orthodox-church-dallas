@@ -2,8 +2,7 @@ server:
   port: 8091
 spring:
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:medhanie-alem-dallas-church-1.cgiucr5gojbw.us-east-2.rds.amazonaws.com}:${MYSQL_PORT:3306}/${MYSQL_DB:test_db}
-    #url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:medhanie_alem_dallas}
+    url: jdbc:mysql://${MYSQL_HOST:medhanie-alem-dallas.cgiucr5gojbw.us-east-2.rds.amazonaws.com}:${MYSQL_PORT:3306}/${MYSQL_DB:test_db}    
     initialization-mode: always
     username: ${MYSQL_USERNAME:admin}
     password: ${MYSQL_PASSWORD:M3dhani3Al3mChurch!Y}
@@ -12,7 +11,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
