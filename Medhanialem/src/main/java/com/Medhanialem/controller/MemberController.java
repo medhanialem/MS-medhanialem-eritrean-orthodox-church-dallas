@@ -23,7 +23,6 @@ import com.Medhanialem.model.Member;
 import com.Medhanialem.model.Memberhistory;
 import com.Medhanialem.repository.MemberHistRepository;
 import com.Medhanialem.repository.MemberRepository;
-import com.Medhanialem.repository.TierRepository;
 
 
 @RestController
@@ -37,7 +36,9 @@ public class MemberController {
 	@Autowired
 	MemberHistRepository memberHistRepository;
 
-	 @CrossOrigin(origins = "http://localhost:4200")
+	//@CrossOrigin(origins = "http://localhost:4200")
+	@CrossOrigin(origins = "*")
+	 
 	@PostMapping("/members")
 	public Member createMember(@RequestBody Member memberDetails) {
 		 
@@ -103,7 +104,7 @@ public class MemberController {
 		member.setChurchId(memberDetails.getChurchId()); 
 		member.setCity(memberDetails.getCity()); 
 		member.setStreetAdress(memberDetails.getStreetAdress());
-		member.setAppartmentNo(memberDetails.getAppartmentNo()); 
+		member.setAppartmentNo(memberDetails.getApartmentNo()); 
 		member.setState(memberDetails.getState()); 
 		member.setZipcode(memberDetails.getZipcode()); 
 		member.setRegistrationDate(memberDetails.getRegistrationDate()); 
@@ -125,7 +126,7 @@ public class MemberController {
 			memberhistory.setChurchId(memberDetails.getChurchId()); 
 			memberhistory.setCity(memberDetails.getCity()); 
 			memberhistory.setStreetAdress(memberDetails.getStreetAdress());
-			memberhistory.setAppartmentNo(memberDetails.getAppartmentNo()); 
+			memberhistory.setAppartmentNo(memberDetails.getApartmentNo()); 
 			memberhistory.setState(memberDetails.getState()); 
 			memberhistory.setZipcode(memberDetails.getZipcode()); 
 			memberhistory.setRegistrationDate(memberDetails.getRegistrationDate()); 

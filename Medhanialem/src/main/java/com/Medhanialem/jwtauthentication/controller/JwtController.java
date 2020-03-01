@@ -85,35 +85,43 @@ public class JwtController {
 
 		strRoles.forEach(role -> {
 			switch (role) {
-			case "superadmin":
-				Role superadminRole = roleRepository.findByName(RoleName.ROLE_SUPERADMIN)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-				roles.add(superadminRole);
-
-				break;
 			case "admin":
-				Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
+				Role adminRole = roleRepository.findByName(RoleName.ADMIN)
 						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
 				roles.add(adminRole);
 
 				break;
-
-			case "cashier":
-				Role cashierRole = roleRepository.findByName(RoleName.ROLE_CASHIER)
+			case "secretary":
+				Role secretaryRole = roleRepository.findByName(RoleName.SECRETARY)
 						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-				roles.add(cashierRole);
-
-				break;
-			case "notifier":
-				Role notifierRole = roleRepository.findByName(RoleName.ROLE_NOTIFIER)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-				roles.add(notifierRole);
+				roles.add(secretaryRole);
 
 				break;
-			default:
-				Role memberRole = roleRepository.findByName(RoleName.ROLE_MEMBER)
+
+			case "sunday school":
+				Role sundaySchoolRole = roleRepository.findByName(RoleName.SUNDAY_SCHOOL)
 						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-				roles.add(memberRole);
+				roles.add(sundaySchoolRole);
+
+				break;
+			case "sebeka gubae":
+				Role sebekaGubaeRole = roleRepository.findByName(RoleName.SEBEKA_GUBAE)
+						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+				roles.add(sebekaGubaeRole);
+
+				break;
+				
+			case "abo wenber sebeka gubae":
+				Role aboWenberSebekaGubaeRole = roleRepository.findByName(RoleName.ABO_WENBER_SEBEKA_GUBAE)
+						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+				roles.add(aboWenberSebekaGubaeRole);
+
+				break;
+				
+//			default:
+//				Role memberRole = roleRepository.findByName(RoleName.ROLE_MEMBER)
+//						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+//				roles.add(memberRole);
 			}
 		});
 

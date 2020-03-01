@@ -30,6 +30,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(value = { "createdDate", "updatedDate" }, allowGetters = true)
 public class Member implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
@@ -46,8 +51,11 @@ public class Member implements Serializable {
 
 	@NotBlank
 	private String lastName;
+	
+	@NotBlank
+	private String gender;
 
-	//@NotBlank
+	@NotBlank
 	private String homePhoneNo;
 
 	//@NotBlank
@@ -57,11 +65,11 @@ public class Member implements Serializable {
 	@Column(length = 50, unique = true)
 	private String email;
 
-	//@NotBlank
+	@NotBlank
 	@Column(name="streetAdress")
 	private String streetAddress;
 
-	private String appartmentNo;
+	private String apartmentNo;
 
 	@NotBlank
 	private String city;
@@ -69,7 +77,7 @@ public class Member implements Serializable {
 	@NotBlank
 	private String state;
 
-	//@NotBlank
+	@NotBlank
 	@Column(name="zipcode")
 	private String zipCode;
 
@@ -77,14 +85,10 @@ public class Member implements Serializable {
 
 	private long superId;
 	
-	public int getPaymentlookupId() {
-		return paymentlookupId;
-	}
-
-	public void setPaymentlookupId(int paymentlookupId) {
-		this.paymentlookupId = paymentlookupId;
-	}
-
+	private boolean sebekaGubae;
+	
+	private boolean sundaySchool;
+	
 	private int paymentlookupId;
 
 	@Column(nullable = false, updatable = false)
@@ -107,6 +111,14 @@ public class Member implements Serializable {
 
 	private String status="ACTIVE";
 
+	public int getPaymentlookupId() {
+		return paymentlookupId;
+	}
+
+	public void setPaymentlookupId(int paymentlookupId) {
+		this.paymentlookupId = paymentlookupId;
+	}
+	
 	public String getChurchId() {
 		return churchId;
 	}
@@ -133,6 +145,14 @@ public class Member implements Serializable {
 
 	public String getLastName() {
 		return lastName;
+	}
+	
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	public void setLastName(String lastName) {
@@ -171,12 +191,12 @@ public class Member implements Serializable {
 		this.streetAddress = streetAdress;
 	}
 
-	public String getAppartmentNo() {
-		return appartmentNo;
+	public String getApartmentNo() {
+		return apartmentNo;
 	}
 
 	public void setAppartmentNo(String appartmentNo) {
-		this.appartmentNo = appartmentNo;
+		this.apartmentNo = appartmentNo;
 	}
 
 	public String getCity() {
@@ -210,8 +230,6 @@ public class Member implements Serializable {
 	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
-
-
 
 	public Date getCreatedDate() {
 		return createdDate;
@@ -294,15 +312,53 @@ public class Member implements Serializable {
 		this.status = status;
 	}
 
+	public boolean isSebekaGubae() {
+		return sebekaGubae;
+	}
+
+	public void setSebekaGubae(boolean sebekaGubae) {
+		this.sebekaGubae = sebekaGubae;
+	}
+
+	public boolean isSundaySchool() {
+		return sundaySchool;
+	}
+
+	public void setSundaySchool(boolean sundaySchool) {
+		this.sundaySchool = sundaySchool;
+	}
+
+	public void setApartmentNo(String apartmentNo) {
+		this.apartmentNo = apartmentNo;
+	}
+
 	@Override
 	public String toString() {
-		return "Member [memberId=" + memberId + ", churchId=" + churchId + ", firstName=" + firstName + ", middleName="
-				+ middleName + ", lastName=" + lastName + ", homePhoneNo=" + homePhoneNo + ", workPhoneNo="
-				+ workPhoneNo + ", email=" + email + ", streetAddress=" + streetAddress + ", appartmentNo="
-				+ appartmentNo + ", city=" + city + ", state=" + state + ", zipCode=" + zipCode + ", registrationDate="
-				+ registrationDate + ", superId=" + superId + ", paymentlookupId=" + paymentlookupId + ", createdDate="
-				+ createdDate + ", createdBy=" + createdBy + ", updatedDate=" + updatedDate + ", updatedBy=" + updatedBy
-				+ ", tier=" + tier + ", status=" + status + "]";
+		return "Member [memberId=" + memberId + 
+				", churchId=" + churchId + 
+				", firstName=" + firstName + 
+				", middleName=" + middleName + 
+				", lastName=" + lastName + 
+				", homePhoneNo=" + homePhoneNo + 
+				", workPhoneNo=" + workPhoneNo + 
+				", email=" + email + 
+				", streetAddress=" + streetAddress + 
+				", apartmentNo=" + apartmentNo + 
+				", city=" + city + 
+				", state=" + state + 
+				", zipCode=" + zipCode + 
+				", registrationDate=" + registrationDate + 
+				", superId=" + superId + 
+				", paymentlookupId=" + paymentlookupId + 
+				", createdDate=" + createdDate + 
+				", createdBy=" + createdBy + 
+				", updatedDate=" + updatedDate + 
+				", updatedBy=" + updatedBy + 
+				", tier=" + tier + 
+				", status=" + status +
+				", sebekaGubae=" + sebekaGubae +
+				", sundaySchool=" + sundaySchool +
+				"]";
 	}
 
 
