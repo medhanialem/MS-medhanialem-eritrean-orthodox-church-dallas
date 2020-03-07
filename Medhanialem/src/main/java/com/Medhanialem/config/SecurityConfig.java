@@ -1,4 +1,4 @@
-package com.Medhanialem.jwtauthentication.security.config;
+package com.Medhanialem.config;
 
 
 
@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.Medhanialem.jwtauthentication.security.jwt.JwtAuthEntryPoint;
 import com.Medhanialem.jwtauthentication.security.jwt.JwtAuthTokenFilter;
-import com.Medhanialem.jwtauthentication.security.services.UserDetailsServiceImpl;
+import com.Medhanialem.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity

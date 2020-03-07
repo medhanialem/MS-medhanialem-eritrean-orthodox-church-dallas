@@ -1,4 +1,4 @@
-package com.Medhanialem.jwtauthentication.security.services;
+package com.Medhanialem.service;
 
 
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.Medhanialem.jwtauthentication.model.User;
-import com.Medhanialem.jwtauthentication.repository.UserRepository;
+import com.Medhanialem.repository.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

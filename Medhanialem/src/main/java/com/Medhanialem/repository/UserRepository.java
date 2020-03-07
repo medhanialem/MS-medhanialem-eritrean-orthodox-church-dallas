@@ -1,4 +1,4 @@
-package com.Medhanialem.jwtauthentication.repository;
+package com.Medhanialem.repository;
 
 
 

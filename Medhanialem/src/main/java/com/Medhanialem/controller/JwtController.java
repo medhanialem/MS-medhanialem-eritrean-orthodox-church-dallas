@@ -1,4 +1,4 @@
-package com.Medhanialem.jwtauthentication.controller;
+package com.Medhanialem.controller;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,16 +22,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Medhanialem.jwtauthentication.model.JwtResponse;
+import com.Medhanialem.jwtauthentication.model.LoginForm;
+import com.Medhanialem.jwtauthentication.model.ResponseMessage;
 import com.Medhanialem.jwtauthentication.model.Role;
 import com.Medhanialem.jwtauthentication.model.RoleName;
+import com.Medhanialem.jwtauthentication.model.Signup;
 import com.Medhanialem.jwtauthentication.model.User;
-import com.Medhanialem.jwtauthentication.repository.RoleRepository;
-import com.Medhanialem.jwtauthentication.repository.UserRepository;
-import com.Medhanialem.jwtauthentication.request.LoginForm;
-import com.Medhanialem.jwtauthentication.request.Signup;
-import com.Medhanialem.jwtauthentication.response.JwtResponse;
-import com.Medhanialem.jwtauthentication.response.ResponseMessage;
 import com.Medhanialem.jwtauthentication.security.jwt.JwtProvider;
+import com.Medhanialem.repository.RoleRepository;
+import com.Medhanialem.repository.UserRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
