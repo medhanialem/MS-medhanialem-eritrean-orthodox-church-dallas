@@ -2,6 +2,7 @@ package com.Medhanialem.jwtauthentication.model;
 
 
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.NaturalId;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -28,7 +31,7 @@ import org.hibernate.annotations.NaturalId;
         })
         
 })
-public class User{
+public class User implements UserDetails{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,6 +44,10 @@ public class User{
     @NotBlank
     @Size(min=6, max = 100)
     private String password;
+    
+    private boolean isAccountNonExpired;
+    
+    private boolean isEnabled;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", 
@@ -88,4 +95,44 @@ public class User{
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+
+
+	public void setAccountNonExpired(boolean isAccountNonExpired) {
+		this.isAccountNonExpired = isAccountNonExpired;
+	}
+
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		
+		return this.isAccountNonExpired;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		
+		return this.isEnabled;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		
+		return null;
+	}
 }

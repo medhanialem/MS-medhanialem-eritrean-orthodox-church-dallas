@@ -3,7 +3,10 @@ package com.Medhanialem.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -11,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -22,7 +27,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.Medhanialem.model.payment.Tier;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Entity
 @Table(name = "Member")
@@ -37,7 +44,6 @@ public class Member implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
 	private Long memberId;
 
 	@NotBlank
@@ -82,8 +88,6 @@ public class Member implements Serializable {
 	private String zipCode;
 
 	private Date registrationDate;
-
-	private long superId;
 	
 	private boolean sebekaGubae;
 	
@@ -110,6 +114,15 @@ public class Member implements Serializable {
 	private Tier tier;
 
 	private String status="ACTIVE";
+	
+	
+	@ManyToOne(cascade={CascadeType.ALL})
+	@JoinColumn(name = "superId")
+	private Member parent;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy="parent")
+	private Set<Member> dependents = new HashSet<Member>();
 
 	public int getPaymentlookupId() {
 		return paymentlookupId;
@@ -288,14 +301,6 @@ public class Member implements Serializable {
 		this.zipCode = zipCode;
 	}
 
-	public long getSuperId() {
-		return superId;
-	}
-
-	public void setSuperId(long superId) {
-		this.superId = superId;
-	}
-
 	public Tier getTier() {
 		return tier;
 	}
@@ -332,6 +337,22 @@ public class Member implements Serializable {
 		this.apartmentNo = apartmentNo;
 	}
 
+	public Member getParent() {
+		return parent;
+	}
+
+	public void setParent(Member parent) {
+		this.parent = parent;
+	}
+
+	public Set<Member> getDependents() {
+		return dependents;
+	}
+
+	public void setDependents(Set<Member> dependents) {
+		this.dependents = dependents;
+	}
+
 	@Override
 	public String toString() {
 		return "Member [memberId=" + memberId + 
@@ -348,7 +369,7 @@ public class Member implements Serializable {
 				", state=" + state + 
 				", zipCode=" + zipCode + 
 				", registrationDate=" + registrationDate + 
-				", superId=" + superId + 
+				", superId=" + parent + 
 				", paymentlookupId=" + paymentlookupId + 
 				", createdDate=" + createdDate + 
 				", createdBy=" + createdBy + 

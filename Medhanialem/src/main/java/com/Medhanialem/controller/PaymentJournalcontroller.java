@@ -123,7 +123,8 @@ public class PaymentJournalcontroller {
 	@GetMapping("/getallpayment/{year}")
 	public List<PaymentInformation> getAllPayment(@PathVariable(value = "year") int year) {
 
-		List<Member> memberList = memberRepository.findAll().parallelStream().filter(t -> t.getSuperId() == 1)
+		List<Member> memberList = memberRepository.findAll().parallelStream()
+				.filter(t -> null==t.getParent())
 				.collect(Collectors.toList());
 
 		List<PaymentInformation> list = new ArrayList<>();

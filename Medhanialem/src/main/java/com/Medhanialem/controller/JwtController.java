@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Medhanialem.exception.UserNotActiveException;
 import com.Medhanialem.jwtauthentication.model.JwtResponse;
 import com.Medhanialem.jwtauthentication.model.LoginForm;
 import com.Medhanialem.jwtauthentication.model.ResponseMessage;
@@ -63,6 +64,9 @@ public class JwtController {
 
 		String jwt = jwtProvider.generateJwtToken(authentication);
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if(!userDetails.isAccountNonExpired()) {
+			throw new UserNotActiveException("User is not active ",userDetails.getUsername(),"");
+		}
 
 		return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities()));
 	}

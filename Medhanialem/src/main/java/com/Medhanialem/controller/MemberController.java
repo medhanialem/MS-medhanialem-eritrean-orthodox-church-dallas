@@ -2,12 +2,14 @@
 package com.Medhanialem.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,11 +39,17 @@ public class MemberController {
 	MemberHistRepository memberHistRepository;
 
 	//@CrossOrigin(origins = "http://localhost:4200")
-	@CrossOrigin(origins = "*")
-	 
+	@CrossOrigin(origins = "*")	 
 	@PostMapping("/members")
-	public Member createMember(@RequestBody Member memberDetails) {
+	public ResponseEntity<?> createMember(@RequestBody Member memberDetails) {
 		 
+		
+		if(null!=memberDetails.getParent()) {
+		Member parentmember = memberRepository.findById(memberDetails.getParent().getMemberId())
+				.orElseThrow(() -> new ResourceNotFoundException("Parent Member", "id", memberDetails.getParent().getMemberId()));
+		memberDetails.setParent(parentmember);
+		}
+		
 		Member savedMember = memberRepository.save(memberDetails);
 
 		if (null != savedMember) {
@@ -59,23 +67,39 @@ public class MemberController {
 			memberhistory.setZipcode(memberDetails.getZipcode());
 			memberhistory.setRegistrationDate(memberDetails.getRegistrationDate());
 			memberhistory.setStatus(memberDetails.getStatus());
-			memberhistory.setSuperId(memberDetails.getSuperId());
+		//	memberhistory.setSuperId(memberDetails.getSuperId());
 
 			memberhistory.setUpdatedBy("Admin to be set from login session");
 			memberhistory.setAction("New Member saved");
 			memberHistRepository.save(memberhistory);
 		}
 
-		return savedMember;
+		return null!=savedMember?new ResponseEntity<>("SUCCESS",HttpStatus.ACCEPTED):new ResponseEntity<>("FAILED",HttpStatus.CONFLICT);
 	}
 	
 
 	 @CrossOrigin(origins = "http://localhost:4200")
-	// Get All Members
+	// Get All Head Members
 	@GetMapping("/members")
 	public List<Member> getAllMembers() {
-		return memberRepository.findAll();
+		return memberRepository.findAll().stream().filter(m -> null== m.getParent()).collect(Collectors.toList());
 	}
+	 
+	 @CrossOrigin(origins = "http://localhost:4200")
+		// Get dependent Members for a selected parent
+		@GetMapping("/submembers/{parentId}")
+		public List<Member> getAllSubMembers(@PathVariable(value = "parentId") Long parentId) {
+			List<Member> list= memberRepository.getDependents(parentId).stream().filter(s -> s.getStatus().equalsIgnoreCase("ACTIVE"))
+					
+					.collect(Collectors.toList());
+					
+			 for (Member m: list) {
+				m.setParent(null);
+			}
+			 return list;
+		}
+	 
+	 
 
 	// Get one Member
 	@GetMapping("/members/{id}")
@@ -85,6 +109,8 @@ public class MemberController {
 				.orElseThrow(() -> new ResourceNotFoundException("Member", "id", memberid));
 	}
 
+	
+	
 	// Update a Member
 	@PutMapping("/members/{id}")
 	public Member updateMember(@PathVariable(value = "id") Long memId, @Valid @RequestBody Member memberDetails) {
@@ -109,7 +135,7 @@ public class MemberController {
 		member.setZipcode(memberDetails.getZipcode()); 
 		member.setRegistrationDate(memberDetails.getRegistrationDate()); 
 		member.setStatus(memberDetails.getStatus()); 
-		member.setSuperId(memberDetails.getSuperId()); 
+	//	member.setSuperId(memberDetails.getSuperId()); 
 		member.setTier(memberDetails.getTier());
 		
 		Member updatedMember = memberRepository.save(member);
@@ -131,7 +157,7 @@ public class MemberController {
 			memberhistory.setZipcode(memberDetails.getZipcode()); 
 			memberhistory.setRegistrationDate(memberDetails.getRegistrationDate()); 
 			memberhistory.setStatus(memberDetails.getStatus()); 
-			memberhistory.setSuperId(memberDetails.getSuperId()); 
+	//		memberhistory.setSuperId(memberDetails.getSuperId()); 
 	//		memberhistory.setTier(memberDetails.getTier());
 			memberhistory.setUpdatedDate(memberDetails.getUpdatedDate());
 			memberhistory.setCreatedDate(memberDetails.getCreatedDate());

@@ -6,6 +6,10 @@ spring:
     initialization-mode: always
     username: ${MYSQL_USERNAME:admin}
     password: ${MYSQL_PASSWORD:M3dhani3Al3mChurch!Y}
+#    url: jdbc:mysql://localhost:3306/medhanialem  
+#    initialization-mode: always
+#    username: root
+#    password: adminadmin
   jpa:
     properties:
       hibernate:
