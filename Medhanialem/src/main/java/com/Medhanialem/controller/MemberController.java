@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Medhanialem.exception.ResourceNotFoundException;
+import com.Medhanialem.model.ChurchIdGenerate;
 import com.Medhanialem.model.Member;
 import com.Medhanialem.model.Memberhistory;
 import com.Medhanialem.repository.MemberHistRepository;
@@ -49,6 +50,9 @@ public class MemberController {
 				.orElseThrow(() -> new ResourceNotFoundException("Parent Member", "id", memberDetails.getParent().getMemberId()));
 		memberDetails.setParent(parentmember);
 		}
+		//Database auto generated churchId
+		ChurchIdGenerate churchId = new ChurchIdGenerate();
+		memberDetails.setChurchId(churchId);
 		
 		Member savedMember = memberRepository.save(memberDetails);
 
@@ -60,7 +64,7 @@ public class MemberController {
 			memberhistory.setEmail(memberDetails.getEmail());
 			memberhistory.setHomePhoneNo(memberDetails.getHomePhoneNo());
 			memberhistory.setWorkPhoneNo(memberDetails.getWorkPhoneNo());
-			memberhistory.setChurchId(memberDetails.getChurchId());
+	//		memberhistory.setChurchId(memberDetails.getChurchId());
 			memberhistory.setCity(memberDetails.getCity());
 			memberhistory.setStreetAdress(memberDetails.getStreetAdress());
 			memberhistory.setState(memberDetails.getState());
@@ -149,7 +153,7 @@ public class MemberController {
 			memberhistory.setEmail(memberDetails.getEmail()); 
 			memberhistory.setHomePhoneNo(memberDetails.getHomePhoneNo()); 
 			memberhistory.setWorkPhoneNo(memberDetails.getWorkPhoneNo()); 
-			memberhistory.setChurchId(memberDetails.getChurchId()); 
+	//		memberhistory.setChurchId(memberDetails.getChurchId()); 
 			memberhistory.setCity(memberDetails.getCity()); 
 			memberhistory.setStreetAdress(memberDetails.getStreetAdress());
 			memberhistory.setAppartmentNo(memberDetails.getApartmentNo()); 

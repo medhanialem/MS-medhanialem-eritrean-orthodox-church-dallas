@@ -135,7 +135,7 @@ public class PaymentJournalcontroller {
 			PaymentInformation response = new PaymentInformation();
 
 			response.setMemberId(member.getMemberId());
-			response.setChurchId(member.getChurchId());
+	//		response.setChurchId(member.getChurchId());
 			response.setFirstName(member.getFirstName());
 			response.setMiddleName(member.getMiddleName());
 			response.setLastName(member.getLastName());
