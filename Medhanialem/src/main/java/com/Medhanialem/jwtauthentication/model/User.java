@@ -1,12 +1,12 @@
 package com.Medhanialem.jwtauthentication.model;
 
-
-
-import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,14 +15,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.NaturalId;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -31,11 +34,12 @@ import org.springframework.security.core.userdetails.UserDetails;
         })
         
 })
-public class User implements UserDetails{
+@EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties(value = { "createdDate", "updatedDate" }, allowGetters = true)
+public class User {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @NotBlank
     @Size(min=3, max = 50)
@@ -45,9 +49,21 @@ public class User implements UserDetails{
     @Size(min=6, max = 100)
     private String password;
     
-    private boolean isAccountNonExpired;
+    private boolean isActive=true;
     
-    private boolean isEnabled;
+	@Column(nullable = false, updatable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@CreatedDate
+	private Date createdDate;
+
+	private String createdBy;
+
+	@Column(nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@LastModifiedDate
+	private Date updatedDate;
+
+	private String updatedBy;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", 
@@ -66,7 +82,47 @@ public class User implements UserDetails{
         return id;
     }
 
-    public void setId(Long id) {
+    public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public void setId(Long id) {
         this.id = id;
     }
 
@@ -77,8 +133,6 @@ public class User implements UserDetails{
     public void setUsername(String username) {
         this.username = username;
     }
-
-   
 
     public String getPassword() {
         return password;
@@ -95,44 +149,4 @@ public class User implements UserDetails{
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-
-
-
-	public void setAccountNonExpired(boolean isAccountNonExpired) {
-		this.isAccountNonExpired = isAccountNonExpired;
-	}
-
-	public void setEnabled(boolean isEnabled) {
-		this.isEnabled = isEnabled;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		
-		return this.isAccountNonExpired;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		
-		return this.isEnabled;
-	}
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		return null;
-	}
 }

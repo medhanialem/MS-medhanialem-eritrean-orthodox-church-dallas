@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.Medhanialem.exception.UserNotActiveException;
 import com.Medhanialem.jwtauthentication.model.User;
 import com.Medhanialem.repository.UserRepository;
 
@@ -24,7 +25,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 		User user = userRepository.findByUsername(username).orElseThrow(
 				() -> new UsernameNotFoundException("User Not Found with -> username or email : " + username));
-
+		if(!user.isActive()) {
+			throw new UserNotActiveException("User Account", "username", user.getUsername());
+		}
 		return UserPrinciple.build(user);
 	}
 }

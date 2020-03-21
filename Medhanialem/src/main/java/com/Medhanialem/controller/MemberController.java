@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Medhanialem.exception.ResourceNotFoundException;
@@ -80,26 +81,33 @@ public class MemberController {
 
 		return null!=savedMember?new ResponseEntity<>("SUCCESS",HttpStatus.ACCEPTED):new ResponseEntity<>("FAILED",HttpStatus.CONFLICT);
 	}
-	
 
-	 @CrossOrigin(origins = "http://localhost:4200")
-	// Get All Head Members
-	@GetMapping("/members")
-	public List<Member> getAllMembers() {
-		return memberRepository.findAll().stream().filter(m -> null== m.getParent()).collect(Collectors.toList());
-	}
 	 
 	 @CrossOrigin(origins = "http://localhost:4200")
-		// Get dependent Members for a selected parent
-		@GetMapping("/submembers/{parentId}")
-		public List<Member> getAllSubMembers(@PathVariable(value = "parentId") Long parentId) {
-			List<Member> list= memberRepository.getDependents(parentId).stream().filter(s -> s.getStatus().equalsIgnoreCase("ACTIVE"))
-					
-					.collect(Collectors.toList());
-					
-			 for (Member m: list) {
-				m.setParent(null);
-			}
+	@GetMapping("/members")
+	public List<Member> getAllSubMembers(@RequestParam(required=false,value = "parentId") Long parentId, @RequestParam(defaultValue="mainmembers") String preset) {
+		 
+		 List<Member> list=null;
+		 
+		  if(preset.equalsIgnoreCase("members")) { // Get All member
+			  
+			  list = memberRepository.findAll().stream().collect(Collectors.toList());
+			  
+		  }else if(preset.equalsIgnoreCase("mainmembers")) {  // Get All Head Members
+			
+			  list = memberRepository.findAll().stream().filter(m -> null== m.getParent()).collect(Collectors.toList());
+			  
+		  }else {    	// Get dependent Members for a selected parent
+			  
+			   list= memberRepository.getDependents(parentId).stream().filter(s -> s.getStatus().equalsIgnoreCase("ACTIVE"))						
+						.collect(Collectors.toList());
+						
+				 for (Member m: list) {
+					m.setParent(null);
+				}  		  
+		  }
+		 
+		 
 			 return list;
 		}
 	 
