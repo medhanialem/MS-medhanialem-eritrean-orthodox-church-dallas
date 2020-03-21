@@ -1,6 +1,4 @@
-package com.Medhanialem.service;
-
-
+package com.Medhanialem.service.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.Medhanialem.exception.UserNotActiveException;
 import com.Medhanialem.jwtauthentication.model.User;
 import com.Medhanialem.repository.UserRepository;
+import com.Medhanialem.service.UserPrinciple;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
