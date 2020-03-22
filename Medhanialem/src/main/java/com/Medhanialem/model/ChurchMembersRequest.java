@@ -1,4 +1,4 @@
-package com.Medhanialem.request;
+package com.Medhanialem.model;
 
 import java.util.List;
 

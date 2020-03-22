@@ -3,7 +3,7 @@ package com.Medhanialem.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.Medhanialem.request.ChurchMembersRequest;
+import com.Medhanialem.model.ChurchMembersRequest;
 
 @Service
 public class TwService {

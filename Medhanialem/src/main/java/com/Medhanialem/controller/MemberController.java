@@ -2,12 +2,14 @@
 package com.Medhanialem.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Medhanialem.exception.ResourceNotFoundException;
+import com.Medhanialem.model.ChurchIdGenerate;
 import com.Medhanialem.model.Member;
 import com.Medhanialem.model.Memberhistory;
 import com.Medhanialem.repository.MemberHistRepository;
@@ -37,11 +41,20 @@ public class MemberController {
 	MemberHistRepository memberHistRepository;
 
 	//@CrossOrigin(origins = "http://localhost:4200")
-	@CrossOrigin(origins = "*")
-	 
+	@CrossOrigin(origins = "*")	 
 	@PostMapping("/members")
-	public Member createMember(@RequestBody Member memberDetails) {
+	public ResponseEntity<?> createMember(@RequestBody Member memberDetails) {
 		 
+		
+		if(null!=memberDetails.getParent()) {
+		Member parentmember = memberRepository.findById(memberDetails.getParent().getMemberId())
+				.orElseThrow(() -> new ResourceNotFoundException("Parent Member", "id", memberDetails.getParent().getMemberId()));
+		memberDetails.setParent(parentmember);
+		}
+		//Database auto generated churchId
+		ChurchIdGenerate churchId = new ChurchIdGenerate();
+		memberDetails.setChurchId(churchId);
+		
 		Member savedMember = memberRepository.save(memberDetails);
 
 		if (null != savedMember) {
@@ -52,30 +65,56 @@ public class MemberController {
 			memberhistory.setEmail(memberDetails.getEmail());
 			memberhistory.setHomePhoneNo(memberDetails.getHomePhoneNo());
 			memberhistory.setWorkPhoneNo(memberDetails.getWorkPhoneNo());
-			memberhistory.setChurchId(memberDetails.getChurchId());
+	//		memberhistory.setChurchId(memberDetails.getChurchId());
 			memberhistory.setCity(memberDetails.getCity());
-			memberhistory.setStreetAdress(memberDetails.getStreetAdress());
+			memberhistory.setStreetAdress(memberDetails.getStreetAddress());
 			memberhistory.setState(memberDetails.getState());
 			memberhistory.setZipcode(memberDetails.getZipcode());
 			memberhistory.setRegistrationDate(memberDetails.getRegistrationDate());
 			memberhistory.setStatus(memberDetails.getStatus());
-			memberhistory.setSuperId(memberDetails.getSuperId());
+		//	memberhistory.setSuperId(memberDetails.getSuperId());
 
 			memberhistory.setUpdatedBy("Admin to be set from login session");
 			memberhistory.setAction("New Member saved");
 			memberHistRepository.save(memberhistory);
 		}
 
-		return savedMember;
+		return null!=savedMember?new ResponseEntity<>("SUCCESS",HttpStatus.ACCEPTED):new ResponseEntity<>("FAILED",HttpStatus.CONFLICT);
 	}
-	
 
+	 
 	 @CrossOrigin(origins = "http://localhost:4200")
-	// Get All Members
 	@GetMapping("/members")
-	public List<Member> getAllMembers() {
-		return memberRepository.findAll();
-	}
+	public List<Member> getAllMembers(@RequestParam(required=false,value = "parentId") Long parentId, @RequestParam(defaultValue="mainmembers") String preset) {
+		 
+		 List<Member> list=null;
+		 
+		  if(preset.equalsIgnoreCase("all")) { // Get All member
+			  
+			  list = memberRepository.findAll().stream().collect(Collectors.toList());
+			  
+		  }else if(preset.equalsIgnoreCase("primary")) {  // Get All primary Members
+			
+			  list = memberRepository.findAll().stream().filter(m -> null== m.getParent()).collect(Collectors.toList());
+			  
+		  }else if(preset.equalsIgnoreCase("dependents")){    	// Get dependent Members for a selected parent
+			  if(parentId!=null) {
+			   list= memberRepository.getDependents(parentId).stream()						
+						.collect(Collectors.toList());
+						
+//				 for (Member m: list) {
+//					m.setParent(null);
+//				}  		  
+		  }else {
+			  
+		  }
+		  }
+		 
+		 
+			 return list;
+		}
+	 
+	 
 
 	// Get one Member
 	@GetMapping("/members/{id}")
@@ -85,6 +124,8 @@ public class MemberController {
 				.orElseThrow(() -> new ResourceNotFoundException("Member", "id", memberid));
 	}
 
+	
+	
 	// Update a Member
 	@PutMapping("/members/{id}")
 	public Member updateMember(@PathVariable(value = "id") Long memId, @Valid @RequestBody Member memberDetails) {
@@ -103,13 +144,13 @@ public class MemberController {
 		member.setWorkPhoneNo(memberDetails.getWorkPhoneNo()); 
 		member.setChurchId(memberDetails.getChurchId()); 
 		member.setCity(memberDetails.getCity()); 
-		member.setStreetAdress(memberDetails.getStreetAdress());
+		member.setStreetAddress(memberDetails.getStreetAddress());
 		member.setAppartmentNo(memberDetails.getApartmentNo()); 
 		member.setState(memberDetails.getState()); 
 		member.setZipcode(memberDetails.getZipcode()); 
 		member.setRegistrationDate(memberDetails.getRegistrationDate()); 
 		member.setStatus(memberDetails.getStatus()); 
-		member.setSuperId(memberDetails.getSuperId()); 
+	//	member.setSuperId(memberDetails.getSuperId()); 
 		member.setTier(memberDetails.getTier());
 		
 		Member updatedMember = memberRepository.save(member);
@@ -123,15 +164,15 @@ public class MemberController {
 			memberhistory.setEmail(memberDetails.getEmail()); 
 			memberhistory.setHomePhoneNo(memberDetails.getHomePhoneNo()); 
 			memberhistory.setWorkPhoneNo(memberDetails.getWorkPhoneNo()); 
-			memberhistory.setChurchId(memberDetails.getChurchId()); 
+	//		memberhistory.setChurchId(memberDetails.getChurchId()); 
 			memberhistory.setCity(memberDetails.getCity()); 
-			memberhistory.setStreetAdress(memberDetails.getStreetAdress());
+			memberhistory.setStreetAdress(memberDetails.getStreetAddress());
 			memberhistory.setAppartmentNo(memberDetails.getApartmentNo()); 
 			memberhistory.setState(memberDetails.getState()); 
 			memberhistory.setZipcode(memberDetails.getZipcode()); 
 			memberhistory.setRegistrationDate(memberDetails.getRegistrationDate()); 
 			memberhistory.setStatus(memberDetails.getStatus()); 
-			memberhistory.setSuperId(memberDetails.getSuperId()); 
+	//		memberhistory.setSuperId(memberDetails.getSuperId()); 
 	//		memberhistory.setTier(memberDetails.getTier());
 			memberhistory.setUpdatedDate(memberDetails.getUpdatedDate());
 			memberhistory.setCreatedDate(memberDetails.getCreatedDate());

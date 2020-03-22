@@ -1,4 +1,4 @@
-package com.Medhanialem.jwtauthentication.response;
+package com.Medhanialem.jwtauthentication.model;
 
 
 

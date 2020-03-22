@@ -1,4 +1,4 @@
-package com.Medhanialem.jwtauthentication.request;
+package com.Medhanialem.jwtauthentication.model;
 
 
 import javax.validation.constraints.NotBlank;

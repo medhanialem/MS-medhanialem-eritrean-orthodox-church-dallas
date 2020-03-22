@@ -1,4 +1,4 @@
-package com.Medhanialem.controller.model.payment;
+package com.Medhanialem.model.payment.objects;
 
 import java.util.List;
 

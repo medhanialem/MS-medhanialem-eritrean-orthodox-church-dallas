@@ -11,17 +11,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Medhanialem.controller.model.payment.MonthlyPaid;
-import com.Medhanialem.controller.model.payment.PaymentInformation;
-import com.Medhanialem.controller.model.payment.PaymentLogs;
-import com.Medhanialem.controller.model.payment.PaymentLookUps;
-import com.Medhanialem.controller.model.payment.PaymentLookupResponseByYear;
-import com.Medhanialem.controller.model.payment.Paymentrequest;
 import com.Medhanialem.model.Member;
 import com.Medhanialem.model.payment.Payment;
 import com.Medhanialem.model.payment.PaymentJournal;
 import com.Medhanialem.model.payment.PaymentLookup;
 import com.Medhanialem.model.payment.PaymentlogDTO;
+import com.Medhanialem.model.payment.objects.MonthlyPaid;
+import com.Medhanialem.model.payment.objects.PaymentInformation;
+import com.Medhanialem.model.payment.objects.PaymentLogs;
+import com.Medhanialem.model.payment.objects.PaymentLookUps;
+import com.Medhanialem.model.payment.objects.PaymentLookupResponseByYear;
+import com.Medhanialem.model.payment.objects.Paymentrequest;
 import com.Medhanialem.repository.MemberRepository;
 import com.Medhanialem.repository.MemberShipPaymentLookUpfeeRepository;
 import com.Medhanialem.repository.PaymentJournalRepository;
@@ -123,7 +123,8 @@ public class PaymentJournalcontroller {
 	@GetMapping("/getallpayment/{year}")
 	public List<PaymentInformation> getAllPayment(@PathVariable(value = "year") int year) {
 
-		List<Member> memberList = memberRepository.findAll().parallelStream().filter(t -> t.getSuperId() == 1)
+		List<Member> memberList = memberRepository.findAll().parallelStream()
+				.filter(t -> null==t.getParent())
 				.collect(Collectors.toList());
 
 		List<PaymentInformation> list = new ArrayList<>();
@@ -134,7 +135,7 @@ public class PaymentJournalcontroller {
 			PaymentInformation response = new PaymentInformation();
 
 			response.setMemberId(member.getMemberId());
-			response.setChurchId(member.getChurchId());
+	//		response.setChurchId(member.getChurchId());
 			response.setFirstName(member.getFirstName());
 			response.setMiddleName(member.getMiddleName());
 			response.setLastName(member.getLastName());

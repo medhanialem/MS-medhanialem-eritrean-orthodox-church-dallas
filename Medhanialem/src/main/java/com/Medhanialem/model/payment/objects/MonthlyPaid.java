@@ -1,8 +1,9 @@
-package com.Medhanialem.controller.model.payment;
+package com.Medhanialem.model.payment.objects;
 
-public class PaymentLogLoad {
+public class MonthlyPaid {
 
 	private Long paymentLookupId;
+	
 	private double amount;
 
 	public Long getPaymentLookupId() {
@@ -20,5 +21,7 @@ public class PaymentLogLoad {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-
+	
+	
+	
 }

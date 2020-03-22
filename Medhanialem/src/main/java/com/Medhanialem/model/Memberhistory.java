@@ -36,7 +36,7 @@ public class Memberhistory implements Serializable {
 	
 	private Long memberId;
 
-	@NotBlank
+	//@NotBlank
 	private String churchId;
 
 	@NotBlank
