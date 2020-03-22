@@ -50,7 +50,7 @@ public class Member implements Serializable {
 	@JoinColumn(name = "churchId", referencedColumnName = "churchId")
 	private ChurchIdGenerate churchId;
 	
-	private int oldchurchId;
+	private Integer oldChurchId;
 
 	@NotBlank
 	private String firstName;
@@ -75,7 +75,6 @@ public class Member implements Serializable {
 	private String email;
 
 	@NotBlank
-	@Column(name="streetAdress")
 	private String streetAddress;
 
 	private String apartmentNo;
@@ -91,6 +90,8 @@ public class Member implements Serializable {
 	private String zipCode;
 
 	private Date registrationDate;
+	
+	private Date paymentStartDate;
 	
 	private boolean sebekaGubae;
 	
@@ -199,14 +200,6 @@ public class Member implements Serializable {
 		this.email = email;
 	}
 
-	public String getStreetAdress() {
-		return streetAddress;
-	}
-
-	public void setStreetAdress(String streetAdress) {
-		this.streetAddress = streetAdress;
-	}
-
 	public String getApartmentNo() {
 		return apartmentNo;
 	}
@@ -245,6 +238,14 @@ public class Member implements Serializable {
 
 	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
+	}
+
+	public Date getPaymentStartDate() {
+		return paymentStartDate;
+	}
+
+	public void setPaymentStartDate(Date paymentStartDate) {
+		this.paymentStartDate = paymentStartDate;
 	}
 
 	public Date getCreatedDate() {
@@ -356,12 +357,12 @@ public class Member implements Serializable {
 		this.dependents = dependents;
 	}
 
-	public int getOldchurchId() {
-		return oldchurchId;
+	public Integer getOldChurchId() {
+		return oldChurchId;
 	}
 
-	public void setOldchurchId(int oldchurchId) {
-		this.oldchurchId = oldchurchId;
+	public void setOldChurchId(Integer oldChurchId) {
+		this.oldChurchId = oldChurchId;
 	}
 
 	@Override
@@ -371,7 +372,7 @@ public class Member implements Serializable {
 				", firstName=" + firstName + 
 				", middleName=" + middleName + 
 				", lastName=" + lastName +
-				", oldchurchId=" + oldchurchId +
+				", oldchurchId=" + oldChurchId +
 				", homePhoneNo=" + homePhoneNo + 
 				", workPhoneNo=" + workPhoneNo + 
 				", email=" + email + 
@@ -380,7 +381,8 @@ public class Member implements Serializable {
 				", city=" + city + 
 				", state=" + state + 
 				", zipCode=" + zipCode + 
-				", registrationDate=" + registrationDate + 
+				", registrationDate=" + registrationDate +
+				", paymentStartDate=" + paymentStartDate + 
 				", superId=" + parent + 
 				", paymentlookupId=" + paymentlookupId + 
 				", createdDate=" + createdDate + 

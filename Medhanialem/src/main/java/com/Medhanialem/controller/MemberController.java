@@ -67,7 +67,7 @@ public class MemberController {
 			memberhistory.setWorkPhoneNo(memberDetails.getWorkPhoneNo());
 	//		memberhistory.setChurchId(memberDetails.getChurchId());
 			memberhistory.setCity(memberDetails.getCity());
-			memberhistory.setStreetAdress(memberDetails.getStreetAdress());
+			memberhistory.setStreetAdress(memberDetails.getStreetAddress());
 			memberhistory.setState(memberDetails.getState());
 			memberhistory.setZipcode(memberDetails.getZipcode());
 			memberhistory.setRegistrationDate(memberDetails.getRegistrationDate());
@@ -85,26 +85,29 @@ public class MemberController {
 	 
 	 @CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping("/members")
-	public List<Member> getAllSubMembers(@RequestParam(required=false,value = "parentId") Long parentId, @RequestParam(defaultValue="mainmembers") String preset) {
+	public List<Member> getAllMembers(@RequestParam(required=false,value = "parentId") Long parentId, @RequestParam(defaultValue="mainmembers") String preset) {
 		 
 		 List<Member> list=null;
 		 
-		  if(preset.equalsIgnoreCase("members")) { // Get All member
+		  if(preset.equalsIgnoreCase("all")) { // Get All member
 			  
 			  list = memberRepository.findAll().stream().collect(Collectors.toList());
 			  
-		  }else if(preset.equalsIgnoreCase("mainmembers")) {  // Get All Head Members
+		  }else if(preset.equalsIgnoreCase("primary")) {  // Get All primary Members
 			
 			  list = memberRepository.findAll().stream().filter(m -> null== m.getParent()).collect(Collectors.toList());
 			  
-		  }else {    	// Get dependent Members for a selected parent
-			  
-			   list= memberRepository.getDependents(parentId).stream().filter(s -> s.getStatus().equalsIgnoreCase("ACTIVE"))						
+		  }else if(preset.equalsIgnoreCase("dependents")){    	// Get dependent Members for a selected parent
+			  if(parentId!=null) {
+			   list= memberRepository.getDependents(parentId).stream()						
 						.collect(Collectors.toList());
 						
-				 for (Member m: list) {
-					m.setParent(null);
-				}  		  
+//				 for (Member m: list) {
+//					m.setParent(null);
+//				}  		  
+		  }else {
+			  
+		  }
 		  }
 		 
 		 
@@ -141,7 +144,7 @@ public class MemberController {
 		member.setWorkPhoneNo(memberDetails.getWorkPhoneNo()); 
 		member.setChurchId(memberDetails.getChurchId()); 
 		member.setCity(memberDetails.getCity()); 
-		member.setStreetAdress(memberDetails.getStreetAdress());
+		member.setStreetAddress(memberDetails.getStreetAddress());
 		member.setAppartmentNo(memberDetails.getApartmentNo()); 
 		member.setState(memberDetails.getState()); 
 		member.setZipcode(memberDetails.getZipcode()); 
@@ -163,7 +166,7 @@ public class MemberController {
 			memberhistory.setWorkPhoneNo(memberDetails.getWorkPhoneNo()); 
 	//		memberhistory.setChurchId(memberDetails.getChurchId()); 
 			memberhistory.setCity(memberDetails.getCity()); 
-			memberhistory.setStreetAdress(memberDetails.getStreetAdress());
+			memberhistory.setStreetAdress(memberDetails.getStreetAddress());
 			memberhistory.setAppartmentNo(memberDetails.getApartmentNo()); 
 			memberhistory.setState(memberDetails.getState()); 
 			memberhistory.setZipcode(memberDetails.getZipcode()); 
