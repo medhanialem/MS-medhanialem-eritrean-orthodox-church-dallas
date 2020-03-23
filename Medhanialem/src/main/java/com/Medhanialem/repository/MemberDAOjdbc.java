@@ -11,7 +11,7 @@ import com.Medhanialem.model.payment.PaymentlogDTO;
 import com.Medhanialem.model.payment.PaymentlogDTORowMapper;
 
 @Repository
-public class PaymentlogRepositoryjdbc {
+public class MemberDAOjdbc {
 	
 	  @Autowired
 	  private JdbcTemplate jdbcTemplate;
@@ -26,6 +26,10 @@ public class PaymentlogRepositoryjdbc {
 		  
 	  }
 	
-
+	  @Transactional(readOnly=true)
+	  public Integer getMaxChurchId() {
+		  
+		  return jdbcTemplate.queryForObject("select max(churchId) from Member;", Integer.class);		  
+	  }
 }
 

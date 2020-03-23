@@ -9,7 +9,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Medhanialem.exception.ResourceNotFoundException;
-import com.Medhanialem.model.ChurchIdGenerate;
 import com.Medhanialem.model.Member;
 import com.Medhanialem.model.Memberhistory;
+import com.Medhanialem.repository.MemberDAOjdbc;
 import com.Medhanialem.repository.MemberHistRepository;
 import com.Medhanialem.repository.MemberRepository;
 
@@ -39,11 +38,14 @@ public class MemberController {
 
 	@Autowired
 	MemberHistRepository memberHistRepository;
+	
+	@Autowired
+	MemberDAOjdbc memberDAOjdbc;
 
 	//@CrossOrigin(origins = "http://localhost:4200")
 	@CrossOrigin(origins = "*")	 
 	@PostMapping("/members")
-	public ResponseEntity<?> createMember(@RequestBody Member memberDetails) {
+	public Member createMember(@RequestBody Member memberDetails) {
 		 
 		
 		if(null!=memberDetails.getParent()) {
@@ -51,9 +53,9 @@ public class MemberController {
 				.orElseThrow(() -> new ResourceNotFoundException("Parent Member", "id", memberDetails.getParent().getMemberId()));
 		memberDetails.setParent(parentmember);
 		}
-		//Database auto generated churchId
-		ChurchIdGenerate churchId = new ChurchIdGenerate();
-		memberDetails.setChurchId(churchId);
+		
+		Integer maxChurchId = memberDAOjdbc.getMaxChurchId()!=null?memberDAOjdbc.getMaxChurchId():100;
+		memberDetails.setChurchId(maxChurchId+1);
 		
 		Member savedMember = memberRepository.save(memberDetails);
 
@@ -79,7 +81,7 @@ public class MemberController {
 			memberHistRepository.save(memberhistory);
 		}
 
-		return null!=savedMember?new ResponseEntity<>("SUCCESS",HttpStatus.ACCEPTED):new ResponseEntity<>("FAILED",HttpStatus.CONFLICT);
+		return null!=savedMember?savedMember:null;
 	}
 
 	 
@@ -101,16 +103,11 @@ public class MemberController {
 			  if(parentId!=null) {
 			   list= memberRepository.getDependents(parentId).stream()						
 						.collect(Collectors.toList());
-						
-//				 for (Member m: list) {
-//					m.setParent(null);
-//				}  		  
+						  		  
 		  }else {
 			  
 		  }
-		  }
-		 
-		 
+		  }		 
 			 return list;
 		}
 	 
@@ -150,7 +147,7 @@ public class MemberController {
 		member.setZipcode(memberDetails.getZipcode()); 
 		member.setRegistrationDate(memberDetails.getRegistrationDate()); 
 		member.setStatus(memberDetails.getStatus()); 
-	//	member.setSuperId(memberDetails.getSuperId()); 
+		member.setParent(memberDetails.getParent()); 
 		member.setTier(memberDetails.getTier());
 		
 		Member updatedMember = memberRepository.save(member);

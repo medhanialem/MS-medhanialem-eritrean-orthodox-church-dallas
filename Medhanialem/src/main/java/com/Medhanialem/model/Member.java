@@ -43,12 +43,10 @@ public class Member implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long memberId;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "churchId", referencedColumnName = "churchId")
-	private ChurchIdGenerate churchId;
+	
+	private Integer churchId;
 	
 	private Integer oldChurchId;
 
@@ -135,17 +133,17 @@ public class Member implements Serializable {
 	public void setPaymentlookupId(int paymentlookupId) {
 		this.paymentlookupId = paymentlookupId;
 	}
+	
+	public String getFirstName() {
+		return firstName;
+	}
 
-	public ChurchIdGenerate getChurchId() {
+	public Integer getChurchId() {
 		return churchId;
 	}
 
-	public void setChurchId(ChurchIdGenerate churchId) {
+	public void setChurchId(Integer churchId) {
 		this.churchId = churchId;
-	}
-
-	public String getFirstName() {
-		return firstName;
 	}
 
 	public void setFirstName(String firstName) {

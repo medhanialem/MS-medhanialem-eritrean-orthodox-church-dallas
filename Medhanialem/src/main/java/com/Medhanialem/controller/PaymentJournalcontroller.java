@@ -22,11 +22,11 @@ import com.Medhanialem.model.payment.objects.PaymentLogs;
 import com.Medhanialem.model.payment.objects.PaymentLookUps;
 import com.Medhanialem.model.payment.objects.PaymentLookupResponseByYear;
 import com.Medhanialem.model.payment.objects.Paymentrequest;
+import com.Medhanialem.repository.MemberDAOjdbc;
 import com.Medhanialem.repository.MemberRepository;
 import com.Medhanialem.repository.MemberShipPaymentLookUpfeeRepository;
 import com.Medhanialem.repository.PaymentJournalRepository;
 import com.Medhanialem.repository.PaymentRepository;
-import com.Medhanialem.repository.PaymentlogRepositoryjdbc;
 
 @RestController
 public class PaymentJournalcontroller {
@@ -35,7 +35,7 @@ public class PaymentJournalcontroller {
 	MemberRepository memberRepository;
 
 	@Autowired
-	PaymentlogRepositoryjdbc paymentlogRepositoryjdbc;
+	MemberDAOjdbc memberDAOjdbc;
 
 	@Autowired
 	PaymentRepository paymentRepository;
@@ -129,7 +129,7 @@ public class PaymentJournalcontroller {
 
 		List<PaymentInformation> list = new ArrayList<>();
 
-		List<PaymentlogDTO> listPaymentdto = paymentlogRepositoryjdbc.findAll(year);
+		List<PaymentlogDTO> listPaymentdto = memberDAOjdbc.findAll(year);
 
 		for (Member member : memberList) {
 			PaymentInformation response = new PaymentInformation();
