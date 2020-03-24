@@ -45,10 +45,8 @@ public class Member implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long memberId;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "churchId", referencedColumnName = "churchId")
-	private ChurchIdGenerate churchId;
+	
+	private String churchId;
 	
 	private Integer oldChurchId;
 
@@ -136,16 +134,16 @@ public class Member implements Serializable {
 		this.paymentlookupId = paymentlookupId;
 	}
 
-	public ChurchIdGenerate getChurchId() {
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getChurchId() {
 		return churchId;
 	}
 
-	public void setChurchId(ChurchIdGenerate churchId) {
+	public void setChurchId(String churchId) {
 		this.churchId = churchId;
-	}
-
-	public String getFirstName() {
-		return firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -369,6 +367,7 @@ public class Member implements Serializable {
 	public String toString() {
 		return "Member [memberId=" + memberId + 
 				", churchId=" + churchId + 
+				", oldChurchId=" + oldChurchId + 
 				", firstName=" + firstName + 
 				", middleName=" + middleName + 
 				", lastName=" + lastName +
