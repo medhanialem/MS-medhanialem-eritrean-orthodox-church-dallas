@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.Medhanialem.model.Memberdto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class MemberController {
 	
 	@PostMapping("")
 	@CrossOrigin(origins = "*")
-	public Member createMember(@RequestBody Member memberDetails) {
+	public Member createMember(@RequestBody Memberdto memberDetails) {
 		
 		logger.info("Inside createMember() method, {}", logger.getName());
 		return this.memberService.createMember(memberDetails);
@@ -62,7 +63,7 @@ public class MemberController {
 	@CrossOrigin(origins = "*")
 	public Member getMember(@PathVariable(value = "id") Long memberid) {
 		
-		return memberService.getMember(memberid);
+		return memberService.getMemberById(memberid);
 		
 	}
 
@@ -76,11 +77,11 @@ public class MemberController {
 	}
 
 	// Delete a Member
-	@DeleteMapping("/{id}")
+	@DeleteMapping("")
 	@CrossOrigin(origins = "*")
-	public ResponseEntity<?> deleteMember(@PathVariable(value = "id") Long memId) {
+	public ResponseEntity<?> deleteMember(@RequestParam(value = "memberId") Long memberId,@RequestParam(defaultValue="delete") String type,@RequestParam(required=false) Long secMemberId) {
 		
-		return new ResponseEntity<>(memberService.deleteMember(memId), HttpStatus.OK);
+		return new ResponseEntity<>(memberService.deleteMember(memberId,type,secMemberId), HttpStatus.OK);
 		
 	}
 	

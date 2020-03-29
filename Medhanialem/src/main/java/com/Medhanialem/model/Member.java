@@ -2,9 +2,7 @@
 package com.Medhanialem.model;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -124,7 +122,7 @@ public class Member implements Serializable {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy="parent")
-	private Set<Member> dependents = new HashSet<Member>();
+	private List<Member> dependents = new ArrayList<Member>();
 
 	public int getPaymentlookupId() {
 		return paymentlookupId;
@@ -270,8 +268,8 @@ public class Member implements Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-	public String getUpdatedBy() {
-		return updatedBy;
+	public String getUpdatedBy(String updatedBy) {
+		return this.updatedBy;
 	}
 
 	public void setUpdatedBy(String updatedBy) {
@@ -347,11 +345,11 @@ public class Member implements Serializable {
 		this.parent = parent;
 	}
 
-	public Set<Member> getDependents() {
+	public List<Member> getDependents() {
 		return dependents;
 	}
 
-	public void setDependents(Set<Member> dependents) {
+	public void setDependents(List<Member> dependents) {
 		this.dependents = dependents;
 	}
 

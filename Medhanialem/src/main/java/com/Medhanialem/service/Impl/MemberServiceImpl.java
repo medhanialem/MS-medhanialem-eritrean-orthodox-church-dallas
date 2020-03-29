@@ -1,20 +1,21 @@
 package com.Medhanialem.service.Impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.Medhanialem.exception.ResourceNotFoundException;
 import com.Medhanialem.model.Member;
+import com.Medhanialem.model.Memberdto;
 import com.Medhanialem.model.Memberhistory;
 import com.Medhanialem.repository.MemberHistRepository;
 import com.Medhanialem.repository.MemberRepository;
 import com.Medhanialem.service.MemberService;
 import com.medhaniealem.utils.MemberConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -40,14 +41,10 @@ public class MemberServiceImpl implements MemberService{
 	 */
 	
 	@Override
-	public Member createMember(Member memberDetails) {
+	public Member createMember(Memberdto memberdto) {
 		
 		logger.info("Inside createMember() method, {}", logger.getName());
-		
-		if (null!=memberDetails.getParent()) {
-			Member parentmember = findById (memberDetails.getParent());
-			memberDetails.setParent(parentmember);
-		}
+		Member memberDetails = mapmemberdtoToMember(memberdto);
 		
 		// Get max value for churchId from Member table and add 1 for new member insertion
 		Integer maxChurchId = memberRepository.getMaxChurchId();
@@ -77,21 +74,41 @@ public class MemberServiceImpl implements MemberService{
 			logger.error("Error on saving new member to Member table");
 			//throw exception
 		}
-
 		return savedMember;
 	}
-	
-	/**
-	 * 
-	 * FIND MEMBER BY ID
-	 * 
-	 */
-	
-	@Override
-	public Member findById(Member parentMember) {
-		
-		return memberRepository.findById(parentMember.getMemberId()).orElseThrow(() -> new ResourceNotFoundException("Parent Member", "id", parentMember.getMemberId()));
-		
+
+	private Member mapmemberdtoToMember(Memberdto memberdto) {
+
+		Member member = new Member();
+		member.setFirstName(memberdto.getFirstName());
+		member.setHomePhoneNo(memberdto.getHomePhoneNo());
+		member.setEmail(memberdto.getEmail());
+		member.setFirstName(memberdto.getFirstName());
+		member.setMiddleName(memberdto.getMiddleName());
+		member.setLastName(memberdto.getLastName());
+		member.setGender(memberdto.getGender());
+		member.setEmail(memberdto.getEmail());
+		member.setHomePhoneNo(memberdto.getHomePhoneNo());
+		member.setWorkPhoneNo(memberdto.getWorkPhoneNo());
+		member.setOldChurchId(memberdto.getOldChurchId());
+		member.setCity(memberdto.getCity());
+		member.setStreetAddress(memberdto.getStreetAddress());
+		member.setAppartmentNo(memberdto.getApartmentNo());
+		member.setState(memberdto.getState());
+		member.setZipcode(memberdto.getZipCode());
+		member.setRegistrationDate(memberdto.getRegistrationDate());
+		member.setPaymentStartDate(memberdto.getPaymentStartDate());
+		member.setPaymentlookupId(memberdto.getPaymentlookupId());
+		member.setTier(memberdto.getTier());
+		member.setCreatedBy(memberdto.getCreatedBy());
+		member.getUpdatedBy(memberdto.getUpdatedBy());
+
+		Member parentMember =null;
+		if(null!=memberdto.getSuperId()) {
+			 parentMember = getMemberById(memberdto.getSuperId());
+		}
+		member.setParent(null!=parentMember?parentMember:null);
+		return member;
 	}
 
 	/**
@@ -123,23 +140,17 @@ public class MemberServiceImpl implements MemberService{
 				//Throw exception saying parent Id is missing
 			}
 		}
-		
 		return memberList;
-		
 	}
 	
 	/**
 	 * 
 	 * FIND MEMBER BY ID
-	 * same as findById(Member parentMember) need to merge????
 	 * 
 	 */
-	
 	@Override
-	public Member getMember(Long memberid) {
-		
+	public Member getMemberById(Long memberid) {
 		return memberRepository.findById(memberid).orElseThrow(() -> new ResourceNotFoundException("Member", "id", memberid));
-		
 	}
 	
 	/**
@@ -191,7 +202,6 @@ public class MemberServiceImpl implements MemberService{
 			logger.error("Error on saving changes to existing member to Member table");
 			//throw exception
 		}
-
 		return updatedMember;
 	}
 
@@ -202,12 +212,51 @@ public class MemberServiceImpl implements MemberService{
 	 */
 	
 	@Override
-	public Member deleteMember(Long memId) {
+	public Member deleteMember(Long memId,String type,Long secMemberId) {
 		
 		Member member = memberRepository.findById(memId).orElseThrow(() -> new ResourceNotFoundException("Member", "id", memId));
-		member.setStatus(MemberConstants.INACTIVE);
+
+		if(type.equalsIgnoreCase("deactivate")) { // delete a main member or a dependent
+			if (null == member.getParent()) {
+				member.setStatus(MemberConstants.INACTIVE);
+				List<Member> memberList = memberRepository.getDependents(member.getMemberId()).stream().collect(Collectors.toList());
+				if(null!=memberList&& !memberList.isEmpty()) {
+					memberList.stream().forEach(m -> m.setStatus(MemberConstants.INACTIVE));
+					member.setDependents(memberList);
+				}
+
+			} else {
+				member.setStatus(MemberConstants.INACTIVE);
+			}
+		} else if(type.equalsIgnoreCase("upgrade")) {  // changes a dependent to main member
+				if(null != member.getParent()) {
+					member.setParent(null);
+					member.setPaymentStartDate(new Date());
+				}else {
+					throw new ResourceNotFoundException("","Already a main member","");
+				}
+		} else if(type.equalsIgnoreCase("move")){
+			Member newMainmember = memberRepository.findById(secMemberId).orElseThrow(() -> new ResourceNotFoundException("Member", "id", secMemberId));
+			if(null!=member.getParent()){  // moves a dependent to another main member
+				member.setParent(newMainmember);
+			}else {  // moves a main member to another main member
+				//if member's payment status is checked and current
+				member.setParent(newMainmember);
+			}
+		}else if(type.equalsIgnoreCase("reactivate")) { // delete a main member or a dependent
+			if (null == member.getParent()) {
+				member.setStatus(MemberConstants.ACTIVE);
+				List<Member> memberList = memberRepository.getDependents(member.getMemberId()).stream().collect(Collectors.toList());
+				if(null!=memberList && !memberList.isEmpty()) {
+					memberList.stream().forEach(m -> m.setStatus(MemberConstants.ACTIVE));
+					member.setDependents(memberList);
+				}
+
+			} else {
+				member.setStatus(MemberConstants.INACTIVE);
+			}
+		}
 		return memberRepository.save(member);
-		
 	}
 	
 	/**
@@ -235,10 +284,10 @@ public class MemberServiceImpl implements MemberService{
 		memberHistory.setZipcode(savedMember.getZipcode());
 		memberHistory.setRegistrationDate(savedMember.getRegistrationDate());
 		memberHistory.setStatus(savedMember.getStatus());
-		//memberHistory.setSuperId(savedMember.getSuperId());
+	//	memberHistory.setSuperId(null!=savedMember.getParent()?savedMember.getParent().getMemberId():null);
 		memberHistory.setTier(savedMember.getTier());
 		memberHistory.setCreatedDate(savedMember.getCreatedDate());
-		memberHistory.setUpdatedDate(savedMember.getUpdatedDate());
+		memberHistory.setUpdatedDate(null!=savedMember.getUpdatedDate()?savedMember.getUpdatedDate():null);
 		memberHistory.setUpdatedBy("Admin to be set from login session");
 		memberHistory.setAction(action);
 		memberHistRepository.save(memberHistory);
