@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -87,7 +88,7 @@ public class MemberServiceImpl implements MemberService{
 		member.setMiddleName(memberdto.getMiddleName());
 		member.setLastName(memberdto.getLastName());
 		member.setGender(memberdto.getGender());
-		member.setEmail(memberdto.getEmail());
+		member.setEmail(StringUtils.isEmpty(memberdto.getEmail()) ? null : memberdto.getEmail());
 		member.setHomePhoneNo(memberdto.getHomePhoneNo());
 		member.setWorkPhoneNo(memberdto.getWorkPhoneNo());
 		member.setOldChurchId(memberdto.getOldChurchId());
@@ -101,7 +102,7 @@ public class MemberServiceImpl implements MemberService{
 		member.setPaymentlookupId(memberdto.getPaymentlookupId());
 		member.setTier(memberdto.getTier());
 		member.setCreatedBy(memberdto.getCreatedBy());
-		member.getUpdatedBy(memberdto.getUpdatedBy());
+		member.setUpdatedBy(memberdto.getUpdatedBy());
 
 		Member parentMember =null;
 		if(null!=memberdto.getSuperId()) {

@@ -66,7 +66,7 @@ public class Member implements Serializable {
 	//@NotBlank
 	private String workPhoneNo;
 
-	@NotBlank
+//	@NotBlank
 	@Column(length = 50, unique = true)
 	private String email;
 
