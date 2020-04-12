@@ -63,6 +63,8 @@ public class Memberdto {
 
     private String updatedBy;
 
+    private MaritalStatus maritalStatus;
+
     private Tier tier;
 
     private Long superId;
@@ -243,6 +245,14 @@ public class Memberdto {
         this.updatedBy = updatedBy;
     }
 
+    public MaritalStatus getMaritalStatus() {
+        return maritalStatus;
+    }
+
+    public void setMaritalStatus(MaritalStatus maritalStatus) {
+        this.maritalStatus = maritalStatus;
+    }
+
     public Tier getTier() {
         return tier;
     }
@@ -285,6 +295,7 @@ public class Memberdto {
                 ", paymentlookupId=" + paymentlookupId +
                 ", createdBy='" + createdBy + '\'' +
                 ", updatedBy='" + updatedBy + '\'' +
+                ", maritalStatus='" + maritalStatus + '\'' +
                 ", tier=" + tier +
                 ", superId=" + superId +
                 '}';

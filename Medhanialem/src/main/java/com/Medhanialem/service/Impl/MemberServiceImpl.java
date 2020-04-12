@@ -1,6 +1,7 @@
 package com.Medhanialem.service.Impl;
 
 import com.Medhanialem.exception.ResourceNotFoundException;
+import com.Medhanialem.jwtauthentication.security.jwt.JwtProvider;
 import com.Medhanialem.model.Member;
 import com.Medhanialem.model.Memberdto;
 import com.Medhanialem.model.Memberhistory;
@@ -11,6 +12,7 @@ import com.medhaniealem.utils.MemberConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -28,6 +30,12 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Autowired
 	MemberHistRepository memberHistRepository;
+
+	@Autowired
+	JwtProvider jwtProvider;
+
+	@Autowired
+	UserDetailsServiceImpl userDetailsServiceImpl;
 	
 	@Autowired
 	public MemberServiceImpl(MemberRepository memberRepository, MemberHistRepository memberHistRepository) {
@@ -80,6 +88,8 @@ public class MemberServiceImpl implements MemberService{
 
 	private Member mapmemberdtoToMember(Memberdto memberdto) {
 
+		UserDetails currentUserDetails = userDetailsServiceImpl.getCurrentUserDetails();
+
 		Member member = new Member();
 		member.setFirstName(memberdto.getFirstName());
 		member.setHomePhoneNo(memberdto.getHomePhoneNo());
@@ -94,15 +104,16 @@ public class MemberServiceImpl implements MemberService{
 		member.setOldChurchId(memberdto.getOldChurchId());
 		member.setCity(memberdto.getCity());
 		member.setStreetAddress(memberdto.getStreetAddress());
-		member.setAppartmentNo(memberdto.getApartmentNo());
+		member.setApartmentNo(memberdto.getApartmentNo());
 		member.setState(memberdto.getState());
-		member.setZipcode(memberdto.getZipCode());
+		member.setZipCode(memberdto.getZipCode());
 		member.setRegistrationDate(memberdto.getRegistrationDate());
 		member.setPaymentStartDate(memberdto.getPaymentStartDate());
 		member.setPaymentlookupId(memberdto.getPaymentlookupId());
+		member.setMaritalStatus(memberdto.getMaritalStatus());
 		member.setTier(memberdto.getTier());
-		member.setCreatedBy(memberdto.getCreatedBy());
-		member.setUpdatedBy(memberdto.getUpdatedBy());
+		member.setCreatedBy(currentUserDetails.getUsername());
+		member.setUpdatedBy(null);
 
 		Member parentMember =null;
 		if(null!=memberdto.getSuperId()) {
@@ -161,6 +172,8 @@ public class MemberServiceImpl implements MemberService{
 	 */
 	@Override
 	public Member updateMember(Long memId, Member memberDetails) {
+
+		UserDetails currentUserDetails = userDetailsServiceImpl.getCurrentUserDetails();
 		
 		Member member = memberRepository.findById(memId).orElseThrow(() -> new ResourceNotFoundException("Member", "id", memId));
 
@@ -176,12 +189,13 @@ public class MemberServiceImpl implements MemberService{
 		member.setOldChurchId(memberDetails.getOldChurchId());
 		member.setCity(memberDetails.getCity()); 
 		member.setStreetAddress(memberDetails.getStreetAddress());
-		member.setAppartmentNo(memberDetails.getApartmentNo()); 
+		member.setApartmentNo(memberDetails.getApartmentNo());
 		member.setState(memberDetails.getState()); 
-		member.setZipcode(memberDetails.getZipcode());
+		member.setZipCode(memberDetails.getZipCode());
 		member.setTier(memberDetails.getTier());
+		member.setMaritalStatus(memberDetails.getMaritalStatus());
 		member.setUpdatedDate(memberDetails.getUpdatedDate());
-		
+		member.setUpdatedBy(currentUserDetails.getUsername());
 		Member updatedMember = memberRepository.save(member);
 		
 		if (null != updatedMember) {
@@ -218,6 +232,7 @@ public class MemberServiceImpl implements MemberService{
 		Member member = memberRepository.findById(memId).orElseThrow(() -> new ResourceNotFoundException("Member", "id", memId));
 
 		if(type.equalsIgnoreCase("deactivate")) { // delete a main member or a dependent
+			//TODO: deactivate date  should be added when deactivating
 			if (null == member.getParent()) {
 				member.setStatus(MemberConstants.INACTIVE);
 				List<Member> memberList = memberRepository.getDependents(member.getMemberId()).stream().collect(Collectors.toList());
@@ -225,7 +240,6 @@ public class MemberServiceImpl implements MemberService{
 					memberList.stream().forEach(m -> m.setStatus(MemberConstants.INACTIVE));
 					member.setDependents(memberList);
 				}
-
 			} else {
 				member.setStatus(MemberConstants.INACTIVE);
 			}
@@ -242,6 +256,7 @@ public class MemberServiceImpl implements MemberService{
 				member.setParent(newMainmember);
 			}else {  // moves a main member to another main member
 				//if member's payment status is checked and current
+				//dependets also moved
 				member.setParent(newMainmember);
 			}
 		}else if(type.equalsIgnoreCase("reactivate")) { // delete a main member or a dependent
@@ -252,9 +267,8 @@ public class MemberServiceImpl implements MemberService{
 					memberList.stream().forEach(m -> m.setStatus(MemberConstants.ACTIVE));
 					member.setDependents(memberList);
 				}
-
 			} else {
-				member.setStatus(MemberConstants.INACTIVE);
+				member.setStatus(MemberConstants.ACTIVE);
 			}
 		}
 		return memberRepository.save(member);
@@ -282,14 +296,14 @@ public class MemberServiceImpl implements MemberService{
 		memberHistory.setCity(savedMember.getCity());
 		memberHistory.setStreetAdress(savedMember.getStreetAddress());
 		memberHistory.setState(savedMember.getState());
-		memberHistory.setZipcode(savedMember.getZipcode());
+		memberHistory.setZipcode(savedMember.getZipCode());
 		memberHistory.setRegistrationDate(savedMember.getRegistrationDate());
 		memberHistory.setStatus(savedMember.getStatus());
 	//	memberHistory.setSuperId(null!=savedMember.getParent()?savedMember.getParent().getMemberId():null);
 		memberHistory.setTier(savedMember.getTier());
 		memberHistory.setCreatedDate(savedMember.getCreatedDate());
 		memberHistory.setUpdatedDate(null!=savedMember.getUpdatedDate()?savedMember.getUpdatedDate():null);
-		memberHistory.setUpdatedBy("Admin to be set from login session");
+		memberHistory.setUpdatedBy(memberHistory.getUpdatedBy());
 		memberHistory.setAction(action);
 		memberHistRepository.save(memberHistory);
 

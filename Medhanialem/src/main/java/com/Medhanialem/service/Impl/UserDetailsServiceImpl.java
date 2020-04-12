@@ -1,6 +1,9 @@
 package com.Medhanialem.service.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,5 +31,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throw new UserNotActiveException("User Account", "username", user.getUsername());
 		}
 		return UserPrinciple.build(user);
+	}
+
+	public UserDetails getCurrentUserDetails(){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails currentUserDetails=null;
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+			 currentUserDetails = (UserDetails) authentication.getPrincipal();
+		}
+		return currentUserDetails;
 	}
 }

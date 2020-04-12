@@ -1,40 +1,25 @@
-
 package com.Medhanialem.model;
-
-import java.io.Serializable;
-import java.util.*;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotBlank;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.Medhanialem.model.payment.Tier;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.NaturalId;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "Member")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "createdDate", "updatedDate" }, allowGetters = true)
 public class Member implements Serializable {
-
 	/**
 	 * 
 	 */
@@ -113,9 +98,12 @@ public class Member implements Serializable {
     @JoinColumn(name = "tierId")
 	private Tier tier;
 
+	@Enumerated(EnumType.STRING)
+	@NaturalId
+	private MaritalStatus maritalStatus;
+
 	private String status="ACTIVE";
-	
-	
+
 	@ManyToOne(cascade={CascadeType.ALL})
 	@JoinColumn(name = "superId")
 	private Member parent;
@@ -124,16 +112,12 @@ public class Member implements Serializable {
 	@OneToMany(mappedBy="parent")
 	private List<Member> dependents = new ArrayList<Member>();
 
-	public int getPaymentlookupId() {
-		return paymentlookupId;
+	public Long getMemberId() {
+		return memberId;
 	}
 
-	public void setPaymentlookupId(int paymentlookupId) {
-		this.paymentlookupId = paymentlookupId;
-	}
-
-	public String getFirstName() {
-		return firstName;
+	public void setMemberId(Long memberId) {
+		this.memberId = memberId;
 	}
 
 	public String getChurchId() {
@@ -142,6 +126,18 @@ public class Member implements Serializable {
 
 	public void setChurchId(String churchId) {
 		this.churchId = churchId;
+	}
+
+	public Integer getOldChurchId() {
+		return oldChurchId;
+	}
+
+	public void setOldChurchId(Integer oldChurchId) {
+		this.oldChurchId = oldChurchId;
+	}
+
+	public String getFirstName() {
+		return firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -159,17 +155,17 @@ public class Member implements Serializable {
 	public String getLastName() {
 		return lastName;
 	}
-	
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
 	public String getGender() {
 		return gender;
 	}
 
 	public void setGender(String gender) {
 		this.gender = gender;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 
 	public String getHomePhoneNo() {
@@ -196,12 +192,20 @@ public class Member implements Serializable {
 		this.email = email;
 	}
 
+	public String getStreetAddress() {
+		return streetAddress;
+	}
+
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
+	}
+
 	public String getApartmentNo() {
 		return apartmentNo;
 	}
 
-	public void setAppartmentNo(String appartmentNo) {
-		this.apartmentNo = appartmentNo;
+	public void setApartmentNo(String apartmentNo) {
+		this.apartmentNo = apartmentNo;
 	}
 
 	public String getCity() {
@@ -220,12 +224,12 @@ public class Member implements Serializable {
 		this.state = state;
 	}
 
-	public String getZipcode() {
+	public String getZipCode() {
 		return zipCode;
 	}
 
-	public void setZipcode(String zipcode) {
-		this.zipCode = zipcode;
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
 	}
 
 	public Date getRegistrationDate() {
@@ -242,6 +246,30 @@ public class Member implements Serializable {
 
 	public void setPaymentStartDate(Date paymentStartDate) {
 		this.paymentStartDate = paymentStartDate;
+	}
+
+	public boolean isSebekaGubae() {
+		return sebekaGubae;
+	}
+
+	public void setSebekaGubae(boolean sebekaGubae) {
+		this.sebekaGubae = sebekaGubae;
+	}
+
+	public boolean isSundaySchool() {
+		return sundaySchool;
+	}
+
+	public void setSundaySchool(boolean sundaySchool) {
+		this.sundaySchool = sundaySchool;
+	}
+
+	public int getPaymentlookupId() {
+		return paymentlookupId;
+	}
+
+	public void setPaymentlookupId(int paymentlookupId) {
+		this.paymentlookupId = paymentlookupId;
 	}
 
 	public Date getCreatedDate() {
@@ -268,37 +296,12 @@ public class Member implements Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-	public String getUpdatedBy(String updatedBy) {
-		return this.updatedBy;
+	public String getUpdatedBy() {
+		return updatedBy;
 	}
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
-	}
-
-
-	public Long getMemberId() {
-		return memberId;
-	}
-
-	public void setMemberId(Long memberId) {
-		this.memberId = memberId;
-	}
-
-	public String getStreetAddress() {
-		return streetAddress;
-	}
-
-	public void setStreetAddress(String streetAddress) {
-		this.streetAddress = streetAddress;
-	}
-
-	public String getZipCode() {
-		return zipCode;
-	}
-
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
 	}
 
 	public Tier getTier() {
@@ -309,32 +312,20 @@ public class Member implements Serializable {
 		this.tier = tier;
 	}
 
+	public MaritalStatus getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(MaritalStatus maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
 	public String getStatus() {
 		return status;
 	}
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public boolean isSebekaGubae() {
-		return sebekaGubae;
-	}
-
-	public void setSebekaGubae(boolean sebekaGubae) {
-		this.sebekaGubae = sebekaGubae;
-	}
-
-	public boolean isSundaySchool() {
-		return sundaySchool;
-	}
-
-	public void setSundaySchool(boolean sundaySchool) {
-		this.sundaySchool = sundaySchool;
-	}
-
-	public void setApartmentNo(String apartmentNo) {
-		this.apartmentNo = apartmentNo;
 	}
 
 	public Member getParent() {
@@ -353,45 +344,38 @@ public class Member implements Serializable {
 		this.dependents = dependents;
 	}
 
-	public Integer getOldChurchId() {
-		return oldChurchId;
-	}
-
-	public void setOldChurchId(Integer oldChurchId) {
-		this.oldChurchId = oldChurchId;
-	}
-
 	@Override
 	public String toString() {
-		return "Member [memberId=" + memberId + 
-				", churchId=" + churchId + 
-				", oldChurchId=" + oldChurchId + 
-				", firstName=" + firstName + 
-				", middleName=" + middleName + 
-				", lastName=" + lastName +
-				", oldchurchId=" + oldChurchId +
-				", homePhoneNo=" + homePhoneNo + 
-				", workPhoneNo=" + workPhoneNo + 
-				", email=" + email + 
-				", streetAddress=" + streetAddress + 
-				", apartmentNo=" + apartmentNo + 
-				", city=" + city + 
-				", state=" + state + 
-				", zipCode=" + zipCode + 
+		return "Member{" +
+				"memberId=" + memberId +
+				", churchId='" + churchId + '\'' +
+				", oldChurchId=" + oldChurchId +
+				", firstName='" + firstName + '\'' +
+				", middleName='" + middleName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", gender='" + gender + '\'' +
+				", homePhoneNo='" + homePhoneNo + '\'' +
+				", workPhoneNo='" + workPhoneNo + '\'' +
+				", email='" + email + '\'' +
+				", streetAddress='" + streetAddress + '\'' +
+				", apartmentNo='" + apartmentNo + '\'' +
+				", city='" + city + '\'' +
+				", state='" + state + '\'' +
+				", zipCode='" + zipCode + '\'' +
 				", registrationDate=" + registrationDate +
-				", paymentStartDate=" + paymentStartDate + 
-				", superId=" + parent + 
-				", paymentlookupId=" + paymentlookupId + 
-				", createdDate=" + createdDate + 
-				", createdBy=" + createdBy + 
-				", updatedDate=" + updatedDate + 
-				", updatedBy=" + updatedBy + 
-				", tier=" + tier + 
-				", status=" + status +
+				", paymentStartDate=" + paymentStartDate +
 				", sebekaGubae=" + sebekaGubae +
 				", sundaySchool=" + sundaySchool +
-				"]";
+				", paymentlookupId=" + paymentlookupId +
+				", createdDate=" + createdDate +
+				", createdBy='" + createdBy + '\'' +
+				", updatedDate=" + updatedDate +
+				", updatedBy='" + updatedBy + '\'' +
+				", tier=" + tier +
+				", maritalStatus=" + maritalStatus +
+				", status='" + status + '\'' +
+				", parent=" + parent +
+				", dependents=" + dependents +
+				'}';
 	}
-
-
 }

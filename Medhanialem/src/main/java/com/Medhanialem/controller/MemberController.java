@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,7 @@ public class MemberController {
 	
 	@Autowired
 	MemberService memberService;
+
 	
 	@Autowired
 	public MemberController(MemberService memberService) {
@@ -42,6 +44,7 @@ public class MemberController {
 	
 	@PostMapping("")
 	@CrossOrigin(origins = "*")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
 	public Member createMember(@RequestBody Memberdto memberDetails) {
 		
 		logger.info("Inside createMember() method, {}", logger.getName());
@@ -51,6 +54,7 @@ public class MemberController {
 
 	@GetMapping("")
 	@CrossOrigin(origins = "*")
+	@PreAuthorize("isAuthenticated()")
 	public List<Member> getAllMembers(@RequestParam(required=false,value = "parentId") Long parentId, @RequestParam(defaultValue="mainmembers") String preset) {
 		
 		logger.info("Inside getAllMembers() method, {}", logger.getName());
@@ -61,6 +65,7 @@ public class MemberController {
 	// Get one Member
 	@GetMapping("/{id}")
 	@CrossOrigin(origins = "*")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
 	public Member getMember(@PathVariable(value = "id") Long memberid) {
 		
 		return memberService.getMemberById(memberid);
@@ -70,6 +75,7 @@ public class MemberController {
 	// Update a Member
 	@PutMapping("/{id}")
 	@CrossOrigin(origins = "*")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
 	public Member updateMember(@PathVariable(value = "id") Long memId, @Valid @RequestBody Member memberDetails) {
 
 		return memberService.updateMember(memId, memberDetails);
@@ -79,6 +85,7 @@ public class MemberController {
 	// Delete a Member
 	@DeleteMapping("")
 	@CrossOrigin(origins = "*")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
 	public ResponseEntity<?> deleteMember(@RequestParam(value = "memberId") Long memberId,@RequestParam(defaultValue="delete") String type,@RequestParam(required=false) Long secMemberId) {
 		
 		return new ResponseEntity<>(memberService.deleteMember(memberId,type,secMemberId), HttpStatus.OK);
