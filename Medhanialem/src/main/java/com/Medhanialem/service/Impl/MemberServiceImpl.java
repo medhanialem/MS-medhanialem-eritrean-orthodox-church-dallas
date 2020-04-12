@@ -32,9 +32,6 @@ public class MemberServiceImpl implements MemberService{
 	MemberHistRepository memberHistRepository;
 
 	@Autowired
-	JwtProvider jwtProvider;
-
-	@Autowired
 	UserDetailsServiceImpl userDetailsServiceImpl;
 	
 	@Autowired
@@ -303,7 +300,7 @@ public class MemberServiceImpl implements MemberService{
 		memberHistory.setTier(savedMember.getTier());
 		memberHistory.setCreatedDate(savedMember.getCreatedDate());
 		memberHistory.setUpdatedDate(null!=savedMember.getUpdatedDate()?savedMember.getUpdatedDate():null);
-		memberHistory.setUpdatedBy(memberHistory.getUpdatedBy());
+		memberHistory.setUpdatedBy(savedMember.getUpdatedBy());
 		memberHistory.setAction(action);
 		memberHistRepository.save(memberHistory);
 
