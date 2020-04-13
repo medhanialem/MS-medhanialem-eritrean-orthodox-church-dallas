@@ -63,7 +63,7 @@ public class Memberdto {
 
     private String updatedBy;
 
-    private MaritalStatus maritalStatus;
+    private String maritalStatus;
 
     private Tier tier;
 
@@ -245,16 +245,15 @@ public class Memberdto {
         this.updatedBy = updatedBy;
     }
 
-    public MaritalStatus getMaritalStatus() {
+    public String getMaritalStatus() {
         return maritalStatus;
     }
 
     public void setMaritalStatus(String maritalStatus) {
         try {
-            this.maritalStatus = MaritalStatus.valueOf(null!=maritalStatus.toUpperCase()?maritalStatus.toUpperCase():null);
+            this.maritalStatus = MaritalStatus.valueOf((null!=maritalStatus)? maritalStatus.toUpperCase():null).toString();
         }
         catch (IllegalArgumentException iae) {
-            this.maritalStatus = null;
           //  LOGGER.ERROR(“Illegal Marital Status {}“, iae);
         }
     }

@@ -98,9 +98,7 @@ public class Member implements Serializable {
     @JoinColumn(name = "tierId")
 	private Tier tier;
 
-	@Enumerated(EnumType.STRING)
-	@NaturalId
-	private MaritalStatus maritalStatus;
+	private String maritalStatus;
 
 	private String status="ACTIVE";
 
@@ -312,11 +310,11 @@ public class Member implements Serializable {
 		this.tier = tier;
 	}
 
-	public MaritalStatus getMaritalStatus() {
+	public String getMaritalStatus() {
 		return maritalStatus;
 	}
 
-	public void setMaritalStatus(MaritalStatus maritalStatus) {
+	public void setMaritalStatus(String maritalStatus) {
 		this.maritalStatus = maritalStatus;
 	}
 
