@@ -1,7 +1,6 @@
 package com.Medhanialem.service.Impl;
 
 import com.Medhanialem.exception.ResourceNotFoundException;
-import com.Medhanialem.jwtauthentication.security.jwt.JwtProvider;
 import com.Medhanialem.model.Member;
 import com.Medhanialem.model.Memberdto;
 import com.Medhanialem.model.Memberhistory;
@@ -110,7 +109,6 @@ public class MemberServiceImpl implements MemberService{
 		member.setMaritalStatus(memberdto.getMaritalStatus());
 		member.setTier(memberdto.getTier());
 		member.setCreatedBy(currentUserDetails.getUsername());
-		member.setUpdatedBy(null);
 
 		Member parentMember =null;
 		if(null!=memberdto.getSuperId()) {
@@ -189,10 +187,12 @@ public class MemberServiceImpl implements MemberService{
 		member.setApartmentNo(memberDetails.getApartmentNo());
 		member.setState(memberDetails.getState()); 
 		member.setZipCode(memberDetails.getZipCode());
+		member.setRegistrationDate(memberDetails.getRegistrationDate());
+		member.setPaymentStartDate(memberDetails.getPaymentStartDate());
 		member.setTier(memberDetails.getTier());
 		member.setMaritalStatus(memberDetails.getMaritalStatus());
-		member.setUpdatedDate(memberDetails.getUpdatedDate());
 		member.setUpdatedBy(currentUserDetails.getUsername());
+
 		Member updatedMember = memberRepository.save(member);
 		
 		if (null != updatedMember) {
@@ -254,7 +254,19 @@ public class MemberServiceImpl implements MemberService{
 			}else {  // moves a main member to another main member
 				//if member's payment status is checked and current
 				//dependets also moved
+				checkPaymentStatus();
+				List<Member> memberList = memberRepository.getDependents(member.getMemberId()).stream().collect(Collectors.toList());
 				member.setParent(newMainmember);
+
+				if(null!=memberList && !memberList.isEmpty()) {
+					if(null!=newMainmember.getDependents()) {
+						memberList.stream().forEach(m -> newMainmember.getDependents().add(m));
+					}else{
+						newMainmember.setDependents(memberList);
+					}
+					memberRepository.save(newMainmember);
+				}
+
 			}
 		}else if(type.equalsIgnoreCase("reactivate")) { // delete a main member or a dependent
 			if (null == member.getParent()) {
@@ -270,7 +282,13 @@ public class MemberServiceImpl implements MemberService{
 		}
 		return memberRepository.save(member);
 	}
-	
+
+	private void checkPaymentStatus() {
+
+
+
+	}
+
 	/**
 	 * 
 	 * SAVE TO MEMBER HISTORY TABLE ON MEMBER OPERATIONs CREATE/UPDATE/INACTIVE ...

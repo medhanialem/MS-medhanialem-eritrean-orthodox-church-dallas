@@ -249,9 +249,17 @@ public class Memberdto {
         return maritalStatus;
     }
 
-    public void setMaritalStatus(MaritalStatus maritalStatus) {
-        this.maritalStatus = maritalStatus;
+    public void setMaritalStatus(String maritalStatus) {
+        try {
+            this.maritalStatus = MaritalStatus.valueOf(null!=maritalStatus.toUpperCase()?maritalStatus.toUpperCase():null);
+        }
+        catch (IllegalArgumentException iae) {
+            this.maritalStatus = null;
+          //  LOGGER.ERROR(“Illegal Marital Status {}“, iae);
+        }
     }
+
+
 
     public Tier getTier() {
         return tier;
@@ -268,7 +276,6 @@ public class Memberdto {
     public void setSuperId(Long superId) {
         this.superId = superId;
     }
-
 
     @Override
     public String toString() {
