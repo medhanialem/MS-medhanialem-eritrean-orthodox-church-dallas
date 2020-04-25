@@ -1,5 +1,16 @@
 package com.Medhanialem.service.Impl;
 
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import com.Medhanialem.exception.ResourceNotFoundException;
 import com.Medhanialem.model.Member;
 import com.Medhanialem.model.Memberdto;
@@ -8,16 +19,6 @@ import com.Medhanialem.repository.MemberHistRepository;
 import com.Medhanialem.repository.MemberRepository;
 import com.Medhanialem.service.MemberService;
 import com.medhaniealem.utils.MemberConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -240,6 +241,7 @@ public class MemberServiceImpl implements MemberService{
 			} else {
 				member.setStatus(MemberConstants.INACTIVE);
 			}
+			
 		} else if(type.equalsIgnoreCase("upgrade")) {  // changes a dependent to main member
 				if(null != member.getParent()) {
 					member.setParent(null);
@@ -254,20 +256,17 @@ public class MemberServiceImpl implements MemberService{
 			}else {  // moves a main member to another main member
 				//if member's payment status is checked and current
 				//dependets also moved
+				
 				checkPaymentStatus();
-				List<Member> memberList = memberRepository.getDependents(member.getMemberId()).stream().collect(Collectors.toList());
+				
 				member.setParent(newMainmember);
-
-				if(null!=memberList && !memberList.isEmpty()) {
-					if(null!=newMainmember.getDependents()) {
-						memberList.stream().forEach(m -> newMainmember.getDependents().add(m));
-					}else{
-						newMainmember.setDependents(memberList);
-					}
-					memberRepository.save(newMainmember);
+				
+				if(null != member.getDependents() && !member.getDependents().isEmpty()) {
+					member.getDependents().stream().forEach(m -> m.setParent(newMainmember));
 				}
-
+				
 			}
+			
 		}else if(type.equalsIgnoreCase("reactivate")) { // delete a main member or a dependent
 			if (null == member.getParent()) {
 				member.setStatus(MemberConstants.ACTIVE);
@@ -280,6 +279,7 @@ public class MemberServiceImpl implements MemberService{
 				member.setStatus(MemberConstants.ACTIVE);
 			}
 		}
+		
 		return memberRepository.save(member);
 	}
 
