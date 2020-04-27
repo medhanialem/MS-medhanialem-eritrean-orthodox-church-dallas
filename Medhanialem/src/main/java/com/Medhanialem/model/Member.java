@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,7 +74,9 @@ public class Member implements Serializable {
 	private Date registrationDate;
 	
 	private Date paymentStartDate;
-	
+
+	private LocalDate deactivatedDate;
+
 	private boolean sebekaGubae;
 	
 	private boolean sundaySchool;
@@ -244,6 +247,14 @@ public class Member implements Serializable {
 
 	public void setPaymentStartDate(Date paymentStartDate) {
 		this.paymentStartDate = paymentStartDate;
+	}
+
+	public LocalDate getDeactivatedDate() {
+		return deactivatedDate;
+	}
+
+	public void setDeactivatedDate(LocalDate deactivatedDate) {
+		this.deactivatedDate = deactivatedDate;
 	}
 
 	public boolean isSebekaGubae() {

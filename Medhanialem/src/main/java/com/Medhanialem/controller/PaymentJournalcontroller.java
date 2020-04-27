@@ -1,32 +1,18 @@
 package com.Medhanialem.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.Medhanialem.model.Member;
 import com.Medhanialem.model.payment.Payment;
 import com.Medhanialem.model.payment.PaymentJournal;
 import com.Medhanialem.model.payment.PaymentLookup;
 import com.Medhanialem.model.payment.PaymentlogDTO;
-import com.Medhanialem.model.payment.objects.MonthlyPaid;
-import com.Medhanialem.model.payment.objects.PaymentInformation;
-import com.Medhanialem.model.payment.objects.PaymentLogs;
-import com.Medhanialem.model.payment.objects.PaymentLookUps;
-import com.Medhanialem.model.payment.objects.PaymentLookupResponseByYear;
-import com.Medhanialem.model.payment.objects.Paymentrequest;
-import com.Medhanialem.repository.MemberRepository;
-import com.Medhanialem.repository.MemberShipPaymentLookUpfeeRepository;
-import com.Medhanialem.repository.PaymentJournalRepository;
-import com.Medhanialem.repository.PaymentRepository;
-import com.Medhanialem.repository.PaymentlogRepositoryjdbc;
+import com.Medhanialem.model.payment.objects.*;
+import com.Medhanialem.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class PaymentJournalcontroller {
@@ -44,7 +30,7 @@ public class PaymentJournalcontroller {
 	PaymentJournalRepository paymentJournalRepository;
 
 	@Autowired
-	MemberShipPaymentLookUpfeeRepository memberShipPaymentLookUpfee;
+	PaymentLookUpRepository memberShipPaymentLookUpfee;
 
 	@GetMapping("/getpaymentlookupinfo/{year}/{tier}")
 	public List<PaymentLookUps> getPaymentLookupInfoByTier(@PathVariable(value = "year") Long year,
@@ -148,9 +134,7 @@ public class PaymentJournalcontroller {
 			response.setPaymentLogs(journals);
 
 			list.add(response);
-
 		}
-
 		return list;
 	}
 
@@ -173,17 +157,6 @@ public class PaymentJournalcontroller {
 				paymentLoglist.add(paylog);
 			}
 		}
-
-		/*
-		 * Comparator<PaymentLogs> journal_year_month_Comparator = Comparator
-		 * .comparing(PaymentLogs::getMonth);
-		 */
-
-		/*
-		 * Collections.sort(journallist, journal_year_month_Comparator);
-		 */
 		return paymentLoglist;
-
 	}
-
 }

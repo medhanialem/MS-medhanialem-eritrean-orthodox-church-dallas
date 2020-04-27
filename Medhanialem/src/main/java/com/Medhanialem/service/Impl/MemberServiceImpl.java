@@ -1,9 +1,11 @@
 package com.Medhanialem.service.Impl;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.Medhanialem.repository.PaymentlogRepositoryjdbc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class MemberServiceImpl implements MemberService{
 
 	@Autowired
 	UserDetailsServiceImpl userDetailsServiceImpl;
+
+	@Autowired
+	PaymentlogRepositoryjdbc paymentlogRepositoryjdbc;
 	
 	@Autowired
 	public MemberServiceImpl(MemberRepository memberRepository, MemberHistRepository memberHistRepository) {
@@ -230,9 +235,9 @@ public class MemberServiceImpl implements MemberService{
 		Member member = memberRepository.findById(memId).orElseThrow(() -> new ResourceNotFoundException("Member", "id", memId));
 
 		if(type.equalsIgnoreCase("deactivate")) { // delete a main member or a dependent
-			//TODO: deactivate date  should be added when deactivating
 			if (null == member.getParent()) {
 				member.setStatus(MemberConstants.INACTIVE);
+				member.setDeactivatedDate(LocalDate.now());
 				List<Member> memberList = memberRepository.getDependents(member.getMemberId()).stream().collect(Collectors.toList());
 				if(null!=memberList&& !memberList.isEmpty()) {
 					memberList.stream().forEach(m -> m.setStatus(MemberConstants.INACTIVE));
@@ -240,6 +245,7 @@ public class MemberServiceImpl implements MemberService{
 				}
 			} else {
 				member.setStatus(MemberConstants.INACTIVE);
+				member.setDeactivatedDate(LocalDate.now());
 			}
 			
 		} else if(type.equalsIgnoreCase("upgrade")) {  // changes a dependent to main member
@@ -255,38 +261,74 @@ public class MemberServiceImpl implements MemberService{
 				member.setParent(newMainmember);
 			}else {  // moves a main member to another main member
 				//if member's payment status is checked and current
-				//dependets also moved
 				
-				checkPaymentStatus();
-				
-				member.setParent(newMainmember);
-				
-				if(null != member.getDependents() && !member.getDependents().isEmpty()) {
-					member.getDependents().stream().forEach(m -> m.setParent(newMainmember));
+				if(!checkPaymentBeforeMove(member)) {
+						throw new ResourceNotFoundException(null,"There are previous unpaid months Please Update payment untill deactivated date!",null);
+
+				}else{
+					member.setParent(newMainmember);
+
+					if (null != member.getDependents() && !member.getDependents().isEmpty()) {
+						member.getDependents().stream().forEach(m -> m.setParent(newMainmember));
+					}
 				}
 				
 			}
 			
 		}else if(type.equalsIgnoreCase("reactivate")) { // delete a main member or a dependent
-			if (null == member.getParent()) {
-				member.setStatus(MemberConstants.ACTIVE);
-				List<Member> memberList = memberRepository.getDependents(member.getMemberId()).stream().collect(Collectors.toList());
-				if(null!=memberList && !memberList.isEmpty()) {
-					memberList.stream().forEach(m -> m.setStatus(MemberConstants.ACTIVE));
-					member.setDependents(memberList);
+			if(!checkPaymentStatus(member)) {
+				throw new ResourceNotFoundException(null,"There are previous unpaid months Please Update payment untill deactivated date!",null);
+
+			}else {
+				if (null == member.getParent()) {
+					member.setStatus(MemberConstants.ACTIVE);
+					checkPaymentStatus(member);
+					List<Member> memberList = memberRepository.getDependents(member.getMemberId()).stream().collect(Collectors.toList());
+					if (null != memberList && !memberList.isEmpty()) {
+						memberList.stream().forEach(m -> m.setStatus(MemberConstants.ACTIVE));
+						member.setDependents(memberList);
+					}
+				} else {
+					member.setStatus(MemberConstants.ACTIVE);
 				}
-			} else {
-				member.setStatus(MemberConstants.ACTIVE);
 			}
 		}
 		
 		return memberRepository.save(member);
 	}
 
-	private void checkPaymentStatus() {
+	private boolean checkPaymentStatus(Member member) {
+		int year=0;
+		int month=0;
+//		if(null!=member) {
+//			year = paymentlogRepositoryjdbc.findLastPaidYear(member.getMemberId());
+//		}
+//		if(year < (member.getDeactivatedDate().getYear()-1)){
+//			return false;
+//		}else{
+//			month= paymentlogRepositoryjdbc.findLastPaidMonth(member.getMemberId(),year);
+//			if(month<member.getDeactivatedDate().getMonth().getValue()){
+//				return false;
+//			}
+//		}
+		return true;
+	}
 
-
-
+	private boolean checkPaymentBeforeMove(Member member) {
+		int year=0;
+		int month=0;
+//		if(null!=member) {
+//			year = paymentlogRepositoryjdbc.findLastPaidYear(member.getMemberId());
+//		}
+//		if(year < (LocalDate.now().getYear()-1)){
+//			return false;
+//		}else{
+//			month= paymentlogRepositoryjdbc.findLastPaidMonth(member.getMemberId(),year);
+//			if(month < LocalDate.now().getMonth().getValue()){
+//				return false;
+//			}
+//		}
+		return true;
 	}
 
 	/**
