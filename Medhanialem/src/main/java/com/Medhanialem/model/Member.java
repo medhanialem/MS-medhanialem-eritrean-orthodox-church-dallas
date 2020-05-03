@@ -3,7 +3,6 @@ package com.Medhanialem.model;
 import com.Medhanialem.model.payment.Tier;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.NaturalId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -76,6 +75,8 @@ public class Member implements Serializable {
 	private Date paymentStartDate;
 
 	private LocalDate deactivatedDate;
+
+	private LocalDate reactivatedDate;
 
 	private boolean sebekaGubae;
 	
@@ -255,6 +256,14 @@ public class Member implements Serializable {
 
 	public void setDeactivatedDate(LocalDate deactivatedDate) {
 		this.deactivatedDate = deactivatedDate;
+	}
+
+	public LocalDate getReactivatedDate() {
+		return reactivatedDate;
+	}
+
+	public void setReactivatedDate(LocalDate reactivatedDate) {
+		this.reactivatedDate = reactivatedDate;
 	}
 
 	public boolean isSebekaGubae() {
