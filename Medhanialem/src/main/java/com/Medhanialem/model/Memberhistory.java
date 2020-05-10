@@ -30,6 +30,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(value = { "actionDate", "updatedDate"}, allowGetters = true)
 public class Memberhistory implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -38,6 +43,8 @@ public class Memberhistory implements Serializable {
 
 	//@NotBlank
 	private String churchId;
+	
+	private Integer oldChurchId;
 
 	@NotBlank
 	private String firstName;
@@ -300,6 +307,14 @@ public class Memberhistory implements Serializable {
 
 	public void setAction(String action) {
 		this.action = action;
+	}
+
+	public Integer getOldChurchId() {
+		return oldChurchId;
+	}
+
+	public void setOldChurchId(Integer oldChurchId) {
+		this.oldChurchId = oldChurchId;
 	}
 
 }

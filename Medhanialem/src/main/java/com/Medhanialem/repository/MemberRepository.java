@@ -14,6 +14,10 @@ import com.Medhanialem.model.Member;
  public interface MemberRepository extends JpaRepository<Member,Long>{
 
 
-	@Query(value = "select * from Member where superId=:parentId", nativeQuery=true )
+	@Query(value = "select * from Member where superId=:parentId", nativeQuery=true)
 	List<Member> getDependents(@Param("parentId") Long parentId);
+	
+	@Query(value = "SELECT MAX(CAST(SUBSTRING(churchId, 7, LENGTH(churchId)-6) AS UNSIGNED)) FROM Member WHERE churchId LIKE 'EOMCD-%'", nativeQuery=true)
+	Integer getMaxChurchId();
+	
 }
