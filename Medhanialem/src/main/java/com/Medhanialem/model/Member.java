@@ -114,6 +114,10 @@ public class Member implements Serializable {
 	@OneToMany(mappedBy="parent")
 	private List<Member> dependents = new ArrayList<Member>();
 
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "fatherpriest_id", referencedColumnName = "memberId")
+	private Member fatherPriest;
+
 	public Long getMemberId() {
 		return memberId;
 	}
@@ -362,6 +366,14 @@ public class Member implements Serializable {
 		this.dependents = dependents;
 	}
 
+	public Member getFatherPriest() {
+		return fatherPriest;
+	}
+
+	public void setFatherPriest(Member fatherPriest) {
+		this.fatherPriest = fatherPriest;
+	}
+
 	@Override
 	public String toString() {
 		return "Member{" +
@@ -394,6 +406,7 @@ public class Member implements Serializable {
 				", status='" + status + '\'' +
 				", parent=" + parent +
 				", dependents=" + dependents +
+				", fatherPriest=" + fatherPriest +
 				'}';
 	}
 }

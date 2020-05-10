@@ -69,6 +69,8 @@ public class Memberdto {
 
     private Long superId;
 
+    private Long fatherPriest;
+
     public Long getMemberId() {
         return memberId;
     }
@@ -276,6 +278,14 @@ public class Memberdto {
         this.superId = superId;
     }
 
+    public Long getFatherPriest() {
+        return fatherPriest;
+    }
+
+    public void setFatherPriest(Long fatherPriest) {
+        this.fatherPriest = fatherPriest;
+    }
+
     @Override
     public String toString() {
         return "Memberdto{" +
@@ -304,6 +314,7 @@ public class Memberdto {
                 ", maritalStatus='" + maritalStatus + '\'' +
                 ", tier=" + tier +
                 ", superId=" + superId +
+                ", fatherPriest=" + fatherPriest +
                 '}';
     }
 }

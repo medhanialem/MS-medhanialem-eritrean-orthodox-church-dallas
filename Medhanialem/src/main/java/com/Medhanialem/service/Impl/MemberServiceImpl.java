@@ -122,6 +122,11 @@ public class MemberServiceImpl implements MemberService{
 			 parentMember = getMemberById(memberdto.getSuperId());
 		}
 		member.setParent(null!=parentMember?parentMember:null);
+		Member fatherPriest =null;
+		if(null!=memberdto.getFatherPriest()) {
+			fatherPriest = getMemberById(memberdto.getFatherPriest());
+		}
+		member.setFatherPriest(null!=fatherPriest?fatherPriest:null);
 		return member;
 	}
 
@@ -153,6 +158,8 @@ public class MemberServiceImpl implements MemberService{
 			else {
 				//Throw exception saying parent Id is missing
 			}
+		}  else if (preset.equalsIgnoreCase("priests")){ // Get all priests
+			memberList = memberRepository.findAll().stream().filter(m -> "Priest".equalsIgnoreCase(m.getTier().getDescription())).collect(Collectors.toList());
 		}
 		return memberList;
 	}
@@ -197,10 +204,12 @@ public class MemberServiceImpl implements MemberService{
 		member.setRegistrationDate(memberDetails.getRegistrationDate());
 		member.setPaymentStartDate(memberDetails.getPaymentStartDate());
 		member.setReactivatedDate(memberDetails.getReactivatedDate());
-		member.setReactivatedDate(memberDetails.getReactivatedDate());
+		member.setDeactivatedDate(memberDetails.getDeactivatedDate());
 		member.setTier(memberDetails.getTier());
 		member.setMaritalStatus(memberDetails.getMaritalStatus());
 		member.setUpdatedBy(currentUserDetails.getUsername());
+
+		//TODO: update a parent and father Priest
 
 		Member updatedMember = memberRepository.save(member);
 		
