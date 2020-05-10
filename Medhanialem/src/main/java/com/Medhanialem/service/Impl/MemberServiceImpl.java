@@ -115,6 +115,7 @@ public class MemberServiceImpl implements MemberService{
 		member.setPaymentlookupId(memberdto.getPaymentlookupId());
 		member.setMaritalStatus(memberdto.getMaritalStatus());
 		member.setTier(memberdto.getTier());
+		member.setRelationship(memberdto.getRelationship());
 		member.setCreatedBy(currentUserDetails.getUsername());
 
 		Member parentMember =null;
@@ -207,9 +208,20 @@ public class MemberServiceImpl implements MemberService{
 		member.setDeactivatedDate(memberDetails.getDeactivatedDate());
 		member.setTier(memberDetails.getTier());
 		member.setMaritalStatus(memberDetails.getMaritalStatus());
+		member.setRelationship(memberDetails.getRelationship());
 		member.setUpdatedBy(currentUserDetails.getUsername());
 
-		//TODO: update a parent and father Priest
+		Member parentMember =null;
+		if(null!=memberDetails.getParent()) {
+			parentMember = getMemberById(memberDetails.getParent().getMemberId());
+		}
+		member.setParent(null!=parentMember?parentMember:null);
+		Member fatherPriest =null;
+		if(null!=memberDetails.getFatherPriest()) {
+			fatherPriest = getMemberById(memberDetails.getFatherPriest().getMemberId());
+		}
+		member.setFatherPriest(null!=fatherPriest?fatherPriest:null);
+
 
 		Member updatedMember = memberRepository.save(member);
 		

@@ -118,6 +118,8 @@ public class Member implements Serializable {
 	@JoinColumn(name = "fatherpriest_id", referencedColumnName = "memberId")
 	private Member fatherPriest;
 
+	private String relationship;
+
 	public Long getMemberId() {
 		return memberId;
 	}
@@ -374,6 +376,14 @@ public class Member implements Serializable {
 		this.fatherPriest = fatherPriest;
 	}
 
+	public String getRelationship() {
+		return relationship;
+	}
+
+	public void setRelationship(String relationship) {
+		this.relationship = relationship;
+	}
+
 	@Override
 	public String toString() {
 		return "Member{" +
@@ -407,6 +417,7 @@ public class Member implements Serializable {
 				", parent=" + parent +
 				", dependents=" + dependents +
 				", fatherPriest=" + fatherPriest +
+				", relationship=" + relationship +
 				'}';
 	}
 }
