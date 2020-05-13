@@ -69,7 +69,7 @@ public class Memberdto {
 
     private Long superId;
 
-    private Long fatherPriest;
+    private Member fatherPriest;
 
     private String relationship;
 
@@ -280,11 +280,11 @@ public class Memberdto {
         this.superId = superId;
     }
 
-    public Long getFatherPriest() {
+    public Member getFatherPriest() {
         return fatherPriest;
     }
 
-    public void setFatherPriest(Long fatherPriest) {
+    public void setFatherPriest(Member fatherPriest) {
         this.fatherPriest = fatherPriest;
     }
 

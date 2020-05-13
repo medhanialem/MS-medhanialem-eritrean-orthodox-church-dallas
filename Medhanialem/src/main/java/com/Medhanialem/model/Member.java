@@ -114,8 +114,12 @@ public class Member implements Serializable {
 	@OneToMany(mappedBy="parent")
 	private List<Member> dependents = new ArrayList<Member>();
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "fatherpriest_id", referencedColumnName = "memberId")
+//	@ManyToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "fatherPriestId", referencedColumnName = "memberId")
+//	private Member fatherPriest;
+	
+	@ManyToOne(cascade = {CascadeType.ALL})
+	@JoinColumn(name = "fatherPriestId")
 	private Member fatherPriest;
 
 	private String relationship;

@@ -94,7 +94,7 @@ public class MemberServiceImpl implements MemberService{
 		UserDetails currentUserDetails = userDetailsServiceImpl.getCurrentUserDetails();
 
 		Member member = new Member();
-		member.setFirstName(memberdto.getFirstName());
+//		member.setFirstName(memberdto.getFirstName());
 		member.setHomePhoneNo(memberdto.getHomePhoneNo());
 		member.setEmail(memberdto.getEmail());
 		member.setFirstName(memberdto.getFirstName());
@@ -117,6 +117,8 @@ public class MemberServiceImpl implements MemberService{
 		member.setTier(memberdto.getTier());
 		member.setRelationship(memberdto.getRelationship());
 		member.setCreatedBy(currentUserDetails.getUsername());
+		member.setSundaySchool(memberdto.isSundaySchool());
+		member.setSebekaGubae(memberdto.isSebekaGubae());
 
 		Member parentMember =null;
 		if(null!=memberdto.getSuperId()) {
@@ -125,7 +127,7 @@ public class MemberServiceImpl implements MemberService{
 		member.setParent(null!=parentMember?parentMember:null);
 		Member fatherPriest =null;
 		if(null!=memberdto.getFatherPriest()) {
-			fatherPriest = getMemberById(memberdto.getFatherPriest());
+			fatherPriest = getMemberById(memberdto.getFatherPriest().getMemberId());
 		}
 		member.setFatherPriest(null!=fatherPriest?fatherPriest:null);
 		return member;
@@ -187,12 +189,13 @@ public class MemberServiceImpl implements MemberService{
 		
 		Member member = memberRepository.findById(memId).orElseThrow(() -> new ResourceNotFoundException("Member", "id", memId));
 
-		member.setFirstName(memberDetails.getFirstName());
+//		member.setFirstName(memberDetails.getFirstName());
 		member.setHomePhoneNo(memberDetails.getHomePhoneNo());
 		member.setEmail(memberDetails.getEmail());
 		member.setFirstName(memberDetails.getFirstName()); 
 		member.setMiddleName(memberDetails.getMiddleName()); 
 		member.setLastName(memberDetails.getLastName()); 
+		member.setGender(memberDetails.getGender());
 		member.setEmail(memberDetails.getEmail()); 
 		member.setHomePhoneNo(memberDetails.getHomePhoneNo()); 
 		member.setWorkPhoneNo(memberDetails.getWorkPhoneNo()); 
@@ -210,6 +213,8 @@ public class MemberServiceImpl implements MemberService{
 		member.setMaritalStatus(memberDetails.getMaritalStatus());
 		member.setRelationship(memberDetails.getRelationship());
 		member.setUpdatedBy(currentUserDetails.getUsername());
+		member.setSundaySchool(memberDetails.isSundaySchool());
+		member.setSebekaGubae(memberDetails.isSebekaGubae());
 
 		Member parentMember =null;
 		if(null!=memberDetails.getParent()) {
