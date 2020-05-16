@@ -15,4 +15,5 @@ public interface TierRepository extends JpaRepository<Tier, Long> {
 	@Query(value = "SELECT MAX(id) FROM Tier", nativeQuery=true)
 	Integer getMaxTierId();
 	
+	int countByDescription(String description);
 }
