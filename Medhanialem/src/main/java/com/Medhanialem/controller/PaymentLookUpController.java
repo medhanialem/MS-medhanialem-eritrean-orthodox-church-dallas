@@ -1,29 +1,24 @@
 package com.Medhanialem.controller;
 
-import java.util.List;
-
+import com.Medhanialem.controller.helper.PaymentLookUpHelper;
+import com.Medhanialem.exception.BackendException;
+import com.Medhanialem.model.payment.PaymentLookup;
+import com.Medhanialem.model.payment.objects.PaymentLookUps;
+import com.Medhanialem.model.payment.objects.PaymentLookupResponseByYear;
+import com.Medhanialem.service.PaymentLookUpService;
+import com.Medhanialem.utils.TypicalResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.Medhanialem.controller.helper.PaymentLookUpHelper;
-import com.Medhanialem.exception.BackendException;
-import com.Medhanialem.model.payment.PaymentLookup;
-import com.Medhanialem.service.PaymentLookUpService;
-import com.medhaniealem.utils.TypicalResponses;
+import java.util.List;
 
 @RestController
-@RequestMapping("/paymentLookUps")
+@RequestMapping("/paymentlookups")
 public class PaymentLookUpController {
 	
 	private final Logger logger = LoggerFactory.getLogger(PaymentLookUpController.class.getName());
@@ -48,15 +43,31 @@ public class PaymentLookUpController {
 			return TypicalResponses.setError(e.getMessage());
 		}
 		return new ResponseEntity<>(this.paymentLookUpService.createPaymentLookUp(paymentLookups, tierId), HttpStatus.OK);
-		
 	}
 
-	@GetMapping("")
+	//this Api fetches payment lookups for a selected tier and year
 	@CrossOrigin(origins = "*")
 	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
-	public ResponseEntity<List<PaymentLookup>> getPaymentLookUp(@RequestParam("id") Long tierId, @RequestParam("year") Long year) {
+	@GetMapping("tier")
+	public List<PaymentLookUps> getPaymentLookupsByYearATier(@RequestParam("tierId") Long tierId, @RequestParam("year") Long year) {
 		logger.info("Inside createMember() method, {}", logger.getName());
-		return null;
+		return paymentLookUpService.getPaymentLookupsByYearATier(tierId,year);
 	}
-	
+
+	//this Api fetches payment lookups for all tiers for a selected year
+	@CrossOrigin(origins = "*")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
+	@GetMapping("/tiers/{year}")
+	public List<PaymentLookupResponseByYear> getPaymentLookupInfo(@PathVariable(value = "year") Long year) {
+		return paymentLookUpService.getPaymentLookupInfo(year);
+	}
+
+	//this Api fetches all payment lookups for a selected year to be viewed in a tiers page for updating
+	@CrossOrigin(origins = "*")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
+	@GetMapping("{year}")
+	public List<PaymentLookup> getAllPaymentLookupByYear(@PathVariable(value = "year") Long year) {
+		return paymentLookUpService.getAllPaymentLookupByYear(year);
+	}
+
 }

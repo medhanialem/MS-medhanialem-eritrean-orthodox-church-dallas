@@ -21,7 +21,7 @@ import com.Medhanialem.model.Memberhistory;
 import com.Medhanialem.repository.MemberHistRepository;
 import com.Medhanialem.repository.MemberRepository;
 import com.Medhanialem.service.MemberService;
-import com.medhaniealem.utils.MemberConstants;
+import com.Medhanialem.utils.MemberConstants;
 
 @Service
 public class MemberServiceImpl implements MemberService{

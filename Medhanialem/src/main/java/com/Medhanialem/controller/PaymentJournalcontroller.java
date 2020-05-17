@@ -32,50 +32,6 @@ public class PaymentJournalcontroller {
 	@Autowired
 	PaymentLookUpRepository memberShipPaymentLookUpfee;
 
-	@GetMapping("/getpaymentlookupinfo/{year}/{tier}")
-	public List<PaymentLookUps> getPaymentLookupInfoByTier(@PathVariable(value = "year") Long year,
-			@PathVariable(value = "tier") Long tier) {
-		List<PaymentLookup> pList = memberShipPaymentLookUpfee.getPaymentLookupInfoByTier(year, tier);
-		List<PaymentLookUps> plookupsList = new ArrayList<>();
-		for (PaymentLookup pLookUp : pList) {
-			if (pLookUp.getTier().getId() == tier) {
-				PaymentLookUps paymentLookUp = new PaymentLookUps();
-				paymentLookUp.setPaymentLookupId(pLookUp.getId());
-				paymentLookUp.setMonth(pLookUp.getMonth());
-				paymentLookUp.setYear(pLookUp.getYear());
-				paymentLookUp.setAmount(pLookUp.getAmount());
-				plookupsList.add(paymentLookUp);
-			}
-		}
-		return plookupsList;
-	}
-
-	@GetMapping("/getpaymentlookupinfo/{year}")
-	public List<PaymentLookupResponseByYear> getPaymentLookupInfo(@PathVariable(value = "year") Long year) {
-		List<PaymentLookup> mplfList = memberShipPaymentLookUpfee.getPaymentLookupInfo(year);
-		List<PaymentLookupResponseByYear> plrbyList = new ArrayList<>();
-
-		for (int i = 1; i < 5; i++) {
-			List<PaymentLookUps> plList = new ArrayList<>();
-			PaymentLookupResponseByYear paymentLookUpResponseByYear = new PaymentLookupResponseByYear();
-			for (PaymentLookup memberLookUpfee : mplfList) {
-
-				if (memberLookUpfee.getTier().getId() == i) {
-					PaymentLookUps paymentLookUp = new PaymentLookUps();
-					paymentLookUp.setPaymentLookupId(memberLookUpfee.getId());
-					paymentLookUp.setMonth(memberLookUpfee.getMonth());
-					paymentLookUp.setYear(memberLookUpfee.getYear());
-					paymentLookUp.setAmount(memberLookUpfee.getAmount());
-					plList.add(paymentLookUp);
-
-				}
-			}
-			paymentLookUpResponseByYear.setTierId((long) i);
-			paymentLookUpResponseByYear.setPaymentLookUps(plList);
-			plrbyList.add(paymentLookUpResponseByYear);
-		}
-		return plrbyList;
-	}
 
 	// This API will be used to post payment to DB
 

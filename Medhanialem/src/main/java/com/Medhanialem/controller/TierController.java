@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Medhanialem.exception.BackendException;
 import com.Medhanialem.model.payment.Tier;
 import com.Medhanialem.service.TierService;
-import com.medhaniealem.utils.TypicalResponses;
+import com.Medhanialem.utils.TypicalResponses;
 
 
 @RestController
