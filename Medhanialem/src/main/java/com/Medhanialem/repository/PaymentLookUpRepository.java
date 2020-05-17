@@ -30,5 +30,8 @@ public interface PaymentLookUpRepository extends JpaRepository<PaymentLookup,Lon
 	
 	@Query(value= "SELECT * FROM test_db.PaymentLookup where year = :year and tierId = :tier", nativeQuery = true)
 	List<PaymentLookup> getPaymentLookupInfoByTier(@Param(value = "year")Long year, @Param(value = "tier")Long tier);
+	
+	
+//	int countByTierIdMonthYear(Long id, int month, int year);
 
 }

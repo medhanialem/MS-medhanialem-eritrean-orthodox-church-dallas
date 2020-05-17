@@ -12,4 +12,9 @@ public class TypicalResponses {
 //    public static final ResponseEntity<RestJsonAnswer> CANT_LOGOUT_IF_NOT_LOGINED_RESPONSE = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RestJsonAnswer("Is not sign in yet", "You can not logout if you are not singed in"));
 //    private static final ResponseEntity<RestJsonAnswer> CONFIRMATION_FAILED_RESPONSE = ResponseEntity.badRequest().body(new RestJsonAnswer("Bad request", "Confirmed user data does not coincide with the original data"));
     public static final ResponseEntity<RestJsonAnswer> TIER_ALREADY_EXISTS = ResponseEntity.badRequest().body(new RestJsonAnswer("Bad request", "Tier already exists"));
+    public static final ResponseEntity<RestJsonAnswer> BAD_PAYMENT_LOOKUP = ResponseEntity.badRequest().body(new RestJsonAnswer("Bad request", "Bad payment lookup in request"));
+    
+    public static ResponseEntity<RestJsonAnswer> setError(String error) {
+    	return ResponseEntity.badRequest().body(new RestJsonAnswer("Bad request", error));
+    }
 }

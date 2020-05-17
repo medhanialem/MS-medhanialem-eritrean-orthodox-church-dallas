@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -19,6 +18,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -35,24 +35,20 @@ public class PaymentLookup {
 
 	@NotNull 
 	@Min(1)
-    @Max(12)
+	@Max(12)
 	private int month;
-	
+
 	@NotNull
 	@Min(1990)
-    @Max(2100)
+	@Max(2100)
 	private int year;
-	
+
 	@OneToOne
 	@JoinColumn(name = "tierId")
 	private Tier tier;
 
-	public double getAmount() {
-		return Amount;
-	}
-
 	public void setAmount(double amount) {
-		Amount = amount;
+		this.amount = amount;
 	}
 
 	/*
@@ -63,18 +59,30 @@ public class PaymentLookup {
 	 * 
 	 */
 	@NotNull 
-	private double Amount;
-	
+	private double amount;
+
 
 	@NotNull 
 	private int revision;
-	
+
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreatedDate
 	private Date createdAt;
-	
+
+	@Column(nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@LastModifiedDate
 	private Date updatedAt;
+
+	private String createdBy;
+
+	private String updatedBy;
+
+	public double getAmount() {
+		return this.amount;
+	}
+
 
 	public Long getId() {
 		return id;
@@ -99,10 +107,6 @@ public class PaymentLookup {
 	public void setYear(int year) {
 		this.year = year;
 	}
-
-	
-
-
 
 	public int getRevision() {
 		return revision;
@@ -136,5 +140,24 @@ public class PaymentLookup {
 		this.updatedAt = updatedAt;
 	}
 
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
 }
