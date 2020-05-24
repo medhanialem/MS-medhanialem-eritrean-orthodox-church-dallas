@@ -8,10 +8,12 @@ import java.util.List;
 
 public interface PaymentLookUpService {
     List<PaymentLookup> createPaymentLookUp(List<PaymentLookup> paymentLookups, Long tierId);
+    List<PaymentLookup> upDatePaymentLookUp(List<PaymentLookup> paymentLookups);
 
     List<PaymentLookUps> getPaymentLookupsByYearATier(Long tierId, Long year);
 
     List<PaymentLookupResponseByYear> getPaymentLookupInfo(Long year);
 
     List<PaymentLookup> getAllPaymentLookupByYear(Long year);
+	
 }

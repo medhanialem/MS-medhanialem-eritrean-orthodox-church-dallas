@@ -3,6 +3,7 @@ package com.Medhanialem.service.Impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import com.Medhanialem.model.payment.objects.PaymentLookUps;
 import com.Medhanialem.model.payment.objects.PaymentLookupResponseByYear;
@@ -55,6 +56,26 @@ public class PaymentLookUpServiceImpl implements PaymentLookUpService {
 		return this.paymentLookUpRepository.saveAll(paymentLookups);
 	}
 
+// paymentLookUp function
+	@Override
+	public List<PaymentLookup> upDatePaymentLookUp(List<PaymentLookup> paymentLookups) {
+		
+		List<PaymentLookup> UpdatedP = new ArrayList<>();
+		
+		paymentLookups.stream().forEach(
+				p -> {
+					PaymentLookup	oldP =	this.paymentLookUpRepository.findById(p.getId()).orElseThrow(() -> new ResourceNotFoundException("PaymentLookup", "id", p.getId()));
+					oldP.setAmount(p.getAmount());
+					oldP.setUpdatedBy(userDetailsServiceImpl.getCurrentUserDetails().getUsername());
+					oldP.setRevision(oldP.getRevision()+1);
+					
+					UpdatedP.add(oldP);
+				}
+				);
+		return this.paymentLookUpRepository.saveAll(UpdatedP);
+	}	
+	
+	
 	@Override
 	public List<PaymentLookUps> getPaymentLookupsByYearATier(Long tierId, Long year) {
 		List<PaymentLookup> paymentLookupList = paymentLookUpRepository.findByTierAndYear(year, tierId);

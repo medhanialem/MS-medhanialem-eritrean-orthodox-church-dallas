@@ -44,6 +44,24 @@ public class PaymentLookUpController {
 		}
 		return new ResponseEntity<>(this.paymentLookUpService.createPaymentLookUp(paymentLookups, tierId), HttpStatus.OK);
 	}
+	
+	// The function of this API to update the PaymentLookup if there any change in the middle of the year cycle. 
+	@PutMapping("")
+	@CrossOrigin(origins = "*")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
+	public ResponseEntity<?> upDatePaymentLookUp(@RequestBody List<PaymentLookup> paymentLookups) {
+		
+		logger.info("Inside createMember() method, {}", logger.getName());
+		try {
+			paymentLookUpHelper.validateLookUpUpDateObject(paymentLookups);
+		}
+		catch (BackendException e) {
+			logger.error(e.getMessage());
+			return TypicalResponses.setError(e.getMessage());
+		}
+		return new ResponseEntity<>(this.paymentLookUpService.upDatePaymentLookUp(paymentLookups), HttpStatus.OK);
+	}
+	
 
 	//this Api fetches payment lookups for a selected tier and year
 	@CrossOrigin(origins = "*")
