@@ -67,9 +67,17 @@ public class TierServiceImpl implements TierService {
 	}
 
 	@Override
-	public void deleteTier(Long tierId) {
+	public boolean deleteTier(Long tierId) {
 		logger.info("Inside deleteTier() method, {}", logger.getName());
-		this.tierRepository.deleteById(tierId);
+		try {
+			this.tierRepository.deleteById(tierId);
+			return true;
+		}
+		catch(Exception e) {
+			logger.error("{} {}", e.getMessage(), logger.getName());
+			throw new BackendException(e.getMessage());
+		}
 	}
+
 
 }

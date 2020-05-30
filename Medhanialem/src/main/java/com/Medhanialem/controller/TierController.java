@@ -94,10 +94,16 @@ public class TierController {
 	@CrossOrigin(origins = "*")
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'ABO_WENBER_SEBEKA_GUBAE')")
-	public void deleteTier(@PathVariable(value = "id") Long tierId) {
+	public ResponseEntity<?> deleteTier(@PathVariable(value = "id") Long tierId) {
 		logger.info("Inside deleteTier() method, {}", logger.getName());
-		this.tierService.deleteTier(tierId);
-		
+		try {
+			return new ResponseEntity<>(this.tierService.deleteTier(tierId), HttpStatus.OK);
+		}
+		catch(BackendException be) {
+			logger.error(be.getMessage());
+			return TypicalResponses.setError(be.getMessage());
+		}
 	}
+
 
 }

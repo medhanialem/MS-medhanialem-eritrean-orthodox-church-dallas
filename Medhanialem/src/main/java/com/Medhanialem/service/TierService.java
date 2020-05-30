@@ -14,6 +14,6 @@ public interface TierService {
 	
 	public Tier updateTier(Long tierId, Tier tierDetails);
 	
-	public void deleteTier(Long tierId);
+	public boolean deleteTier(Long tierId);
 	
 }

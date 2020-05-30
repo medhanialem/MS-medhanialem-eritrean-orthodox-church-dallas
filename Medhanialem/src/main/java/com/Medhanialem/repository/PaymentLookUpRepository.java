@@ -31,6 +31,6 @@ public interface PaymentLookUpRepository extends JpaRepository<PaymentLookup,Lon
 	List<PaymentLookup> findByTierAndYear(@Param(value = "year")Long year, @Param(value = "tierId")Long tier);
 	
 	
-//	int countByTierIdMonthYear(Long id, int month, int year);
+	int countByTierIdAndMonthAndYear(Long id, int month, int year);
 
 }
