@@ -40,7 +40,8 @@ public class PaymentLookUpServiceImpl implements PaymentLookUpService {
 		
 		logger.info("Inside createPaymentLookUp() method, {}", logger.getName());
 		
-		int count = this.paymentLookUpRepository.countByTierIdAndMonthAndYear(tierId, paymentLookups.get(0).getMonth(), paymentLookups.get(0).getYear());
+//		int count = this.paymentLookUpRepository.countByTierIdAndMonthAndYear(tierId, paymentLookups.get(0).getMonth(), paymentLookups.get(0).getYear());
+		int count = this.paymentLookUpRepository.countByTierIdAndYear(tierId, paymentLookups.get(0).getYear());
 		logger.info("Count of Paymentlookup with TierId: {}, Year: {} Count: {}", tierId, paymentLookups.get(0).getYear(), count);
 		if (count > 0) {
 			throw new BackendException("Paymentlookup exists with same TierId: " + tierId + ", Year: " + paymentLookups.get(0).getYear() + " and count: " + count);
@@ -62,19 +63,23 @@ public class PaymentLookUpServiceImpl implements PaymentLookUpService {
 	@Override
 	public List<PaymentLookup> upDatePaymentLookUp(List<PaymentLookup> paymentLookups) {
 		
-		List<PaymentLookup> UpdatedP = new ArrayList<>();
+		List<PaymentLookup> updatedPaymentLookups = new ArrayList<>();
 		
 		paymentLookups.stream().forEach(
 				p -> {
 					PaymentLookup oldP = this.paymentLookUpRepository.findById(p.getId()).orElseThrow(() -> new ResourceNotFoundException("PaymentLookup", "id", p.getId()));
-					oldP.setAmount(p.getAmount());
-					oldP.setUpdatedBy(userDetailsServiceImpl.getCurrentUserDetails().getUsername());
-					oldP.setRevision(oldP.getRevision()+1);
+					if(p.getAmount() != oldP.getAmount()) {
+						oldP.setAmount(p.getAmount());
+						oldP.setUpdatedBy(userDetailsServiceImpl.getCurrentUserDetails().getUsername());
+						oldP.setRevision(oldP.getRevision()+1);
+						
+						updatedPaymentLookups.add(oldP);
+					}
 					
-					UpdatedP.add(oldP);
+					
 				}
 				);
-		return this.paymentLookUpRepository.saveAll(UpdatedP);
+		return this.paymentLookUpRepository.saveAll(updatedPaymentLookups);
 	}	
 	
 	
