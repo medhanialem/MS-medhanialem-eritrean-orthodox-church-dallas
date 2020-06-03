@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,7 @@ import com.Medhanialem.jwtauthentication.model.User;
 import com.Medhanialem.jwtauthentication.security.jwt.JwtProvider;
 import com.Medhanialem.repository.RoleRepository;
 import com.Medhanialem.repository.UserRepository;
+import com.Medhanialem.service.Impl.UserDetailsServiceImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -49,6 +51,9 @@ public class JwtController {
 
 	@Autowired
 	JwtProvider jwtProvider;
+	
+	@Autowired
+	UserDetailsServiceImpl userDetailsServiceImpl;
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginform) {
@@ -65,6 +70,7 @@ public class JwtController {
 	}
 
 	@PostMapping("/signup")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'ABO_WENBER_SEBEKA_GUBAE')")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody Signup signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!"),
@@ -120,6 +126,7 @@ public class JwtController {
 			}
 		});
 
+		user.setCreatedBy(userDetailsServiceImpl.getCurrentUserDetails().getUsername());
 		user.setRoles(roles);
 		userRepository.save(user);
 
