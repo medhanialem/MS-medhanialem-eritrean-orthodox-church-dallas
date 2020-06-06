@@ -95,10 +95,9 @@ public class Memberhistory implements Serializable {
 
 	private String updatedBy;
 
-	@OneToOne
-	private Tier tier;
+	private Long tierId;
 
-	private String status="ACTIVE";
+	private String status;
 	
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -261,12 +260,12 @@ public class Memberhistory implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public Tier getTier() {
-		return tier;
+	public Long getTierId() {
+		return tierId;
 	}
 
-	public void setTier(Tier tier) {
-		this.tier = tier;
+	public void setTierId(Long tierId) {
+		this.tierId = tierId;
 	}
 
 	public String getStatus() {

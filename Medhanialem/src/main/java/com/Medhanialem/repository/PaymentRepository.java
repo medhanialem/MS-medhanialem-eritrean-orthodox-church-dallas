@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.Medhanialem.model.payment.Payment;
-import com.Medhanialem.model.payment.PaymentJournal;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {

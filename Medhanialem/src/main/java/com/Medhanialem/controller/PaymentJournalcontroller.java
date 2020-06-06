@@ -2,8 +2,7 @@ package com.Medhanialem.controller;
 
 import com.Medhanialem.model.Member;
 import com.Medhanialem.model.payment.Payment;
-import com.Medhanialem.model.payment.PaymentJournal;
-import com.Medhanialem.model.payment.PaymentLookup;
+import com.Medhanialem.model.payment.PaymentLog;
 import com.Medhanialem.model.payment.PaymentlogDTO;
 import com.Medhanialem.model.payment.objects.*;
 import com.Medhanialem.repository.*;
@@ -27,7 +26,7 @@ public class PaymentJournalcontroller {
 	PaymentRepository paymentRepository;
 
 	@Autowired
-	PaymentJournalRepository paymentJournalRepository;
+	PaymentLogRepository paymentLogRepository;
 
 	@Autowired
 	PaymentLookUpRepository memberShipPaymentLookUpfee;
@@ -48,16 +47,16 @@ public class PaymentJournalcontroller {
 
 		for (MonthlyPaid monthlypaid : paymentRequest.getPayments()) {
 
-			PaymentJournal paymentJournal = new PaymentJournal();
+			PaymentLog paymentLog = new PaymentLog();
 
-			paymentJournal.setAmount(monthlypaid.getAmount());
+			paymentLog.setAmount(monthlypaid.getAmount());
 
-			paymentJournal.setPayment(payment);
-			paymentJournal.setMember(member);
-			paymentJournal
+			paymentLog.setPayment(payment);
+			paymentLog.setMember(member);
+			paymentLog
 					.setPaymentLookupfee(memberShipPaymentLookUpfee.findById(monthlypaid.getPaymentLookupId()).get());
 
-			paymentJournalRepository.save(paymentJournal);
+			paymentLogRepository.save(paymentLog);
 		}
 	}
 

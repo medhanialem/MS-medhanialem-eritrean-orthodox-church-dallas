@@ -2,9 +2,11 @@ package com.Medhanialem.service.Impl;
 
 import java.util.List;
 
+import com.Medhanialem.exception.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.Medhanialem.exception.BackendException;
@@ -12,6 +14,8 @@ import com.Medhanialem.exception.ResourceNotFoundException;
 import com.Medhanialem.model.payment.Tier;
 import com.Medhanialem.repository.TierRepository;
 import com.Medhanialem.service.TierService;
+
+import javax.validation.ConstraintViolationException;
 
 @Service
 public class TierServiceImpl implements TierService {
@@ -72,10 +76,16 @@ public class TierServiceImpl implements TierService {
 		try {
 			this.tierRepository.deleteById(tierId);
 			return true;
-		}
-		catch(Exception e) {
+		} catch (DataIntegrityViolationException e){
+			if(e.getCause().getCause().getLocalizedMessage().contains("member")){
+				throw new ApplicationException("tier is associated with member. To delete Please remove selected tier from all members!");
+			}if(e.getCause().getCause().getLocalizedMessage().contains("paymentlog")){
+				throw new ApplicationException("paymentlookup is used in paymentlog data. It can not be deleted!");
+			}
+			throw new ApplicationException(e.getMessage());
+		} catch(Exception e) {
 			logger.error("{} {}", e.getMessage(), logger.getName());
-			throw new BackendException(e.getMessage());
+			throw new ApplicationException(e.getMessage());
 		}
 	}
 

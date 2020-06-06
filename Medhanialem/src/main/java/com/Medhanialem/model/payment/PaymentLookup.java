@@ -2,21 +2,14 @@ package com.Medhanialem.model.payment;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -43,34 +36,24 @@ public class PaymentLookup {
 	@Max(2100)
 	private int year;
 
-	@OneToOne
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "tierId")
 	private Tier tier;
 
-	public void setAmount(double amount) {
-		this.amount = amount;
-	}
-
-	/*
-	 * @NotNull private double teir2Amount;
-	 * 
-	 * @NotNull private double teir3Amount;
-	 * 
-	 * 
-	 */
 	@NotNull 
 	private double amount;
-
 
 	@NotNull 
 	private int revision;
 
-	@Column(nullable = false, updatable = false)
+	@Column( updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreatedDate
 	private Date createdAt;
 
-	@Column(nullable = false)
+	@Column
 	@Temporal(TemporalType.TIMESTAMP)
 	@LastModifiedDate
 	private Date updatedAt;
@@ -83,6 +66,9 @@ public class PaymentLookup {
 		return this.amount;
 	}
 
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
 
 	public Long getId() {
 		return id;

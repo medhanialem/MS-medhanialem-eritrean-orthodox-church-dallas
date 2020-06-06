@@ -379,7 +379,7 @@ public class MemberServiceImpl implements MemberService{
 		memberHistory.setRegistrationDate(savedMember.getRegistrationDate());
 		memberHistory.setStatus(savedMember.getStatus());
 	//	memberHistory.setSuperId(null!=savedMember.getParent()?savedMember.getParent().getMemberId():null);
-		memberHistory.setTier(savedMember.getTier());
+		memberHistory.setTierId(savedMember.getTier().getId());
 		memberHistory.setCreatedDate(savedMember.getCreatedDate());
 		memberHistory.setUpdatedDate(null!=savedMember.getUpdatedDate()?savedMember.getUpdatedDate():null);
 		memberHistory.setUpdatedBy(savedMember.getUpdatedBy());
