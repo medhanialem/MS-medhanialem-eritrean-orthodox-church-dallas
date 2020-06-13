@@ -26,6 +26,7 @@ import com.Medhanialem.jwtauthentication.model.ResponseMessage;
 import com.Medhanialem.jwtauthentication.model.Role;
 import com.Medhanialem.jwtauthentication.model.RoleName;
 import com.Medhanialem.jwtauthentication.model.Signup;
+import com.Medhanialem.jwtauthentication.model.UpdateUser;
 import com.Medhanialem.jwtauthentication.model.User;
 import com.Medhanialem.jwtauthentication.security.jwt.JwtProvider;
 import com.Medhanialem.repository.RoleRepository;
@@ -132,6 +133,67 @@ public class JwtController {
 		userRepository.save(user);
 
 		return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
+	}
+	
+	@PostMapping("/updateUser")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'ABO_WENBER_SEBEKA_GUBAE')")
+	public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUser updateUserRequest) {
+		
+		User user = userRepository.getOne(updateUserRequest.getId());
+		if (null == user) {
+			return new ResponseEntity<>(new ResponseMessage("Fail -> the User you are trying to edit doesnot exist in Database!"),
+					HttpStatus.BAD_REQUEST);
+		}
+
+		Set<String> strRoles = updateUserRequest.getRoles();
+		Set<Role> roles = new HashSet<>();
+
+		strRoles.forEach(role -> {
+			switch (role) {
+			case "admin":
+				Role adminRole = roleRepository.findByName(RoleName.ADMIN)
+						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+				roles.add(adminRole);
+
+				break;
+			case "secretary":
+				Role secretaryRole = roleRepository.findByName(RoleName.SECRETARY)
+						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+				roles.add(secretaryRole);
+
+				break;
+
+			case "sunday school":
+				Role sundaySchoolRole = roleRepository.findByName(RoleName.SUNDAY_SCHOOL)
+						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+				roles.add(sundaySchoolRole);
+
+				break;
+			case "sebeka gubae":
+				Role sebekaGubaeRole = roleRepository.findByName(RoleName.SEBEKA_GUBAE)
+						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+				roles.add(sebekaGubaeRole);
+
+				break;
+				
+			case "abo wenber sebeka gubae":
+				Role aboWenberSebekaGubaeRole = roleRepository.findByName(RoleName.ABO_WENBER_SEBEKA_GUBAE)
+						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+				roles.add(aboWenberSebekaGubaeRole);
+
+				break;
+			}
+		});
+		
+		if(null!=userDetailsServiceImpl.getCurrentUserDetails()) {
+			user.setUpdatedBy(userDetailsServiceImpl.getCurrentUserDetails().getUsername());
+		}
+		
+		user.setRoles(roles);
+		user.setActive(updateUserRequest.isActive());
+		userRepository.save(user);
+
+		return new ResponseEntity<>(new ResponseMessage("User updated successfully!"), HttpStatus.OK);
 	}
 
 }
