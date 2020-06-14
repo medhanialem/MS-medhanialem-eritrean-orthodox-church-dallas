@@ -33,7 +33,7 @@ public class PaymentLookUpServiceImpl implements PaymentLookUpService {
 	TierRepository tierRepository;
 
 	@Autowired
-	UserDetailsServiceImpl userDetailsServiceImpl;
+	UserServiceImpl userDetailsServiceImpl;
 	
 	@Override
 	public List<PaymentLookup> createPaymentLookUp(List<PaymentLookup> paymentLookups, Long tierId) {

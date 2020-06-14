@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.Medhanialem.exception.BackendException;
 import com.Medhanialem.repository.PaymentlogRepositoryjdbc;
+import com.Medhanialem.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class MemberServiceImpl implements MemberService{
 	MemberHistRepository memberHistRepository;
 
 	@Autowired
-	UserDetailsServiceImpl userDetailsServiceImpl;
+	UserService userService;
 
 	@Autowired
 	PaymentlogRepositoryjdbc paymentlogRepositoryjdbc;
@@ -91,7 +92,7 @@ public class MemberServiceImpl implements MemberService{
 
 	private Member mapmemberdtoToMember(Memberdto memberdto) {
 
-		UserDetails currentUserDetails = userDetailsServiceImpl.getCurrentUserDetails();
+		UserDetails currentUserDetails = userService.getCurrentUserDetails();
 
 		Member member = new Member();
 //		member.setFirstName(memberdto.getFirstName());
@@ -185,7 +186,7 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public Member updateMember(Long memId, Member memberDetails) {
 
-		UserDetails currentUserDetails = userDetailsServiceImpl.getCurrentUserDetails();
+		UserDetails currentUserDetails = userService.getCurrentUserDetails();
 		
 		Member member = memberRepository.findById(memId).orElseThrow(() -> new ResourceNotFoundException("Member", "id", memId));
 

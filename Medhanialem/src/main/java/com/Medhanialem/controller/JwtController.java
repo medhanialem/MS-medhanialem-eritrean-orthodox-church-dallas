@@ -1,9 +1,10 @@
 package com.Medhanialem.controller;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.validation.Valid;
+import com.Medhanialem.jwtauthentication.model.*;
+import com.Medhanialem.jwtauthentication.security.jwt.JwtProvider;
+import com.Medhanialem.repository.RoleRepository;
+import com.Medhanialem.repository.UserRepository;
+import com.Medhanialem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,24 +15,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.Medhanialem.jwtauthentication.model.JwtResponse;
-import com.Medhanialem.jwtauthentication.model.LoginForm;
-import com.Medhanialem.jwtauthentication.model.ResponseMessage;
-import com.Medhanialem.jwtauthentication.model.Role;
-import com.Medhanialem.jwtauthentication.model.RoleName;
-import com.Medhanialem.jwtauthentication.model.Signup;
-import com.Medhanialem.jwtauthentication.model.UpdateUser;
-import com.Medhanialem.jwtauthentication.model.User;
-import com.Medhanialem.jwtauthentication.security.jwt.JwtProvider;
-import com.Medhanialem.repository.RoleRepository;
-import com.Medhanialem.repository.UserRepository;
-import com.Medhanialem.service.Impl.UserDetailsServiceImpl;
+import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -54,7 +42,7 @@ public class JwtController {
 	JwtProvider jwtProvider;
 	
 	@Autowired
-	UserDetailsServiceImpl userDetailsServiceImpl;
+	UserService userService;
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginform) {
@@ -126,8 +114,8 @@ public class JwtController {
 //				roles.add(memberRole);
 			}
 		});
-		if(null!=userDetailsServiceImpl.getCurrentUserDetails()) {
-			user.setCreatedBy(userDetailsServiceImpl.getCurrentUserDetails().getUsername());
+		if(null!=userService.getCurrentUserDetails()) {
+			user.setCreatedBy(userService.getCurrentUserDetails().getUsername());
 		}
 		user.setRoles(roles);
 		userRepository.save(user);
@@ -185,8 +173,8 @@ public class JwtController {
 			}
 		});
 		
-		if(null!=userDetailsServiceImpl.getCurrentUserDetails()) {
-			user.setUpdatedBy(userDetailsServiceImpl.getCurrentUserDetails().getUsername());
+		if(null!=userService.getCurrentUserDetails()) {
+			user.setUpdatedBy(userService.getCurrentUserDetails().getUsername());
 		}
 		
 		user.setRoles(roles);
@@ -195,5 +183,6 @@ public class JwtController {
 
 		return new ResponseEntity<>(new ResponseMessage("User updated successfully!"), HttpStatus.OK);
 	}
+
 
 }

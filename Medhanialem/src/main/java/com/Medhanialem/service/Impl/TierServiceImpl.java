@@ -3,6 +3,7 @@ package com.Medhanialem.service.Impl;
 import java.util.List;
 
 import com.Medhanialem.exception.ApplicationException;
+import com.Medhanialem.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class TierServiceImpl implements TierService {
 	TierRepository tierRepository;
 	
 	@Autowired
-	UserDetailsServiceImpl userDetailsServiceImpl;
+	UserService userService;
 
 	@Override
 	public List<Tier> getAllTiers() {
@@ -45,7 +46,7 @@ public class TierServiceImpl implements TierService {
 		}
 		
 		tierDetails.setTierType("Tier" + (this.tierRepository.getMaxTierId() + 1));
-		tierDetails.setCreatedBy(userDetailsServiceImpl.getCurrentUserDetails().getUsername());
+		tierDetails.setCreatedBy(userService.getCurrentUserDetails().getUsername());
 		System.out.println(tierDetails.getTierType());
 		return this.tierRepository.save(tierDetails);
 	}
@@ -66,7 +67,7 @@ public class TierServiceImpl implements TierService {
 			throw new BackendException("Tier exists with same description: " + tierDetails.getDescription());
 		}
 		tier.setDescription(tierDetails.getDescription());
-		tier.setUpdatedBy(this.userDetailsServiceImpl.getCurrentUserDetails().getUsername());
+		tier.setUpdatedBy(this.userService.getCurrentUserDetails().getUsername());
 		return this.tierRepository.save(tier);
 	}
 
@@ -78,7 +79,7 @@ public class TierServiceImpl implements TierService {
 			return true;
 		} catch (DataIntegrityViolationException e){
 			if(e.getCause().getCause().getLocalizedMessage().contains("member")){
-				throw new ApplicationException("tier is associated with member. To delete Please remove selected tier from all members!");
+				throw new ApplicationException("tier is associated with member. To delete Please remove selected tier from all members: "+tierId);
 			}if(e.getCause().getCause().getLocalizedMessage().contains("paymentlog")){
 				throw new ApplicationException("paymentlookup is used in paymentlog data. It can not be deleted!");
 			}
