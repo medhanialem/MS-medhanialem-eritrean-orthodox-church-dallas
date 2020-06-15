@@ -57,11 +57,11 @@ public class PaymentLookUpController {
 	@PutMapping("")
 	@CrossOrigin(origins = "*")
 	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
-	public ResponseEntity<?> upDatePaymentLookUp(@RequestBody List<PaymentLookup> paymentLookups) {
+	public ResponseEntity<?> upDatePaymentLookUp(@RequestBody List<PaymentLookup> paymentLookups, @RequestParam(required = true) Long tierId) {
 		
 		logger.info("Inside upDatePaymentLookUp() method, {}", logger.getName());
 		try {
-			paymentLookUpHelper.validateLookUpUpDateObject(paymentLookups);
+			paymentLookUpHelper.validateLookUpUpDateObject(paymentLookups, tierId);
 		}
 		catch (BackendException e) {
 			logger.error(e.getMessage());

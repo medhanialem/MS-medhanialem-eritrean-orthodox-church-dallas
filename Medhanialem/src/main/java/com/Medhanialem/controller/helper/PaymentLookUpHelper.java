@@ -108,8 +108,7 @@ public class PaymentLookUpHelper {
 		}
 	}
 	
-public void validateLookUpUpDateObject(List<PaymentLookup> paymentLookups) {
-		
+public void validateLookUpUpDateObject(List<PaymentLookup> paymentLookups, Long tierIdFromUI) {
 		Map<Integer, Boolean> monthRepeatCheck = new HashMap<>();
 		
 		//Initialize map
@@ -140,7 +139,8 @@ public void validateLookUpUpDateObject(List<PaymentLookup> paymentLookups) {
 			int year = paymentLookups.get(0).getYear();
 			PaymentLookup existingPaymentLookup = paymentLookUpRepository.findById(paymentLookupcurrnetId).orElseThrow(() -> new ResourceNotFoundException("PaymentLookup", "id", paymentLookupcurrnetId));
 			int existingYear =existingPaymentLookup.getYear();
-	    	Long tierId =  paymentLookups.get(0).getTier().getId();	//2
+//	    	Long tierId =  paymentLookups.get(0).getTier().getId();	//2
+			Long tierId =  tierIdFromUI;	//2
 	    	Long oldTierId=existingPaymentLookup.getTier().getId();//2
 	    	
 	    	//
@@ -174,10 +174,10 @@ public void validateLookUpUpDateObject(List<PaymentLookup> paymentLookups) {
 					}
 				
 					// Check if same Tier
-					if (tierId != p.getTier().getId()) {
-						logger.error("PaymentLookup Tier cannot be different than the rest.");
-						throw new BackendException("PaymentLookup Tier cannot be different than the rest.");
-					}
+//					if (tierId != p.getTier().getId()) {
+//						logger.error("PaymentLookup Tier cannot be different than the rest.");
+//						throw new BackendException("PaymentLookup Tier cannot be different than the rest.");
+//					}
 					
 					// Checking Month < 1
 					if (p.getMonth() < 1) {

@@ -146,4 +146,11 @@ public class PaymentLookup {
 		this.updatedBy = updatedBy;
 	}
 
+	@Override
+	public String toString() {
+		return "PaymentLookup [id=" + id + ", month=" + month + ", year=" + year + ", tier=" + tier + ", amount="
+				+ amount + ", revision=" + revision + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
+				+ ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + "]";
+	}
+
 }
