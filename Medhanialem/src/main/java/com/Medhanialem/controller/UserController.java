@@ -1,7 +1,7 @@
 
 package com.Medhanialem.controller;
 
-import com.Medhanialem.exception.BackendException;
+import com.Medhanialem.exception.InvalidRequestException;
 import com.Medhanialem.jwtauthentication.model.User;
 import com.Medhanialem.jwtauthentication.security.jwt.JwtProvider;
 import com.Medhanialem.model.PasswordDto;
@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,6 +71,7 @@ public class UserController {
 //	}
 
 	//this API changes a password for a logged in user
+	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("/user/updatePassword")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<?> changeUserPassword( @Valid @RequestBody PasswordDto passwordDto) {
@@ -82,15 +82,15 @@ public class UserController {
 		}
 
 		if (!userService.checkIfValidConfirmPassword(passwordDto)) {
-			throw new RuntimeException(" Password and Confirm Pa!");
+			throw new InvalidRequestException(" Password and Confirm Password do not match!");
 		}
 
 		if (!(userService.checkIfValidOldPassword(user, passwordDto.getOldPassword()))) {
-			throw new RuntimeException("Incorrect Password!");
+			throw new InvalidRequestException("Incorrect Password!");
 		}
 
 		userService.changeUserPassword(user, passwordDto.getNewPassword());
-		return new ResponseEntity<>("Password Updated Successfully!", HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }

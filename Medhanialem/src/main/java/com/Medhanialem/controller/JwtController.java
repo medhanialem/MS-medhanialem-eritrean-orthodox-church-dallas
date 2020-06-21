@@ -1,5 +1,6 @@
 package com.Medhanialem.controller;
 
+import com.Medhanialem.exception.InvalidRequestException;
 import com.Medhanialem.jwtauthentication.model.*;
 import com.Medhanialem.jwtauthentication.security.jwt.JwtProvider;
 import com.Medhanialem.repository.RoleRepository;
@@ -77,33 +78,33 @@ public class JwtController {
 			switch (role) {
 			case "admin":
 				Role adminRole = roleRepository.findByName(RoleName.ADMIN)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+						.orElseThrow(() -> new InvalidRequestException("Fail! -> Cause: User Role not found."));
 				roles.add(adminRole);
 
 				break;
 			case "secretary":
 				Role secretaryRole = roleRepository.findByName(RoleName.SECRETARY)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+						.orElseThrow(() -> new InvalidRequestException("Fail! -> Cause: User Role not find."));
 				roles.add(secretaryRole);
 
 				break;
 
 			case "sunday school":
 				Role sundaySchoolRole = roleRepository.findByName(RoleName.SUNDAY_SCHOOL)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+						.orElseThrow(() -> new InvalidRequestException("Fail! -> Cause: User Role not find."));
 				roles.add(sundaySchoolRole);
 
 				break;
 			case "sebeka gubae":
 				Role sebekaGubaeRole = roleRepository.findByName(RoleName.SEBEKA_GUBAE)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+						.orElseThrow(() -> new InvalidRequestException("Fail! -> Cause: User Role not find."));
 				roles.add(sebekaGubaeRole);
 
 				break;
 				
 			case "abo wenber sebeka gubae":
 				Role aboWenberSebekaGubaeRole = roleRepository.findByName(RoleName.ABO_WENBER_SEBEKA_GUBAE)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+						.orElseThrow(() -> new InvalidRequestException("Fail! -> Cause: User Role not find."));
 				roles.add(aboWenberSebekaGubaeRole);
 
 				break;
@@ -140,33 +141,33 @@ public class JwtController {
 			switch (role) {
 			case "admin":
 				Role adminRole = roleRepository.findByName(RoleName.ADMIN)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+						.orElseThrow(() -> new InvalidRequestException("Fail! -> Cause: User Role not find."));
 				roles.add(adminRole);
 
 				break;
 			case "secretary":
 				Role secretaryRole = roleRepository.findByName(RoleName.SECRETARY)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+						.orElseThrow(() -> new InvalidRequestException("Fail! -> Cause: User Role not find."));
 				roles.add(secretaryRole);
 
 				break;
 
 			case "sunday school":
 				Role sundaySchoolRole = roleRepository.findByName(RoleName.SUNDAY_SCHOOL)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+						.orElseThrow(() -> new InvalidRequestException("Fail! -> Cause: User Role not find."));
 				roles.add(sundaySchoolRole);
 
 				break;
 			case "sebeka gubae":
 				Role sebekaGubaeRole = roleRepository.findByName(RoleName.SEBEKA_GUBAE)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+						.orElseThrow(() -> new InvalidRequestException("Fail! -> Cause: User Role not find."));
 				roles.add(sebekaGubaeRole);
 
 				break;
 				
 			case "abo wenber sebeka gubae":
 				Role aboWenberSebekaGubaeRole = roleRepository.findByName(RoleName.ABO_WENBER_SEBEKA_GUBAE)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+						.orElseThrow(() -> new InvalidRequestException("Fail! -> Cause: User Role not find."));
 				roles.add(aboWenberSebekaGubaeRole);
 
 				break;
