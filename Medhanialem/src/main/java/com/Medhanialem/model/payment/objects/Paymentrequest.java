@@ -2,12 +2,19 @@ package com.Medhanialem.model.payment.objects;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class Paymentrequest {
 
+	@NotNull
 	private Long memberId;
 	
+	@NotNull
 	private double total;
 	
+	@NotNull
+	@Size(min=1)
 	List<MonthlyPaid> payments;
 
 	public Long getMemberId() {

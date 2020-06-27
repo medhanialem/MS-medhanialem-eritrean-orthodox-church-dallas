@@ -12,6 +12,7 @@ public class PaymentInformation {
 	private String lastName;
 	private String homePhoneNo;
 	private Date registrationDate;
+	private Date paymentStartDate;
 	private Long tier;
 
 	private List<PaymentLogs> paymentLogs;
@@ -46,6 +47,14 @@ public class PaymentInformation {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public Date getPaymentStartDate() {
+		return paymentStartDate;
+	}
+
+	public void setPaymentStartDate(Date paymentStartDate) {
+		this.paymentStartDate = paymentStartDate;
 	}
 
 	public Long getTier() {

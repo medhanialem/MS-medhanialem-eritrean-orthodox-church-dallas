@@ -1,117 +1,76 @@
 package com.Medhanialem.controller;
 
-import com.Medhanialem.model.Member;
-import com.Medhanialem.model.payment.Payment;
-import com.Medhanialem.model.payment.PaymentLog;
-import com.Medhanialem.model.payment.PaymentlogDTO;
-import com.Medhanialem.model.payment.objects.*;
-import com.Medhanialem.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.Medhanialem.exception.BackendException;
+import com.Medhanialem.model.payment.objects.PaymentInformation;
+import com.Medhanialem.model.payment.objects.PaymentResponse;
+import com.Medhanialem.model.payment.objects.Paymentrequest;
+import com.Medhanialem.service.PaymentJournalService;
+import com.Medhanialem.utils.TypicalResponses;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class PaymentJournalcontroller {
-
+	
+	Logger logger = LoggerFactory.getLogger(PaymentJournalcontroller.class);
+	
 	@Autowired
-	MemberRepository memberRepository;
-
-	@Autowired
-	PaymentlogRepositoryjdbc paymentlogRepositoryjdbc;
-
-	@Autowired
-	PaymentRepository paymentRepository;
-
-	@Autowired
-	PaymentLogRepository paymentLogRepository;
-
-	@Autowired
-	PaymentLookUpRepository memberShipPaymentLookUpfee;
-
+	PaymentJournalService paymentJournalService;
 
 	// This API will be used to post payment to DB
-
 	@PostMapping("/pay")
-	public void paymonthlyfee(@RequestBody Paymentrequest paymentRequest) {
-
-		Member member = memberRepository.findById(paymentRequest.getMemberId()).get();
-
-		Payment payment = new Payment();
-		payment.setMember(member);
-		payment.setTotal(paymentRequest.getTotal());
-
-		payment = paymentRepository.save(payment);
-
-		for (MonthlyPaid monthlypaid : paymentRequest.getPayments()) {
-
-			PaymentLog paymentLog = new PaymentLog();
-
-			paymentLog.setAmount(monthlypaid.getAmount());
-
-			paymentLog.setPayment(payment);
-			paymentLog.setMember(member);
-			paymentLog
-					.setPaymentLookupfee(memberShipPaymentLookUpfee.findById(monthlypaid.getPaymentLookupId()).get());
-
-			paymentLogRepository.save(paymentLog);
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
+	public ResponseEntity<?> payMonthlyFee(@RequestBody @Valid Paymentrequest paymentRequest) {
+		
+		logger.info("Inside payMonthlyFee() method, {}", logger.getName());
+		PaymentResponse insertedPayment;
+		
+		try {
+			insertedPayment = paymentJournalService.payMonthlyFee(paymentRequest);
 		}
+		catch (BackendException e) {
+			logger.error(e.getMessage());
+			return TypicalResponses.setError(e.getMessage());
+		}
+		
+		return new ResponseEntity<PaymentResponse>(insertedPayment, HttpStatus.CREATED);
+		
 	}
 
 	// This method fetches payment information for all members for a selected year
 	@GetMapping("/getallpayment/{year}")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
 	public List<PaymentInformation> getAllPayment(@PathVariable(value = "year") int year) {
-
-		List<Member> memberList = memberRepository.findAll().parallelStream()
-				.filter(t -> null==t.getParent())
-				.collect(Collectors.toList());
-
-		List<PaymentInformation> list = new ArrayList<>();
-
-		List<PaymentlogDTO> listPaymentdto = paymentlogRepositoryjdbc.findAll(year);
-
-		for (Member member : memberList) {
-			PaymentInformation response = new PaymentInformation();
-
-			response.setMemberId(member.getMemberId());
-	//		response.setChurchId(member.getChurchId());
-			response.setFirstName(member.getFirstName());
-			response.setMiddleName(member.getMiddleName());
-			response.setLastName(member.getLastName());
-			response.setHomePhoneNo(member.getHomePhoneNo());
-			response.setMemberId(member.getMemberId());
-			response.setTier(member.getTier().getId());
-			response.setRegistrationDate(member.getRegistrationDate());
-
-			List<PaymentLogs> journals = getPaymentLogs(listPaymentdto, member);
-			response.setPaymentLogs(journals);
-
-			list.add(response);
-		}
-		return list;
+		
+		logger.info("Inside getAllPayment() method, {}", logger.getName());
+		return paymentJournalService.getAllPayment(year);
+		
 	}
-
-	private List<PaymentLogs> getPaymentLogs(List<PaymentlogDTO> listPaymentdto, Member member) {
-
-		List<PaymentLogs> paymentLoglist = new ArrayList<>();
-
-		for (PaymentlogDTO paymentdto : listPaymentdto) {
-
-			if (paymentdto.getMemberId().equals(member.getMemberId())) {
-
-				PaymentLogs paylog = new PaymentLogs();
-
-				paylog.setPaymentLogId(paymentdto.getPaymentLogId());
-
-				paylog.setMonth(paymentdto.getMonth());
-				paylog.setYear(paymentdto.getYear());
-				paylog.setAmount(paymentdto.getAmount());
-
-				paymentLoglist.add(paylog);
-			}
-		}
-		return paymentLoglist;
+	
+	@GetMapping("/previousYearPaymentExist")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
+	public boolean unpaidPreviousYearPaymentExist(@RequestParam("memberId") Long memberId, @RequestParam("paymentStartYear") Long paymentStartYear, @RequestParam("year") Long year) {
+		
+		logger.info("Inside unpaidPreviousYearPaymentExist() method, {}", logger.getName());
+		return paymentJournalService.unpaidPreviousYearPaymentExist(memberId, paymentStartYear, year);
+		
 	}
+	
 }
