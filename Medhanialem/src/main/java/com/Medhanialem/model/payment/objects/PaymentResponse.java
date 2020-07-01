@@ -4,6 +4,8 @@ import java.util.Map;
 
 public class PaymentResponse {
 	
+	private Long receiptId;
+	
 	private Long memberId;
 	
 	private String churchId;
@@ -17,6 +19,14 @@ public class PaymentResponse {
 	private double total;
 	
 	private Map<String, Double> amountsPaidPerMonth;
+
+	public Long getReceiptId() {
+		return receiptId;
+	}
+
+	public void setReceiptId(Long receiptId) {
+		this.receiptId = receiptId;
+	}
 
 	public Long getMemberId() {
 		return memberId;
@@ -72,6 +82,13 @@ public class PaymentResponse {
 
 	public void setAmountsPaidPerMonth(Map<String, Double> amountsPaidPerMonth) {
 		this.amountsPaidPerMonth = amountsPaidPerMonth;
+	}
+
+	@Override
+	public String toString() {
+		return "PaymentResponse [receiptId=" + receiptId + ", memberId=" + memberId + ", churchId=" + churchId
+				+ ", fullName=" + fullName + ", tierDescription=" + tierDescription + ", numberOfMonthsPaid="
+				+ numberOfMonthsPaid + ", total=" + total + ", amountsPaidPerMonth=" + amountsPaidPerMonth + "]";
 	}
 	
 }

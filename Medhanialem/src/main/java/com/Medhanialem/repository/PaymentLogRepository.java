@@ -3,11 +3,13 @@ package com.Medhanialem.repository;
 
 import java.util.List;
 
-import com.Medhanialem.model.payment.PaymentLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.Medhanialem.model.payment.Payment;
+import com.Medhanialem.model.payment.PaymentLog;
 
 
 @Repository
@@ -22,4 +24,9 @@ public interface PaymentLogRepository extends JpaRepository<PaymentLog, Long> {
 	 * ) List<Paymentlog> getYearpayments(@Param("id") Long id,@Param("year") int
 	 * year );
 	 */
+		
+//		@Query("DELETE FROM PaymentLog p where p.receiptId=:receiptId")
+//		void deletePaymentLogs(@Param("receiptId") Long receiptId);
+		
+		List<PaymentLog> deleteByPayment(Payment payment);
 }

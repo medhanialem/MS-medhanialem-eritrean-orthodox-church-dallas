@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Medhanialem.exception.BackendException;
+import com.Medhanialem.model.payment.objects.MembershipReceiptHistory;
 import com.Medhanialem.model.payment.objects.PaymentInformation;
 import com.Medhanialem.model.payment.objects.PaymentResponse;
 import com.Medhanialem.model.payment.objects.Paymentrequest;
@@ -73,4 +74,31 @@ public class PaymentJournalcontroller {
 		
 	}
 	
+	@GetMapping("/getReceipts/{year}/{searchCriteria}")
+	public List<MembershipReceiptHistory> getReceipts(@PathVariable(value = "year") int year, @PathVariable(value = "searchCriteria") String searchCriteria) {
+		
+		logger.info("Inside getReceipts() method, {}", logger.getName());
+		return  (null != searchCriteria &&  searchCriteria.equals("*all*")) ? paymentJournalService.getAllReceipts(year) : paymentJournalService.getReceipts(year, searchCriteria);
+				
+	}
+	
+	@PostMapping("/refund/{receiptId}")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
+	public ResponseEntity<?> refundMonthlyFee(@PathVariable(value = "receiptId") Long receiptId) {
+		
+		logger.info("Inside refundMonthlyFee() method, {}", logger.getName());
+		PaymentResponse refundedPayment;
+		
+		try {
+			refundedPayment = paymentJournalService.refundMonthlyFee(receiptId);
+		}
+		catch (BackendException e) {
+			logger.error(e.getMessage());
+			return TypicalResponses.setError(e.getMessage());
+		}
+		
+		return new ResponseEntity<PaymentResponse>(refundedPayment, HttpStatus.CREATED);
+		
+	}
+
 }

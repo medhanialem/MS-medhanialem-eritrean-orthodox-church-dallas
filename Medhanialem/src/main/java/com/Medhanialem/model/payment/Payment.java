@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.OnDelete;
@@ -46,6 +47,11 @@ public class Payment {
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreatedDate
 	private Date paymentDate;
+	
+	@NotBlank
+	private String createdBy;
+	
+	private Long parentReceiptId;
 
 	public Long getId() {
 		return id;
@@ -79,9 +85,26 @@ public class Payment {
 		this.paymentDate = paymentDate;
 	}
 
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Long getParentReceiptId() {
+		return parentReceiptId;
+	}
+
+	public void setParentReceiptId(Long parentReceiptId) {
+		this.parentReceiptId = parentReceiptId;
+	}
+
 	@Override
 	public String toString() {
-		return "Payment [id=" + id + ", member=" + member + ", total=" + total + ", paymentDate=" + paymentDate + "]";
+		return "Payment [id=" + id + ", member=" + member + ", total=" + total + ", paymentDate=" + paymentDate
+				+ ", createdBy=" + createdBy + ", parentReceiptId=" + parentReceiptId + "]";
 	}
 
 }

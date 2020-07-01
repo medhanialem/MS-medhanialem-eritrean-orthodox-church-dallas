@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.Medhanialem.exception.BackendException;
 import com.Medhanialem.model.Member;
@@ -17,12 +18,14 @@ import com.Medhanialem.model.payment.Payment;
 import com.Medhanialem.model.payment.PaymentLog;
 import com.Medhanialem.model.payment.PaymentLookup;
 import com.Medhanialem.model.payment.PaymentlogDTO;
+import com.Medhanialem.model.payment.objects.MembershipReceiptHistory;
 import com.Medhanialem.model.payment.objects.MonthlyPaid;
 import com.Medhanialem.model.payment.objects.PaymentInformation;
 import com.Medhanialem.model.payment.objects.PaymentLogs;
 import com.Medhanialem.model.payment.objects.PaymentResponse;
 import com.Medhanialem.model.payment.objects.Paymentrequest;
 import com.Medhanialem.repository.MemberRepository;
+import com.Medhanialem.repository.MembershipReceiptHistoryRepository;
 import com.Medhanialem.repository.PaymentLogRepository;
 import com.Medhanialem.repository.PaymentLookUpRepository;
 import com.Medhanialem.repository.PaymentRepository;
@@ -45,6 +48,12 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 	
 	@Autowired
 	PaymentlogRepositoryjdbc paymentlogRepositoryjdbc;
+	
+	@Autowired
+	MembershipReceiptHistoryRepository membershipReceiptHistoryRepository;
+	
+	@Autowired
+	UserService userService;
 	
 	@Override
 	public List<PaymentInformation> getAllPayment(int year) {
@@ -79,6 +88,7 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 	
 	@Override
 	public PaymentResponse payMonthlyFee(Paymentrequest paymentRequest) {
+		String createdBy = userService.getCurrentUserDetails().getUsername();
 		Member member = memberRepository.findById(paymentRequest.getMemberId()).get();
 		PaymentResponse paymentResponse = new PaymentResponse();
 		Map<String, Double> amountsPaidPerMonth = new HashMap<>();
@@ -97,6 +107,7 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		Payment payment = new Payment();
 		payment.setMember(member);
 		payment.setTotal(paymentRequest.getTotal());
+		payment.setCreatedBy(createdBy);
 
 		payment = paymentRepository.save(payment);
 		
@@ -104,6 +115,9 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 			throw new BackendException("Payment didnot get saved to Receipt table.");
 		}
 
+		int membershipReceiptHistoryYear = 0;
+		StringBuilder monthBuilder = new StringBuilder("");
+		
 		for (MonthlyPaid monthlypaid : paymentRequest.getPayments()) {
 
 			PaymentLog paymentLog = new PaymentLog();
@@ -117,12 +131,24 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 			amountsPaidPerMonth.put(intToMonth(paymentLookup.getMonth()), (Double)paymentLookup.getAmount());
 			
 			paymentLog.setPaymentLookupfee(paymentLookup);
+			
+			membershipReceiptHistoryYear = paymentLookup.getYear();
+			monthBuilder.append(intToMonth(paymentLookup.getMonth()) + ",");
+			
 
 			if (null == paymentLogRepository.save(paymentLog)) {
 				throw new BackendException("Payment didnot get saved to PaymentLog table.");
 			}
 		}
+		
 		paymentResponse.setAmountsPaidPerMonth(amountsPaidPerMonth);
+		
+		// Save to MembershipReceiptHistory table
+		MembershipReceiptHistory membershipReceiptHistory = populateMembershipReceiptHistory(member, payment, paymentRequest, monthBuilder, membershipReceiptHistoryYear);
+		
+		if (null == saveMembershipReceiptHistory(membershipReceiptHistory)) {
+			throw new BackendException("Payment didnot get saved to MembershipReceiptHistory table.");
+		}
 		
 		return paymentResponse;
 	}
@@ -156,6 +182,88 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		
 		return true;
 	}
+
+	@Override
+	public List<MembershipReceiptHistory> getAllReceipts(int year) {
+		return membershipReceiptHistoryRepository.getAllReciptsByYear(year);
+	}
+
+	@Override
+	public List<MembershipReceiptHistory> getReceipts(int year, String searchCriteria) {
+		return membershipReceiptHistoryRepository.getReceiptsByYearAndSearchCriteria(year, searchCriteria);
+	}
+	
+	private MembershipReceiptHistory saveMembershipReceiptHistory(MembershipReceiptHistory membershipReceiptHistory) {
+		return membershipReceiptHistoryRepository.save(membershipReceiptHistory);
+	}
+	
+
+	@Transactional
+	@Override
+	public PaymentResponse refundMonthlyFee(Long receiptId) {
+		String createdBy = userService.getCurrentUserDetails().getUsername();
+		
+		Payment existingPayment = this.paymentRepository.findById(receiptId).orElseThrow(
+				() -> new BackendException("There is no receipt found with receiptId = " + receiptId));
+		
+		// First insert payment which is the negative amount of original payment
+		Payment refundPayment = new Payment();
+		refundPayment.setMember(existingPayment.getMember());
+		refundPayment.setTotal(-1 * existingPayment.getTotal());
+		refundPayment.setCreatedBy(createdBy);
+		refundPayment.setParentReceiptId(existingPayment.getId());
+		
+		refundPayment = paymentRepository.save(refundPayment);
+		if (null == refundPayment) {
+			throw new BackendException("Refund Payment didnot get saved to Receipt table. Please try again later.");
+		}
+		
+		// Delete related monthly payment logs
+		List<PaymentLog> deletedPaymentLogs = paymentLogRepository.deleteByPayment(existingPayment);
+		
+		if (null == deletedPaymentLogs || deletedPaymentLogs.size() == 0) {
+			throw new BackendException("Monthly payment logs didnot get deleted. Looks like there is an issue.");
+		}
+		
+		Member member = existingPayment.getMember();
+		if (null == member) {
+			throw new BackendException("Member associated with the payment doesnot exist.");
+		}
+		
+		Map<String, Double> amountsPaidPerMonth = new HashMap<>();
+		int membershipReceiptHistoryYear = 0;
+		StringBuilder monthBuilder = new StringBuilder("");
+		
+		// Getting details of old saved payment logs
+		for (PaymentLog paymentLog : deletedPaymentLogs) {
+			
+			PaymentLookup paymentLookup = memberShipPaymentLookUpfee.findById((paymentLog.getPaymentLookupfee()).getId()).orElseThrow(
+					() -> new BackendException("There is no lookup associated to the payment log with ID = " + paymentLog.getId()));
+			
+			amountsPaidPerMonth.put(intToMonth(paymentLookup.getMonth()), (Double)paymentLookup.getAmount());
+			membershipReceiptHistoryYear = paymentLookup.getYear();
+			monthBuilder.append(intToMonth(paymentLookup.getMonth()) + ",");
+		}
+		
+		// Save to MembershipReceiptHistory table
+		MembershipReceiptHistory membershipReceiptHistory = populateMembershipReceiptHistoryForRefund(member, refundPayment, deletedPaymentLogs.size(), monthBuilder, membershipReceiptHistoryYear);
+		
+		if (null == saveMembershipReceiptHistory(membershipReceiptHistory)) {
+			throw new BackendException("Payment didnot get saved to MembershipReceiptHistory table for refund.");
+		}
+		
+		PaymentResponse refundResponse = new PaymentResponse();
+		refundResponse.setMemberId(member.getMemberId());
+		refundResponse.setChurchId(member.getChurchId());
+		refundResponse.setFullName(member.getFirstName() + " " + member.getMiddleName() + " " + member.getLastName());
+		refundResponse.setTierDescription(member.getTier().getDescription());
+		refundResponse.setNumberOfMonthsPaid(deletedPaymentLogs.size());
+		refundResponse.setTotal(refundPayment.getTotal());
+		refundResponse.setAmountsPaidPerMonth(amountsPaidPerMonth);
+		
+		return refundResponse;
+		
+	}
 	
 	private boolean checkPaymentStartDate(Date paymentStartDate, int year) {
 
@@ -185,6 +293,47 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 			}
 		}
 		return paymentLoglist;
+	}
+	
+	// For Regular monthly payment
+	private MembershipReceiptHistory populateMembershipReceiptHistory(Member member, Payment payment, Paymentrequest paymentRequest, StringBuilder monthBuilder, int membershipReceiptHistoryYear) {
+		String createdBy = userService.getCurrentUserDetails().getUsername();
+		MembershipReceiptHistory membershipReceiptHistory = new MembershipReceiptHistory();
+		membershipReceiptHistory.setReceiptId(payment.getId());
+		membershipReceiptHistory.setMemberId(member.getMemberId());
+		membershipReceiptHistory.setFullName(member.getFirstName() + " " + member.getMiddleName() + " " + member.getLastName());
+		membershipReceiptHistory.setChurchId(member.getChurchId());
+		membershipReceiptHistory.setPhone(member.getHomePhoneNo());
+		membershipReceiptHistory.setTierDescription(member.getTier().getDescription());
+		membershipReceiptHistory.setTotal(paymentRequest.getTotal());
+		membershipReceiptHistory.setMonths(paymentRequest.getPayments().size());
+		membershipReceiptHistory.setYear(membershipReceiptHistoryYear);
+		membershipReceiptHistory.setMonthsDetail(removeLastChar(monthBuilder.toString()));
+		membershipReceiptHistory.setCreatedBy(createdBy);
+		
+		return membershipReceiptHistory;
+	}
+	
+	// For refunding a monthly payment
+	private MembershipReceiptHistory populateMembershipReceiptHistoryForRefund(Member member, Payment refundPayment, int paymentLogSize, StringBuilder monthBuilder, int membershipReceiptHistoryYear) {
+		String createdBy = userService.getCurrentUserDetails().getUsername();
+		MembershipReceiptHistory membershipReceiptHistory = new MembershipReceiptHistory();
+		membershipReceiptHistory.setReceiptId(refundPayment.getId());
+		membershipReceiptHistory.setMemberId(member.getMemberId());
+		membershipReceiptHistory.setFullName(member.getFirstName() + " " + member.getMiddleName() + " " + member.getLastName());
+		membershipReceiptHistory.setChurchId(member.getChurchId());
+		membershipReceiptHistory.setPhone(member.getHomePhoneNo());
+		membershipReceiptHistory.setTierDescription(member.getTier().getDescription());
+		membershipReceiptHistory.setTotal(refundPayment.getTotal());
+		membershipReceiptHistory.setMonths(paymentLogSize);
+		membershipReceiptHistory.setYear(membershipReceiptHistoryYear);
+		membershipReceiptHistory.setMonthsDetail(removeLastChar(monthBuilder.toString()));
+		membershipReceiptHistory.setCreatedBy(createdBy);
+		membershipReceiptHistory.setVoided(true);
+		membershipReceiptHistory.setParentReceipt(refundPayment.getParentReceiptId());
+		membershipReceiptHistory.setRemarks("Refunded months " + removeLastChar(monthBuilder.toString()));
+		
+		return membershipReceiptHistory;
 	}
 	
 	private String intToMonth(int numberMonth) {
@@ -232,6 +381,10 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		
 		return month;
 		
+	}
+	
+	private static String removeLastChar(String s) {
+	    return (s == null || s.length() == 0) ? null : (s.substring(0, s.length() - 1));
 	}
 
 }
