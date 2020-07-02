@@ -206,6 +206,22 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		Payment existingPayment = this.paymentRepository.findById(receiptId).orElseThrow(
 				() -> new BackendException("There is no receipt found with receiptId = " + receiptId));
 		
+		MembershipReceiptHistory existingMembershipReceiptHistory = membershipReceiptHistoryRepository.findByReceiptId(receiptId).orElseThrow(
+				() -> new BackendException("There is no receipt found with receiptId = " + receiptId));
+		
+		// Making the existing receipt to be voided
+		if (existingMembershipReceiptHistory.isVoided() == true) {
+			throw new BackendException("The receipt is already voided. You cannnot refund it again. ReceiptId = " + receiptId);
+		}
+		
+		// Check if the person is trying to refund a refund receiptID
+		if (null != existingMembershipReceiptHistory.getParentReceipt()) {
+			throw new BackendException("Trying to refund a refunded receiptId. ReceiptId = " + receiptId);
+		}
+		
+		existingMembershipReceiptHistory.setVoided(true);
+		saveMembershipReceiptHistory(existingMembershipReceiptHistory);
+		
 		// First insert payment which is the negative amount of original payment
 		Payment refundPayment = new Payment();
 		refundPayment.setMember(existingPayment.getMember());

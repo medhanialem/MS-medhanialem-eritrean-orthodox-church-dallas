@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +29,7 @@ import com.Medhanialem.utils.TypicalResponses;
 
 @RestController
 @CrossOrigin(origins = "*")
+@RequestMapping("/monthlyPayment")
 public class PaymentJournalcontroller {
 	
 	Logger logger = LoggerFactory.getLogger(PaymentJournalcontroller.class);
@@ -75,6 +77,7 @@ public class PaymentJournalcontroller {
 	}
 	
 	@GetMapping("/getReceipts/{year}/{searchCriteria}")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
 	public List<MembershipReceiptHistory> getReceipts(@PathVariable(value = "year") int year, @PathVariable(value = "searchCriteria") String searchCriteria) {
 		
 		logger.info("Inside getReceipts() method, {}", logger.getName());

@@ -1,6 +1,7 @@
 package com.Medhanialem.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,5 @@ public interface MembershipReceiptHistoryRepository extends JpaRepository<Member
 	@Query(value = "select * from MembershipReceiptHistory WHERE year =:year AND (receiptID =:searchCriteria OR churchId =:searchCriteria OR fullName like :searchCriteria%) ORDER BY createdDate DESC", nativeQuery=true)
 	List<MembershipReceiptHistory> getReceiptsByYearAndSearchCriteria(@Param("year") int year, @Param("searchCriteria") String searchCriteria);
 	
+	Optional<MembershipReceiptHistory> findByReceiptId(Long receiptId);
 }
