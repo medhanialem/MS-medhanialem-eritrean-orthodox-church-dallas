@@ -1,9 +1,10 @@
 package com.Medhanialem.service;
 
-import com.Medhanialem.jwtauthentication.model.User;
-import com.Medhanialem.model.PasswordDto;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import com.Medhanialem.jwtauthentication.model.User;
+import com.Medhanialem.model.PasswordDto;
 
 @Service
 public interface UserService {
@@ -20,4 +21,7 @@ public interface UserService {
 	User getUserByUsername(String username);
 
 	boolean checkIfValidConfirmPassword(PasswordDto passwordDto);
+	boolean requestPasswordReset(String email);
+
+	boolean resetPassword(String token, String password) ;
 }
