@@ -55,7 +55,7 @@ public class MemberController {
 	@GetMapping("")
 	@CrossOrigin(origins = "*")
 	@PreAuthorize("isAuthenticated()")
-	public List<Member> getAllMembers(@RequestParam(required=false,value = "parentId") Long parentId, @RequestParam(defaultValue="mainmembers") String preset) {
+	public List<Member> getAllMembers(@RequestParam(required=false,value = "parentId") Long parentId, @RequestParam(defaultValue="primary") String preset) {
 		
 		logger.info("Inside getAllMembers() method, {}", logger.getName());
 		return memberService.getAllMembers(preset, parentId);

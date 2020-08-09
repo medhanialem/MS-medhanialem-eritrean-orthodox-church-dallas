@@ -114,6 +114,16 @@ public class Member implements Serializable {
 	@OneToMany(mappedBy="parent")
 	private List<Member> dependents = new ArrayList<Member>();
 
+//	@ManyToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "fatherPriestId", referencedColumnName = "memberId")
+//	private Member fatherPriest;
+	
+	@ManyToOne(cascade = {CascadeType.ALL})
+	@JoinColumn(name = "fatherPriestId")
+	private Member fatherPriest;
+
+	private String relationship;
+
 	public Long getMemberId() {
 		return memberId;
 	}
@@ -362,6 +372,22 @@ public class Member implements Serializable {
 		this.dependents = dependents;
 	}
 
+	public Member getFatherPriest() {
+		return fatherPriest;
+	}
+
+	public void setFatherPriest(Member fatherPriest) {
+		this.fatherPriest = fatherPriest;
+	}
+
+	public String getRelationship() {
+		return relationship;
+	}
+
+	public void setRelationship(String relationship) {
+		this.relationship = relationship;
+	}
+
 	@Override
 	public String toString() {
 		return "Member{" +
@@ -394,6 +420,8 @@ public class Member implements Serializable {
 				", status='" + status + '\'' +
 				", parent=" + parent +
 				", dependents=" + dependents +
+				", fatherPriest=" + fatherPriest +
+				", relationship=" + relationship +
 				'}';
 	}
 }

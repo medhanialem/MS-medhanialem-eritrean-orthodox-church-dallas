@@ -4,15 +4,16 @@ package com.Medhanialem.jwtauthentication.security.jwt;
 
 import java.util.Date;
 
-//import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
-import org.springframework.security.core.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+//import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import com.Medhanialem.service.UserPrinciple;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -24,6 +25,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 public class JwtProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
+    public static final long PASSWORD_RESET_EXPIRATION_TIME=1000*60*5;
 
     @Value("${medhanialem.app.jwtSecret}")
     private String jwtSecret;
@@ -70,4 +72,26 @@ public class JwtProvider {
 			                .parseClaimsJws(token)
 			                .getBody().getSubject();
     }
+
+	public String generatePasswordRequestToken(String username) {
+		String token= Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + PASSWORD_RESET_EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+		return token;
+	}
+
+	public boolean hasTokenExpired(String token) {
+		Claims claims= Jwts.parser()
+				.setSigningKey(jwtSecret)
+				.parseClaimsJws(token)
+				.getBody();
+		Date tokenExpirationDate = claims.getExpiration();
+		Date todayDate = new Date();
+		System.out.println("return value is  "+ tokenExpirationDate.before(todayDate));
+		return tokenExpirationDate.before(todayDate);
+		
+	}
 }

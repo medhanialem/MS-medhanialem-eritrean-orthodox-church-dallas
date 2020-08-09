@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.Medhanialem.exception.BackendException;
 import com.Medhanialem.repository.PaymentlogRepositoryjdbc;
+import com.Medhanialem.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import com.Medhanialem.model.Memberhistory;
 import com.Medhanialem.repository.MemberHistRepository;
 import com.Medhanialem.repository.MemberRepository;
 import com.Medhanialem.service.MemberService;
-import com.medhaniealem.utils.MemberConstants;
+import com.Medhanialem.utils.MemberConstants;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -35,7 +36,7 @@ public class MemberServiceImpl implements MemberService{
 	MemberHistRepository memberHistRepository;
 
 	@Autowired
-	UserDetailsServiceImpl userDetailsServiceImpl;
+	UserService userService;
 
 	@Autowired
 	PaymentlogRepositoryjdbc paymentlogRepositoryjdbc;
@@ -91,10 +92,10 @@ public class MemberServiceImpl implements MemberService{
 
 	private Member mapmemberdtoToMember(Memberdto memberdto) {
 
-		UserDetails currentUserDetails = userDetailsServiceImpl.getCurrentUserDetails();
+		UserDetails currentUserDetails = userService.getCurrentUserDetails();
 
 		Member member = new Member();
-		member.setFirstName(memberdto.getFirstName());
+//		member.setFirstName(memberdto.getFirstName());
 		member.setHomePhoneNo(memberdto.getHomePhoneNo());
 		member.setEmail(memberdto.getEmail());
 		member.setFirstName(memberdto.getFirstName());
@@ -115,13 +116,21 @@ public class MemberServiceImpl implements MemberService{
 		member.setPaymentlookupId(memberdto.getPaymentlookupId());
 		member.setMaritalStatus(memberdto.getMaritalStatus());
 		member.setTier(memberdto.getTier());
+		member.setRelationship(memberdto.getRelationship());
 		member.setCreatedBy(currentUserDetails.getUsername());
+		member.setSundaySchool(memberdto.isSundaySchool());
+		member.setSebekaGubae(memberdto.isSebekaGubae());
 
 		Member parentMember =null;
 		if(null!=memberdto.getSuperId()) {
 			 parentMember = getMemberById(memberdto.getSuperId());
 		}
 		member.setParent(null!=parentMember?parentMember:null);
+		Member fatherPriest =null;
+		if(null!=memberdto.getFatherPriest()) {
+			fatherPriest = getMemberById(memberdto.getFatherPriest().getMemberId());
+		}
+		member.setFatherPriest(null!=fatherPriest?fatherPriest:null);
 		return member;
 	}
 
@@ -153,6 +162,8 @@ public class MemberServiceImpl implements MemberService{
 			else {
 				//Throw exception saying parent Id is missing
 			}
+		}  else if (preset.equalsIgnoreCase("priests")){ // Get all priests
+			memberList = memberRepository.findAll().stream().filter(m -> "Priest".equalsIgnoreCase(m.getTier().getDescription())).collect(Collectors.toList());
 		}
 		return memberList;
 	}
@@ -175,16 +186,17 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public Member updateMember(Long memId, Member memberDetails) {
 
-		UserDetails currentUserDetails = userDetailsServiceImpl.getCurrentUserDetails();
+		UserDetails currentUserDetails = userService.getCurrentUserDetails();
 		
 		Member member = memberRepository.findById(memId).orElseThrow(() -> new ResourceNotFoundException("Member", "id", memId));
 
-		member.setFirstName(memberDetails.getFirstName());
+//		member.setFirstName(memberDetails.getFirstName());
 		member.setHomePhoneNo(memberDetails.getHomePhoneNo());
 		member.setEmail(memberDetails.getEmail());
 		member.setFirstName(memberDetails.getFirstName()); 
 		member.setMiddleName(memberDetails.getMiddleName()); 
 		member.setLastName(memberDetails.getLastName()); 
+		member.setGender(memberDetails.getGender());
 		member.setEmail(memberDetails.getEmail()); 
 		member.setHomePhoneNo(memberDetails.getHomePhoneNo()); 
 		member.setWorkPhoneNo(memberDetails.getWorkPhoneNo()); 
@@ -197,10 +209,25 @@ public class MemberServiceImpl implements MemberService{
 		member.setRegistrationDate(memberDetails.getRegistrationDate());
 		member.setPaymentStartDate(memberDetails.getPaymentStartDate());
 		member.setReactivatedDate(memberDetails.getReactivatedDate());
-		member.setReactivatedDate(memberDetails.getReactivatedDate());
+		member.setDeactivatedDate(memberDetails.getDeactivatedDate());
 		member.setTier(memberDetails.getTier());
 		member.setMaritalStatus(memberDetails.getMaritalStatus());
+		member.setRelationship(memberDetails.getRelationship());
 		member.setUpdatedBy(currentUserDetails.getUsername());
+		member.setSundaySchool(memberDetails.isSundaySchool());
+		member.setSebekaGubae(memberDetails.isSebekaGubae());
+
+		Member parentMember =null;
+		if(null!=memberDetails.getParent()) {
+			parentMember = getMemberById(memberDetails.getParent().getMemberId());
+		}
+		member.setParent(null!=parentMember?parentMember:null);
+		Member fatherPriest =null;
+		if(null!=memberDetails.getFatherPriest()) {
+			fatherPriest = getMemberById(memberDetails.getFatherPriest().getMemberId());
+		}
+		member.setFatherPriest(null!=fatherPriest?fatherPriest:null);
+
 
 		Member updatedMember = memberRepository.save(member);
 		
@@ -353,7 +380,7 @@ public class MemberServiceImpl implements MemberService{
 		memberHistory.setRegistrationDate(savedMember.getRegistrationDate());
 		memberHistory.setStatus(savedMember.getStatus());
 	//	memberHistory.setSuperId(null!=savedMember.getParent()?savedMember.getParent().getMemberId():null);
-		memberHistory.setTier(savedMember.getTier());
+		memberHistory.setTierId(savedMember.getTier().getId());
 		memberHistory.setCreatedDate(savedMember.getCreatedDate());
 		memberHistory.setUpdatedDate(null!=savedMember.getUpdatedDate()?savedMember.getUpdatedDate():null);
 		memberHistory.setUpdatedBy(savedMember.getUpdatedBy());

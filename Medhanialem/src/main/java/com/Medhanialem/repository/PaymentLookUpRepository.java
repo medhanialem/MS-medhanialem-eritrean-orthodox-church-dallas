@@ -17,7 +17,7 @@ public interface PaymentLookUpRepository extends JpaRepository<PaymentLookup,Lon
 //			  nativeQuery = true)
 //	List<MembershipPaymentLookupFee> findpaylookUpfees(@Param(value = "id") Long id,@Param(value = "year") int year,@Param(value = "month") int month);
 	
-	@Query(value = "SELECT * FROM test_db.PaymentLookupe WHERE `id` > :id  and id <= :currentId", 
+	@Query(value = "SELECT * FROM PaymentLookupe WHERE `id` > :id  and id <= :currentId",
 			  nativeQuery = true)
 	List<PaymentLookup> findpaylookUpfees(@Param(value = "id") Long id,@Param(value = "currentId") Long currentId);
 
@@ -25,10 +25,13 @@ public interface PaymentLookUpRepository extends JpaRepository<PaymentLookup,Lon
 			  nativeQuery = true)
 	PaymentLookup getIdbymonthAndyear(@Param(value = "year") int year,@Param(value = "month") int month);
 
-	@Query(value= "SELECT * FROM PaymentLookup where year = :year", nativeQuery = true)
-	List<PaymentLookup> getPaymentLookupInfo(@Param(value = "year")Long year);
+	List<PaymentLookup> findByYear(@Param(value = "year") int year);
 	
-	@Query(value= "SELECT * FROM test_db.PaymentLookup where year = :year and tierId = :tier", nativeQuery = true)
-	List<PaymentLookup> getPaymentLookupInfoByTier(@Param(value = "year")Long year, @Param(value = "tier")Long tier);
+	@Query(value= "SELECT * FROM PaymentLookup where year = :year and tierId = :tierId", nativeQuery = true)
+	List<PaymentLookup> findByTierAndYear(@Param(value = "year")Long year, @Param(value = "tierId")Long tier);
+	
+	
+//	int countByTierIdAndMonthAndYear(Long id, int month, int year);
+	int countByTierIdAndYear(Long id, int year);
 
 }
