@@ -15,6 +15,7 @@ public interface MembershipReceiptHistoryRepository extends JpaRepository<Member
 	@Query(value = "select * from MembershipReceiptHistory WHERE year =:year ORDER BY createdDate DESC", nativeQuery=true)
 	List<MembershipReceiptHistory> getAllReciptsByYear(@Param("year") int year);
 	
+	// Search by churchId is not working. Needs to be checked
 	@Query(value = "select * from MembershipReceiptHistory WHERE year =:year AND (receiptID =:searchCriteria OR churchId =:searchCriteria OR fullName like :searchCriteria%) ORDER BY createdDate DESC", nativeQuery=true)
 	List<MembershipReceiptHistory> getReceiptsByYearAndSearchCriteria(@Param("year") int year, @Param("searchCriteria") String searchCriteria);
 	

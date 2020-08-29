@@ -12,14 +12,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Medhanialem.exception.BackendException;
 import com.Medhanialem.exception.InvalidRequestException;
 import com.Medhanialem.jwtauthentication.model.OperationStatusModel;
 import com.Medhanialem.jwtauthentication.model.PasswordResetModel;
@@ -67,19 +70,19 @@ public class UserController {
 	}
 
 //	//this API is called for profile page for user
-//	@GetMapping("profile")
-//	@PreAuthorize("isAuthenticated()")
-//	public ResponseEntity<?> updateUser(@RequestParam String username) {
-//
-//		UserDetails userDetail = userService.getCurrentUserDetails();
-//		if(null==userDetail){
-//			throw new BackendException("Fail! -> Cause: No session for username!");
-//		}
-//		if(!(userDetail.getUsername().equals(username))){
-//			throw new BackendException("Fail! -> Cause: requested Username not the same as logged in user!");
-//		}
-//		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-//	}
+	@GetMapping("profile")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<?> updateUser(@RequestParam String username) {
+
+		UserDetails userDetail = userService.getCurrentUserDetails();
+		if(null==userDetail){
+			throw new BackendException("Fail! -> Cause: No session for username!");
+		}
+		if(!(userDetail.getUsername().equals(username))){
+			throw new BackendException("Fail! -> Cause: requested Username not the same as logged in user!");
+		}
+		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+	}
 
 	// this API changes a password for a logged in user
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -104,6 +107,7 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@CrossOrigin(origins = "*")
 	@PostMapping("/password-reset-request")
 	public ResponseEntity<OperationStatusModel> requestReset(
 			@RequestBody PasswordResetRequestModel passwordResetRequestModel) {
@@ -124,6 +128,7 @@ public class UserController {
 		}
 	}
 
+	@CrossOrigin(origins = "*")
 	@PostMapping("/password-reset")
 	public ResponseEntity<OperationStatusModel> requestReset(@RequestBody PasswordResetModel passwordResetModel) {
 		OperationStatusModel returnValue = new OperationStatusModel();
