@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.Medhanialem.exception.ApplicationException;
+import com.Medhanialem.service.PdfViewerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,9 @@ public class PaymentJournalcontroller {
 	
 	@Autowired
 	EmailService emailService;
+
+	@Autowired
+	PdfViewerService pdfViewerService;
 
 	// This API will be used to post payment to DB
 	@PostMapping("/pay")
@@ -126,6 +131,22 @@ public class PaymentJournalcontroller {
 		
 		return new ResponseEntity<>(sendEmailResult, HttpStatus.CREATED);
 		
+	}
+
+	@GetMapping(value="/viewreceipt/{receiptId}", produces = "application/pdf")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
+	public byte[] generatePdfReceipt( @PathVariable Long receiptId) {
+
+		logger.info("Inside generatePdfReceipt() method, {}", logger.getName());
+		byte[] result =null;
+		try {
+			 result = pdfViewerService.generatePdf(receiptId);
+		}
+		catch (BackendException e) {
+			logger.error(e.getMessage());
+			throw new ApplicationException("Pdf generation failed due to error -->"+e.getMessage());
+		}
+		return result;
 	}
 
 }
