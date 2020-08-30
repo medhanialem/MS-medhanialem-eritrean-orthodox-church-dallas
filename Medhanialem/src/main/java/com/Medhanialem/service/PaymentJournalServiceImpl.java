@@ -326,6 +326,7 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		membershipReceiptHistory.setYear(membershipReceiptHistoryYear);
 		membershipReceiptHistory.setMonthsDetail(removeLastChar(monthBuilder.toString()));
 		membershipReceiptHistory.setCreatedBy(createdBy);
+		membershipReceiptHistory.setEmail(member.getEmail());
 		
 		return membershipReceiptHistory;
 	}
@@ -348,6 +349,7 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		membershipReceiptHistory.setVoided(true);
 		membershipReceiptHistory.setParentReceipt(refundPayment.getParentReceiptId());
 		membershipReceiptHistory.setRemarks("Refunded months " + removeLastChar(monthBuilder.toString()));
+		membershipReceiptHistory.setEmail(member.getEmail());
 		
 		return membershipReceiptHistory;
 	}

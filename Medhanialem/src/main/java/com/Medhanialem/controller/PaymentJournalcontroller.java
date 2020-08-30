@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Medhanialem.exception.BackendException;
+import com.Medhanialem.model.MonthlyPaymentEmailRequest;
 import com.Medhanialem.model.payment.objects.MembershipReceiptHistory;
 import com.Medhanialem.model.payment.objects.PaymentInformation;
 import com.Medhanialem.model.payment.objects.PaymentResponse;
 import com.Medhanialem.model.payment.objects.Paymentrequest;
+import com.Medhanialem.service.EmailService;
 import com.Medhanialem.service.PaymentJournalService;
 import com.Medhanialem.utils.TypicalResponses;
 
@@ -36,6 +38,9 @@ public class PaymentJournalcontroller {
 	
 	@Autowired
 	PaymentJournalService paymentJournalService;
+	
+	@Autowired
+	EmailService emailService;
 
 	// This API will be used to post payment to DB
 	@PostMapping("/pay")
@@ -101,6 +106,25 @@ public class PaymentJournalcontroller {
 		}
 		
 		return new ResponseEntity<PaymentResponse>(refundedPayment, HttpStatus.CREATED);
+		
+	}
+	
+	@PostMapping("/sendEmail")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
+	public ResponseEntity<?> sendEmail(@RequestBody @Valid MonthlyPaymentEmailRequest monthlyPaymentEmailRequest) {
+		
+		logger.info("Inside sendEmail() method, {}", logger.getName());
+		boolean sendEmailResult = false;
+		
+		try {
+			sendEmailResult = emailService.sendEmail(monthlyPaymentEmailRequest);
+		}
+		catch (BackendException e) {
+			logger.error(e.getMessage());
+			return TypicalResponses.setError(e.getMessage());
+		}
+		
+		return new ResponseEntity<>(sendEmailResult, HttpStatus.CREATED);
 		
 	}
 

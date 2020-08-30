@@ -6,7 +6,7 @@ spring:
     #initialization-mode: always
     #username: ${MYSQL_USERNAME:admin}
     #password: ${MYSQL_PASSWORD:M3dhani3Al3mChurch!Y}
-    url: jdbc:mysql://localhost:3306/medhanialem?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/medhanie_alem_dallas?serverTimezone=UTC
     initialization-mode: always
     username: root
     password:
@@ -26,4 +26,4 @@ twilio:
 logging:
   level:
     org.hibernate.SQL: DEBUG
-    org.hibernate.type: TRACE
+    org.hibernate.type: DEBUG

@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -72,6 +71,8 @@ public class MembershipReceiptHistory {
 	private boolean voided; // if its returned we set true otherwise false
 	
 	private Long parentReceipt;
+	
+	private String email;
 
 	public Long getId() {
 		return id;
@@ -201,13 +202,21 @@ public class MembershipReceiptHistory {
 		this.parentReceipt = parentReceipt;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	@Override
 	public String toString() {
 		return "MembershipReceiptHistory [id=" + id + ", receiptId=" + receiptId + ", memberId=" + memberId
 				+ ", fullName=" + fullName + ", churchId=" + churchId + ", phone=" + phone + ", tierDescription="
 				+ tierDescription + ", total=" + total + ", months=" + months + ", year=" + year + ", monthsDetail="
 				+ monthsDetail + ", createdDate=" + createdDate + ", createdBy=" + createdBy + ", remarks=" + remarks
-				+ ", voided=" + voided + ", parentReceipt=" + parentReceipt + "]";
+				+ ", voided=" + voided + ", parentReceipt=" + parentReceipt + ", email=" + email + "]";
 	}
 
 }
