@@ -65,15 +65,12 @@ public class PdfViewerServiceImpl implements PdfViewerService {
 		Chunk chunk = new Chunk("Receipt", font);
 		document.add(chunk);
 
-//		Paragraph paragraph = new Paragraph();
-//        paragraph.add(new Chunk("Full Name: \t" + membershipReceiptHistory.getFullName().toUpperCase()));
-//        paragraph.add(new Chunk("ChurchId: \t" + membershipReceiptHistory.getChurchId()));
-//        paragraph.add(new Chunk("Tier: \t" + membershipReceiptHistory.getTierDescription()));
-//        paragraph.add(new Chunk("Date: \t" + membershipReceiptHistory.getCreatedDate()));
-//        paragraph.add(new Chunk("Total: \t" + membershipReceiptHistory.getTotal()));
-//        document.add(paragraph);
+		Paragraph paragraph = new Paragraph();
+        paragraph.add(new Chunk(" " ));
 
-		PdfPTable table = new PdfPTable(3);
+        document.add(paragraph);
+
+		PdfPTable table = new PdfPTable(4);
 		addTableHeader(table);
 		addRows(table,membershipReceiptHistory);
 		document.add(table);
@@ -82,13 +79,14 @@ public class PdfViewerServiceImpl implements PdfViewerService {
     }
 
 	private void addRows(PdfPTable table,MembershipReceiptHistory membershipReceiptHistory) {
+        table.addCell(membershipReceiptHistory.getChurchId());
 		table.addCell(membershipReceiptHistory.getFullName().toUpperCase());
 		table.addCell(membershipReceiptHistory.getCreatedDate().toString());
 		table.addCell(membershipReceiptHistory.getTotal().toString());
 	}
 
 	private void addTableHeader(PdfPTable table) {
-		Stream.of("Full Name", "Date", "Total paid")
+		Stream.of("Receipt No.","Full Name", "Date", "Total paid")
 				.forEach(columnTitle -> {
 					PdfPCell header = new PdfPCell();
 					header.setBackgroundColor(BaseColor.LIGHT_GRAY);
