@@ -2,6 +2,7 @@ package com.Medhanialem.service;
 
 import java.util.List;
 
+import com.Medhanialem.model.MonthlyPaymentEmailRequest;
 import com.Medhanialem.model.payment.objects.MembershipReceiptHistory;
 import com.Medhanialem.model.payment.objects.PaymentInformation;
 import com.Medhanialem.model.payment.objects.PaymentResponse;
@@ -20,5 +21,7 @@ public interface PaymentJournalService {
 	public List<MembershipReceiptHistory> getReceipts(int year, String searchCriteria);
 	
 	public PaymentResponse refundMonthlyFee(Long receiptId);
+
+	boolean sendReceiptByEmail(MonthlyPaymentEmailRequest monthlyPaymentEmailRequest);
 	
 }

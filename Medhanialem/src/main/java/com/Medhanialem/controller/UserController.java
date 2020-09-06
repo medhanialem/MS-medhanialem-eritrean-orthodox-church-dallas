@@ -129,7 +129,7 @@ public class UserController {
 	}
 
 	@CrossOrigin(origins = "*")
-	@PostMapping("/password-reset")
+	@PostMapping("/passwordReset")
 	public ResponseEntity<OperationStatusModel> requestReset(@RequestBody PasswordResetModel passwordResetModel) {
 		OperationStatusModel returnValue = new OperationStatusModel();
 		returnValue.setOperationName(RequestOperationName.PASSWORD_RESET.name());

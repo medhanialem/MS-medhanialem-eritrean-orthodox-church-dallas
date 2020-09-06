@@ -21,7 +21,7 @@ public class MailServiceImpl implements MailService {
     @Autowired
     JavaMailSender mailSender;
  
-    public boolean sendEmail(String mailFrom, String mailTo, String subject, String body) {
+    public boolean sendEmail(String mailFrom, String mailTo, String subject, String body, String personal) {
     	boolean mailStatus= false;
     	
         MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -31,13 +31,12 @@ public class MailServiceImpl implements MailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
  
             mimeMessageHelper.setSubject(subject);
-            mimeMessageHelper.setFrom(new InternetAddress(mailFrom, "MedhaniAlemDallas.com"));
+            mimeMessageHelper.setFrom(new InternetAddress(mailFrom, personal));
             mimeMessageHelper.setTo(mailTo);
-            mimeMessageHelper.setText(body);
+            mimeMessageHelper.setText(body, true);
  
             mailSender.send(mimeMessageHelper.getMimeMessage());
             mailStatus= true;
-        return mailStatus;
         } catch (MessagingException e) {
             e.printStackTrace();
             

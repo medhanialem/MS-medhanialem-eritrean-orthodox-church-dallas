@@ -8,7 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.Medhanialem.model.MonthlyPaymentEmailRequest;
+import com.Medhanialem.service.Impl.MailServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +39,8 @@ import com.Medhanialem.repository.PaymentlogRepositoryjdbc;
 @Service
 public class PaymentJournalServiceImpl implements PaymentJournalService {
 
+	Logger logger = LoggerFactory.getLogger(PaymentJournalServiceImpl.class);
+
 	@Autowired
 	MemberRepository memberRepository;
 	
@@ -54,6 +61,18 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 	
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	private MailServiceImpl mailService;
+
+	@Value("${receipt.subject}")
+	String subject;
+
+	@Value("${receipt.from}")
+	String from;
+
+	@Value("${receipt.personal}")
+	String personal;
 	
 	@Override
 	public List<PaymentInformation> getAllPayment(int year) {
@@ -280,6 +299,18 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		return refundResponse;
 		
 	}
+
+	@Override
+	public boolean sendReceiptByEmail(MonthlyPaymentEmailRequest monthlyPaymentEmailRequest) {
+		logger.info("Inside sendReceiptByEmail() method, {}", logger.getName());
+		logger.info("Request object: {}", monthlyPaymentEmailRequest);
+
+		MembershipReceiptHistory  membershipReceiptHistory = membershipReceiptHistoryRepository.findByReceiptId(monthlyPaymentEmailRequest.getReceiptId()).orElseThrow(
+				() -> new BackendException("There is no receipt found with receiptId = " + monthlyPaymentEmailRequest.getReceiptId()));
+
+		return mailService.sendEmail(from, monthlyPaymentEmailRequest.getEmail(), subject, getReceiptBody(membershipReceiptHistory), personal);
+	}
+
 	
 	private boolean checkPaymentStartDate(Date paymentStartDate, int year) {
 
@@ -403,6 +434,161 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 	
 	private static String removeLastChar(String s) {
 	    return (s == null || s.length() == 0) ? null : (s.substring(0, s.length() - 1));
+	}
+
+	public String getReceiptBody(MembershipReceiptHistory membershipReceiptHistory) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("<p>Hi <b><i><span style=\"color:blue\">" + membershipReceiptHistory.getFullName() + "</span><i></b>. <br>Thank you! We have received your monthly membership payment and you will find your receipt below.</p>");
+		sb.append("<div class='nameMonthTotal'>");
+		sb.append("<table class='memberPaymentInfoTbl' style=\"border: 1px solid lightblue;\">");
+		sb.append("<tr>");
+		sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px; background-color: #f5f5f5;\">Full Name</td>");
+		sb.append("<td id='value' style=\"border: 1px solid lightblue;\">" + membershipReceiptHistory.getFullName() + "</td>");
+		sb.append("</tr>");
+		sb.append("<tr>");
+		sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px; background-color: #f5f5f5;\">Church Id</td>");
+		sb.append("<td id='value' style=\"border: 1px solid lightblue;\">" + membershipReceiptHistory.getChurchId() + "</td>");
+		sb.append("</tr>");
+		sb.append("<tr>");
+		sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px; background-color: #f5f5f5;\">Phone</td>");
+		sb.append("<td id='value' style=\"border: 1px solid lightblue;\">" + membershipReceiptHistory.getPhone() + "</td>");
+		sb.append("</tr>");
+		sb.append("<tr>");
+		sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px; background-color: #f5f5f5;\">Tier</td>");
+		sb.append("<td id='value' style=\"border: 1px solid lightblue;\">" + membershipReceiptHistory.getTierDescription() + "</td>");
+		sb.append("</tr>");
+		sb.append("<tr>");
+		sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px; background-color: #f5f5f5;\">Months</td>");
+		sb.append("<td id='value' style=\"border: 1px solid lightblue;\">" + membershipReceiptHistory.getMonths() + "</td>");
+		sb.append("</tr>");
+		sb.append("<tr>");
+		sb.append("<tr>");
+		sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px; background-color: #f5f5f5;\">Date</td>");
+		sb.append("<td id='value' style=\"border: 1px solid lightblue;\">" + membershipReceiptHistory.getCreatedDate() + "</td>");
+		sb.append("</tr>");
+		sb.append("<tr>");
+		sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px; background-color: #f5f5f5;\">Total</td>");
+		sb.append("<td id='value' style=\"border: 1px solid lightblue;\">$" + membershipReceiptHistory.getTotal() + "</td>");
+		sb.append("</tr>");
+		sb.append("<tr>");
+		sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px; background-color: #f5f5f5;\">Receipt No</td>");
+		sb.append("<td id='value' style=\"border: 1px solid lightblue;\">" + membershipReceiptHistory.getReceiptId() + "</td>");
+		sb.append("</tr>");
+		sb.append("</table>");
+		sb.append("</div>");
+
+		sb.append("<br><div>");
+		sb.append("<table class='memberPaymentInfoMonthsTbl'>");
+		sb.append("<tr>");
+		sb.append("<td id='leftLabels'><b>Year: </b></td>");
+		sb.append("<td id='leftLabels'>" + membershipReceiptHistory.getYear() + "</td>");
+		sb.append("</tr>");
+		sb.append("</table>");
+		sb.append("<table class='memberPaymentInfoMonthsTbl' style=\"border: 1px solid lightblue;\">");
+		sb.append("<tr>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>January</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>February</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>March</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>April</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>May</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>June</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>July</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>August</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>September</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>October</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>November</b></td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; background-color: #f5f5f5; width: 70px;\"><b>December</b></td>");
+		sb.append("</tr>");
+
+		Map<String, String> monthsPaymentDetail = new HashMap<>();
+		fetchMonthsPaymentDetail(monthsPaymentDetail, membershipReceiptHistory.getMonthsDetail());
+
+		sb.append("<tr>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Jan") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Feb") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Mar") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Apr") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("May") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Jun") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Jul") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Aug") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Sep") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Oct") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Nov") + "</td>");
+		sb.append("<td id='leftLabelsMonths' style=\"border: 1px solid lightblue; width: 70px;\">" + monthsPaymentDetail.get("Dec") + "</td>");
+		sb.append("</tr>");
+		sb.append("</table>");
+		sb.append("</div>");
+
+		sb.append("<br><br><div>");
+		sb.append("Regards,<br>");
+		sb.append("Finance Department<br>");
+		sb.append("Medhani Alem Eritrean Orthodox Church<br>");
+		sb.append("Dallas, TX");
+		sb.append("</div>");
+
+		return sb.toString();
+	}
+
+	public Map<String, String> fetchMonthsPaymentDetail(Map<String, String> monthsPaymentDetail, String monthsDetail) {
+		monthsPaymentDetail.put("Jan", "");
+		monthsPaymentDetail.put("Feb", "");
+		monthsPaymentDetail.put("Mar", "");
+		monthsPaymentDetail.put("Apr", "");
+		monthsPaymentDetail.put("May", "");
+		monthsPaymentDetail.put("Jun", "");
+		monthsPaymentDetail.put("Jul", "");
+		monthsPaymentDetail.put("Aug", "");
+		monthsPaymentDetail.put("Sep", "");
+		monthsPaymentDetail.put("Oct", "");
+		monthsPaymentDetail.put("Nov", "");
+		monthsPaymentDetail.put("Dec", "");
+
+		String[] monthDetailArray = monthsDetail.split(",");
+
+		for (int i = 0; i < monthDetailArray.length; i++) {
+			switch (monthDetailArray[i]) {
+				case "Jan":
+					monthsPaymentDetail.put("Jan", "Paid");
+					break;
+				case "Feb":
+					monthsPaymentDetail.put("Feb", "Paid");
+					break;
+				case "Mar":
+					monthsPaymentDetail.put("Mar", "Paid");
+					break;
+				case "Apr":
+					monthsPaymentDetail.put("Apr", "Paid");
+					break;
+				case "May":
+					monthsPaymentDetail.put("May", "Paid");
+					break;
+				case "Jun":
+					monthsPaymentDetail.put("Jun", "Paid");
+					break;
+				case "Jul":
+					monthsPaymentDetail.put("Jul", "Paid");
+					break;
+				case "Aug":
+					monthsPaymentDetail.put("Aug", "Paid");
+					break;
+				case "Sep":
+					monthsPaymentDetail.put("Sep", "Paid");
+					break;
+				case "Oct":
+					monthsPaymentDetail.put("Oct", "Paid");
+					break;
+				case "Nov":
+					monthsPaymentDetail.put("Nov", "Paid");
+					break;
+				case "Dec":
+					monthsPaymentDetail.put("Dec", "Paid");
+					break;
+			}
+		}
+
+		return monthsPaymentDetail;
 	}
 
 }

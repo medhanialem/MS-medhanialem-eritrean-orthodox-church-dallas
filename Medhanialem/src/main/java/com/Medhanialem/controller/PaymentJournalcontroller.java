@@ -27,7 +27,6 @@ import com.Medhanialem.model.payment.objects.MembershipReceiptHistory;
 import com.Medhanialem.model.payment.objects.PaymentInformation;
 import com.Medhanialem.model.payment.objects.PaymentResponse;
 import com.Medhanialem.model.payment.objects.Paymentrequest;
-import com.Medhanialem.service.EmailService;
 import com.Medhanialem.service.PaymentJournalService;
 import com.Medhanialem.utils.TypicalResponses;
 
@@ -40,9 +39,6 @@ public class PaymentJournalcontroller {
 	
 	@Autowired
 	PaymentJournalService paymentJournalService;
-	
-	@Autowired
-	EmailService emailService;
 
 	@Autowired
 	PdfViewerService pdfViewerService;
@@ -114,15 +110,15 @@ public class PaymentJournalcontroller {
 		
 	}
 	
-	@PostMapping("/sendEmail")
+	@PostMapping("/sendReceiptByEmail")
 	@PreAuthorize("hasAnyAuthority('ADMIN','SECRETARY','ABO_WENBER_SEBEKA_GUBAE')")
-	public ResponseEntity<?> sendEmail(@RequestBody @Valid MonthlyPaymentEmailRequest monthlyPaymentEmailRequest) {
+	public ResponseEntity<?> sendReceiptByEmail(@RequestBody @Valid MonthlyPaymentEmailRequest monthlyPaymentEmailRequest) {
 		
-		logger.info("Inside sendEmail() method, {}", logger.getName());
-		boolean sendEmailResult = false;
+		logger.info("Inside sendReceiptByEmail() method, {}", logger.getName());
+		boolean sendEmailResult;
 		
 		try {
-			sendEmailResult = emailService.sendEmail(monthlyPaymentEmailRequest);
+			sendEmailResult = paymentJournalService.sendReceiptByEmail(monthlyPaymentEmailRequest);
 		}
 		catch (BackendException e) {
 			logger.error(e.getMessage());
