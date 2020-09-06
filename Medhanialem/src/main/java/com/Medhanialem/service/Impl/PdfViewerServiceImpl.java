@@ -30,7 +30,7 @@ public class PdfViewerServiceImpl implements PdfViewerService {
     @Override
     public byte[] generatePdf(Long receiptId) {
 
-        MembershipReceiptHistory membershipReceiptHistory = membershipReceiptHistoryRepository.findById(receiptId).orElseThrow(
+        MembershipReceiptHistory membershipReceiptHistory = membershipReceiptHistoryRepository.findByReceiptId(receiptId).orElseThrow(
                 () -> new BackendException("There is no receipt found with receiptId = " + receiptId));
 
         ByteArrayOutputStream outputStream = null;
