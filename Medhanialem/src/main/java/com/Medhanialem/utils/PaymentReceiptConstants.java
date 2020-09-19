@@ -33,7 +33,4 @@ public class PaymentReceiptConstants {
 
     public static final String DEC = "Dec";
 
-    public static final String TIMEZONE_US_CENTRAL = "US/Central";
-
-    public static final String DATE_FORMAT_MM_DD_YYYY = "MM/dd/yyyy";
 }
