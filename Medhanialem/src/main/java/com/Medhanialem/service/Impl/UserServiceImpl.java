@@ -21,7 +21,7 @@ import com.Medhanialem.repository.PasswordResetTokenRepository;
 import com.Medhanialem.repository.UserRepository;
 import com.Medhanialem.service.UserPrinciple;
 import com.Medhanialem.service.UserService;
-import com.Medhanialem.utils.EmailUtility;
+import com.Medhanialem.utils.ResetPasswordByEmailUtility;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	private PasswordResetTokenRepository passwordResetTokenRepository;
 
 	@Autowired
-	private EmailUtility emailUtility;
+	private ResetPasswordByEmailUtility emailUtility;
 
 	@Autowired
 	PasswordEncoder encoder;

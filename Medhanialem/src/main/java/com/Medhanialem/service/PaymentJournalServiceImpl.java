@@ -310,10 +310,19 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		logger.info("Inside sendReceiptByEmail() method, {}", logger.getName());
 		logger.info("Request object: {}", monthlyPaymentEmailRequest);
 
+		boolean sendEmailResult = false;
+
 		MembershipReceiptHistory  membershipReceiptHistory = membershipReceiptHistoryRepository.findByReceiptId(monthlyPaymentEmailRequest.getReceiptId()).orElseThrow(
 				() -> new BackendException("There is no receipt found with receiptId = " + monthlyPaymentEmailRequest.getReceiptId()));
 
-		return mailService.sendEmail(from, monthlyPaymentEmailRequest.getEmail(), subject, buildReceiptByEmailUtility.getReceiptBody(membershipReceiptHistory), personal);
+		try {
+			mailService.sendEmail(from, monthlyPaymentEmailRequest.getEmail(), subject, buildReceiptByEmailUtility.getReceiptBody(membershipReceiptHistory), personal);
+			sendEmailResult = true;
+		} catch (Exception e) {
+			logger.error("Exception in sending email: ", e.getMessage());
+		}
+
+		return sendEmailResult;
 	}
 
 	

@@ -6,37 +6,39 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 
-import com.Medhanialem.service.MailService;
- 
+@Component
+public class MailServiceImpl {
 
+    Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 
-@Service("mailService")
-public class MailServiceImpl implements MailService {
- 
     @Autowired
     JavaMailSender mailSender;
 
-    public boolean sendEmail(String mailFrom, String mailTo, String subject, String body, String personal) {
-    	boolean mailStatus= false;
+    @Async
+    public void sendEmail(String mailFrom, String mailTo, String subject, String body, String personal) {
     	
         MimeMessage mimeMessage = mailSender.createMimeMessage();
  
         try {
  
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
- 
+
+            logger.info("Sending email to: " + mailTo);
             mimeMessageHelper.setSubject(subject);
             mimeMessageHelper.setFrom(new InternetAddress(mailFrom, personal));
             mimeMessageHelper.setTo(mailTo);
             mimeMessageHelper.setText(body, true);
  
             mailSender.send(mimeMessageHelper.getMimeMessage());
-            mailStatus= true;
+            logger.info("Email sent");
         } catch (MessagingException e) {
             e.printStackTrace();
             
@@ -44,7 +46,6 @@ public class MailServiceImpl implements MailService {
             e.printStackTrace();
             
         }
-        return mailStatus;
     }
   
 }
