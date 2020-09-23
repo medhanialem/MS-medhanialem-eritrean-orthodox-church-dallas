@@ -41,7 +41,7 @@ public class PdfViewerServiceImpl implements PdfViewerService {
                 () -> new BackendException("There is no receipt found with receiptId = " + receiptId));
 
         ByteArrayOutputStream outputStream = null;
-        byte[] bytes = null;
+        byte[] bytes;
         try {
             outputStream = new ByteArrayOutputStream();
             writePdf(outputStream, membershipReceiptHistory);
@@ -88,20 +88,23 @@ public class PdfViewerServiceImpl implements PdfViewerService {
         p2.setAlignment(Element.ALIGN_CENTER);
         document.add(p2);
 
-        document.add(new Paragraph("\n"));
+        document.add(new Paragraph("\n\n\n"));
 		PdfPTable table = new PdfPTable(2);
+        table.setWidthPercentage(50);
+        table.setWidths(new float[] {1, 2});
+        table.setHorizontalAlignment(Element.ALIGN_LEFT);
 
 		addRows(table,membershipReceiptHistory);
 		document.add(table);
 
         document.add(new Paragraph("\n"));
         PdfPTable table2 = new PdfPTable(12);
+        table2.setWidthPercentage(100);
+        table2.setHorizontalAlignment(Element.ALIGN_LEFT);
 
-
-        document.add(new Paragraph("\n"));
-        Font font2 = FontFactory.getFont("Arial", 12, Font.BOLD);
-        Paragraph table2Heading= new Paragraph("YEAR: "+membershipReceiptHistory.getYear(),font2);
-        table2Heading.setAlignment(Element.ALIGN_CENTER);
+        Font font2 = FontFactory.getFont("Arial", 11, Font.BOLD);
+        Paragraph table2Heading= new Paragraph("Year: " + membershipReceiptHistory.getYear(), font2);
+        table2Heading.setAlignment(Element.ALIGN_LEFT);
         document.add(table2Heading);
         document.add(new Paragraph("\n"));
 
@@ -110,19 +113,21 @@ public class PdfViewerServiceImpl implements PdfViewerService {
         Map<String, String> monthsPaymentDetail = new HashMap<>();
         buildReceiptByEmailUtility.fetchMonthsPaymentDetail(monthsPaymentDetail, membershipReceiptHistory);
 
-        addPaidMonthsTable(table2,monthsPaymentDetail);
+        addPaidMonthsTable(table2, monthsPaymentDetail);
         document.add(table2);
 
         document.close();
     }
 
     private void addMonthsHeadersTable(PdfPTable table2) {
+        Font monthsDetailFont = FontFactory.getFont("Arial", 11, Font.BOLD);
         Stream.of("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
                 .forEach(columnTitle -> {
                     PdfPCell header = new PdfPCell();
                     header.setBorderWidth(1);
                     header.setBorderColor(new BaseColor(173, 216, 230));
-                    header.setPhrase(new Phrase(columnTitle));
+                    header.setPhrase(new Phrase(columnTitle, monthsDetailFont));
+                    header.setPaddingLeft(3);
                     table2.addCell(header);
                 });
     }
@@ -134,93 +139,144 @@ public class PdfViewerServiceImpl implements PdfViewerService {
                     header.setBorderWidth(1);
                     header.setBorderColor(new BaseColor(173, 216, 230));
                     header.setPhrase(new Phrase(monthCol));
+                    header.setPaddingLeft(3);
+                    header.setBackgroundColor(BaseColor.WHITE);
                     table2.addCell(header);
                 });
     }
 
     private void addRows(PdfPTable table,MembershipReceiptHistory membershipReceiptHistory) {
-
+        Font memberDetailsFont = FontFactory.getFont("Arial", 11, Font.BOLD);
         PdfPCell header3 = new PdfPCell();
         header3.setBorderWidth(1);
-        header3.setPhrase(new Phrase("Full Name".toUpperCase()));
+        header3.setPhrase(new Phrase("Full Name", memberDetailsFont));
+        header3.setPaddingLeft(4);
         table.addCell(header3);
 
         PdfPCell nameVal = new PdfPCell();
         nameVal.setBackgroundColor(BaseColor.WHITE);
         nameVal.setPhrase(new Phrase(membershipReceiptHistory.getFullName()));
+        nameVal.setPaddingLeft(4);
         table.addCell(nameVal);
 
         PdfPCell header2 = new PdfPCell();
         header2.setBorderWidth(1);
-        header2.setPhrase(new Phrase("Church Id"));
+        header2.setPhrase(new Phrase("Church Id", memberDetailsFont));
+        header2.setPaddingLeft(4);
         table.addCell(header2);
 
         PdfPCell churchidVal = new PdfPCell();
         churchidVal.setBackgroundColor(BaseColor.WHITE);
         churchidVal.setPhrase(new Phrase(membershipReceiptHistory.getChurchId()));
+        churchidVal.setPaddingLeft(4);
         table.addCell(churchidVal);
 
 
         PdfPCell header4 = new PdfPCell();
         header4.setBorderWidth(1);
-        header4.setPhrase(new Phrase("Phone NO."));
+        header4.setPhrase(new Phrase("Phone", memberDetailsFont));
+        header4.setPaddingLeft(4);
         table.addCell(header4);
 
         PdfPCell phoneVal = new PdfPCell();
         phoneVal.setBackgroundColor(BaseColor.WHITE);
         phoneVal.setPhrase(new Phrase(membershipReceiptHistory.getPhone()));
+        phoneVal.setPaddingLeft(4);
         table.addCell(phoneVal);
 
         PdfPCell header5 = new PdfPCell();
         header5.setBorderWidth(1);
-        header5.setPhrase(new Phrase("Tier"));
+        header5.setPhrase(new Phrase("Tier", memberDetailsFont));
+        header5.setPaddingLeft(4);
         table.addCell(header5);
 
         PdfPCell tierVal = new PdfPCell();
         tierVal.setBackgroundColor(BaseColor.WHITE);
         tierVal.setPhrase(new Phrase(membershipReceiptHistory.getTierDescription()));
+        tierVal.setPaddingLeft(4);
         table.addCell(tierVal);
 
         PdfPCell header6 = new PdfPCell();
         header6.setBorderWidth(1);
-        header6.setPhrase(new Phrase("Months"));
+        header6.setPhrase(new Phrase("Months", memberDetailsFont));
+        header6.setPaddingLeft(4);
         table.addCell(header6);
 
         PdfPCell monthsVal = new PdfPCell();
         monthsVal.setBackgroundColor(BaseColor.WHITE);
         monthsVal.setPhrase(new Phrase(String.valueOf(membershipReceiptHistory.getMonths())));
+        monthsVal.setPaddingLeft(4);
         table.addCell(monthsVal);
 
         PdfPCell header7 = new PdfPCell();
         header7.setBorderWidth(1);
-        header7.setPhrase(new Phrase("Date"));
+        header7.setPhrase(new Phrase("Date", memberDetailsFont));
+        header7.setPaddingLeft(4);
         table.addCell(header7);
 
         PdfPCell dateVal = new PdfPCell();
         dateVal.setBackgroundColor(BaseColor.WHITE);
         dateVal.setPhrase(new Phrase(membershipReceiptHistory.getCreatedDate().toString()));
+        dateVal.setPaddingLeft(4);
 		table.addCell(dateVal);
 
         PdfPCell header8 = new PdfPCell();
         header8.setBorderWidth(1);
-        header8.setPhrase(new Phrase("Total"));
+        header8.setPhrase(new Phrase("Total", memberDetailsFont));
+        header8.setPaddingLeft(4);
         table.addCell(header8);
-
 
         PdfPCell totValue = new PdfPCell();
         totValue.setBackgroundColor(BaseColor.WHITE);
-        totValue.setPhrase(new Phrase(membershipReceiptHistory.getTotal().toString()));
+
+        if (!membershipReceiptHistory.isVoided() || null == membershipReceiptHistory.getParentReceipt()) {
+            totValue.setPhrase(new Phrase("$" + membershipReceiptHistory.getTotal()));
+        } else {
+            totValue.setPhrase(new Phrase("-$" + (-1 * membershipReceiptHistory.getTotal())));
+        }
+
+        totValue.setPaddingLeft(4);
         table.addCell(totValue);
 
 
         PdfPCell header1 = new PdfPCell();
         header1.setBorderWidth(1);
-        header1.setPhrase(new Phrase("Receipt No."));
+        header1.setPhrase(new Phrase("Receipt No", memberDetailsFont));
+        header1.setPaddingLeft(4);
         table.addCell(header1);
 
         PdfPCell header10 = new PdfPCell();
         header10.setBackgroundColor(BaseColor.WHITE);
         header10.setPhrase(new Phrase(membershipReceiptHistory.getReceiptId().toString()));
+        header10.setPaddingLeft(4);
         table.addCell(header10);
+
+        if (membershipReceiptHistory.isVoided() && null != membershipReceiptHistory.getParentReceipt()) {
+            PdfPCell originalReceipt = new PdfPCell();
+            originalReceipt.setBorderWidth(1);
+            originalReceipt.setPhrase(new Phrase("Original Receipt No", memberDetailsFont));
+            originalReceipt.setPaddingLeft(4);
+            table.addCell(originalReceipt);
+
+            PdfPCell originalReceiptValue = new PdfPCell();
+            originalReceiptValue.setBackgroundColor(BaseColor.WHITE);
+            originalReceiptValue.setPhrase(new Phrase("" + membershipReceiptHistory.getParentReceipt()));
+            originalReceiptValue.setPaddingLeft(4);
+            table.addCell(originalReceiptValue);
+        }
+
+        if (membershipReceiptHistory.isVoided() && null == membershipReceiptHistory.getParentReceipt()) {
+            PdfPCell voided = new PdfPCell();
+            voided.setBorderWidth(1);
+            voided.setPhrase(new Phrase("Voided", memberDetailsFont));
+            voided.setPaddingLeft(4);
+            table.addCell(voided);
+
+            PdfPCell voidedValue = new PdfPCell();
+            voidedValue.setBackgroundColor(BaseColor.WHITE);
+            voidedValue.setPhrase(new Phrase("TRUE"));
+            voidedValue.setPaddingLeft(4);
+            table.addCell(voidedValue);
+        }
 	}
 }
