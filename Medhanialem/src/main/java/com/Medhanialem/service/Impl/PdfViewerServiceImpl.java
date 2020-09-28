@@ -149,24 +149,28 @@ public class PdfViewerServiceImpl implements PdfViewerService {
         Font memberDetailsFont = FontFactory.getFont("Arial", 11, Font.BOLD);
         PdfPCell header3 = new PdfPCell();
         header3.setBorderWidth(1);
+        header3.setBorderColor(new BaseColor(173, 216, 230));
         header3.setPhrase(new Phrase("Full Name", memberDetailsFont));
         header3.setPaddingLeft(4);
         table.addCell(header3);
 
         PdfPCell nameVal = new PdfPCell();
         nameVal.setBackgroundColor(BaseColor.WHITE);
+        nameVal.setBorderColor(new BaseColor(173, 216, 230));
         nameVal.setPhrase(new Phrase(membershipReceiptHistory.getFullName()));
         nameVal.setPaddingLeft(4);
         table.addCell(nameVal);
 
         PdfPCell header2 = new PdfPCell();
         header2.setBorderWidth(1);
+        header2.setBorderColor(new BaseColor(173, 216, 230));
         header2.setPhrase(new Phrase("Church Id", memberDetailsFont));
         header2.setPaddingLeft(4);
         table.addCell(header2);
 
         PdfPCell churchidVal = new PdfPCell();
         churchidVal.setBackgroundColor(BaseColor.WHITE);
+        churchidVal.setBorderColor(new BaseColor(173, 216, 230));
         churchidVal.setPhrase(new Phrase(membershipReceiptHistory.getChurchId()));
         churchidVal.setPaddingLeft(4);
         table.addCell(churchidVal);
@@ -174,59 +178,69 @@ public class PdfViewerServiceImpl implements PdfViewerService {
 
         PdfPCell header4 = new PdfPCell();
         header4.setBorderWidth(1);
+        header4.setBorderColor(new BaseColor(173, 216, 230));
         header4.setPhrase(new Phrase("Phone", memberDetailsFont));
         header4.setPaddingLeft(4);
         table.addCell(header4);
 
         PdfPCell phoneVal = new PdfPCell();
         phoneVal.setBackgroundColor(BaseColor.WHITE);
+        phoneVal.setBorderColor(new BaseColor(173, 216, 230));
         phoneVal.setPhrase(new Phrase(membershipReceiptHistory.getPhone()));
         phoneVal.setPaddingLeft(4);
         table.addCell(phoneVal);
 
         PdfPCell header5 = new PdfPCell();
         header5.setBorderWidth(1);
+        header5.setBorderColor(new BaseColor(173, 216, 230));
         header5.setPhrase(new Phrase("Tier", memberDetailsFont));
         header5.setPaddingLeft(4);
         table.addCell(header5);
 
         PdfPCell tierVal = new PdfPCell();
         tierVal.setBackgroundColor(BaseColor.WHITE);
+        tierVal.setBorderColor(new BaseColor(173, 216, 230));
         tierVal.setPhrase(new Phrase(membershipReceiptHistory.getTierDescription()));
         tierVal.setPaddingLeft(4);
         table.addCell(tierVal);
 
         PdfPCell header6 = new PdfPCell();
         header6.setBorderWidth(1);
+        header6.setBorderColor(new BaseColor(173, 216, 230));
         header6.setPhrase(new Phrase("Months", memberDetailsFont));
         header6.setPaddingLeft(4);
         table.addCell(header6);
 
         PdfPCell monthsVal = new PdfPCell();
         monthsVal.setBackgroundColor(BaseColor.WHITE);
+        monthsVal.setBorderColor(new BaseColor(173, 216, 230));
         monthsVal.setPhrase(new Phrase(String.valueOf(membershipReceiptHistory.getMonths())));
         monthsVal.setPaddingLeft(4);
         table.addCell(monthsVal);
 
         PdfPCell header7 = new PdfPCell();
         header7.setBorderWidth(1);
+        header7.setBorderColor(new BaseColor(173, 216, 230));
         header7.setPhrase(new Phrase("Date", memberDetailsFont));
         header7.setPaddingLeft(4);
         table.addCell(header7);
 
         PdfPCell dateVal = new PdfPCell();
         dateVal.setBackgroundColor(BaseColor.WHITE);
+        dateVal.setBorderColor(new BaseColor(173, 216, 230));
         dateVal.setPhrase(new Phrase(membershipReceiptHistory.getCreatedDate().toString()));
         dateVal.setPaddingLeft(4);
 		table.addCell(dateVal);
 
         PdfPCell header8 = new PdfPCell();
         header8.setBorderWidth(1);
+        header8.setBorderColor(new BaseColor(173, 216, 230));
         header8.setPhrase(new Phrase("Total", memberDetailsFont));
         header8.setPaddingLeft(4);
         table.addCell(header8);
 
         PdfPCell totValue = new PdfPCell();
+        totValue.setBorderColor(new BaseColor(173, 216, 230));
         totValue.setBackgroundColor(BaseColor.WHITE);
 
         if (!membershipReceiptHistory.isVoided() || null == membershipReceiptHistory.getParentReceipt()) {
@@ -241,12 +255,14 @@ public class PdfViewerServiceImpl implements PdfViewerService {
 
         PdfPCell header1 = new PdfPCell();
         header1.setBorderWidth(1);
+        header1.setBorderColor(new BaseColor(173, 216, 230));
         header1.setPhrase(new Phrase("Receipt No", memberDetailsFont));
         header1.setPaddingLeft(4);
         table.addCell(header1);
 
         PdfPCell header10 = new PdfPCell();
         header10.setBackgroundColor(BaseColor.WHITE);
+        header10.setBorderColor(new BaseColor(173, 216, 230));
         header10.setPhrase(new Phrase(membershipReceiptHistory.getReceiptId().toString()));
         header10.setPaddingLeft(4);
         table.addCell(header10);
@@ -254,12 +270,14 @@ public class PdfViewerServiceImpl implements PdfViewerService {
         if (membershipReceiptHistory.isVoided() && null != membershipReceiptHistory.getParentReceipt()) {
             PdfPCell originalReceipt = new PdfPCell();
             originalReceipt.setBorderWidth(1);
+            originalReceipt.setBorderColor(new BaseColor(173, 216, 230));
             originalReceipt.setPhrase(new Phrase("Original Receipt No", memberDetailsFont));
             originalReceipt.setPaddingLeft(4);
             table.addCell(originalReceipt);
 
             PdfPCell originalReceiptValue = new PdfPCell();
             originalReceiptValue.setBackgroundColor(BaseColor.WHITE);
+            originalReceiptValue.setBorderColor(new BaseColor(173, 216, 230));
             originalReceiptValue.setPhrase(new Phrase("" + membershipReceiptHistory.getParentReceipt()));
             originalReceiptValue.setPaddingLeft(4);
             table.addCell(originalReceiptValue);
@@ -268,12 +286,14 @@ public class PdfViewerServiceImpl implements PdfViewerService {
         if (membershipReceiptHistory.isVoided() && null == membershipReceiptHistory.getParentReceipt()) {
             PdfPCell voided = new PdfPCell();
             voided.setBorderWidth(1);
+            voided.setBorderColor(new BaseColor(173, 216, 230));
             voided.setPhrase(new Phrase("Voided", memberDetailsFont));
             voided.setPaddingLeft(4);
             table.addCell(voided);
 
             PdfPCell voidedValue = new PdfPCell();
             voidedValue.setBackgroundColor(BaseColor.WHITE);
+            voidedValue.setBorderColor(new BaseColor(173, 216, 230));
             voidedValue.setPhrase(new Phrase("TRUE"));
             voidedValue.setPaddingLeft(4);
             table.addCell(voidedValue);
