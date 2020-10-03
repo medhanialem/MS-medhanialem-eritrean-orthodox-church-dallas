@@ -14,6 +14,7 @@ public class PaymentInformation {
 	private Date registrationDate;
 	private Date paymentStartDate;
 	private Long tier;
+	private String status;
 
 	private List<PaymentLogs> paymentLogs;
 
@@ -97,4 +98,11 @@ public class PaymentInformation {
 		this.paymentLogs = paymentLogs;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }

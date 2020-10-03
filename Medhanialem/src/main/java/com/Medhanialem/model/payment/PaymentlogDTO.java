@@ -17,6 +17,7 @@ public class PaymentlogDTO {
 	private int month;
 	private int year;
 	private double amount;
+	private boolean forgiven;
 	public Long getMemberId() {
 		return memberId;
 	}
@@ -89,12 +90,21 @@ public class PaymentlogDTO {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
+
+	public void setForgiven(boolean forgiven) {
+		this.forgiven = forgiven;
+	}
+
+	public boolean isForgiven() {
+		return this.forgiven;
+	}
+
 	@Override
 	public String toString() {
 		return "PaymentlogDTO [memberId=" + memberId + ", churchId=" + churchId + ", firstName=" + firstName
 				+ ", middleName=" + middleName + ", lastName=" + lastName + ", homePhoneNo=" + homePhoneNo
 				+ ", registrationDate=" + registrationDate + ", tier=" + tier + ", paymentLogId=" + paymentLogId
-				+ ", month=" + month + ", year=" + year + ", amount=" + amount + "]";
+				+ ", month=" + month + ", year=" + year + ", amount=" + amount + ", forgiven=" + forgiven + "]";
 	}
 	
 	

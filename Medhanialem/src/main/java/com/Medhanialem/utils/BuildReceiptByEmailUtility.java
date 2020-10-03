@@ -1,6 +1,10 @@
 package com.Medhanialem.utils;
 
+import com.Medhanialem.exception.BackendException;
+import com.Medhanialem.model.payment.Payment;
 import com.Medhanialem.model.payment.objects.MembershipReceiptHistory;
+import com.Medhanialem.repository.PaymentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -8,6 +12,10 @@ import java.util.Map;
 
 @Component
 public class BuildReceiptByEmailUtility {
+
+    @Autowired
+    PaymentRepository paymentRepository;
+
     public String getReceiptBody(MembershipReceiptHistory membershipReceiptHistory) {
         StringBuilder sb = new StringBuilder();
 
@@ -91,6 +99,23 @@ public class BuildReceiptByEmailUtility {
             sb.append("<tr>");
             sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px;\">Original Receipt No</td>");
             sb.append("<td id='value' style=\"border: 1px solid lightblue; padding-left: 5px; background-color: #FFFFFF; width: 60%;\">" + membershipReceiptHistory.getParentReceipt() + "</td>");
+            sb.append("</tr>");
+        }
+
+        if (membershipReceiptHistory.isForgiven()) {
+            sb.append("<tr>");
+            sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px;\">Forgiven</td>");
+            sb.append("<td id='value' style=\"border: 1px solid lightblue; padding-left: 5px; background-color: #FFFFFF; width: 60%;\">TRUE</td>");
+            sb.append("</tr>");
+        }
+
+        if (membershipReceiptHistory.isForgiven()) {
+            Long receiptId = membershipReceiptHistory.getReceiptId();
+            Payment payment = paymentRepository.findById(receiptId).orElseThrow(
+                    () -> new BackendException("There is no receipt found with receiptId = " + receiptId));
+            sb.append("<tr>");
+            sb.append("<td id='leftLabels' style=\"border: 1px solid lightblue; font-weight: bold; padding-right: 50px; padding-left: 5px;\">Remark</td>");
+            sb.append("<td id='value' style=\"border: 1px solid lightblue; padding-left: 5px; background-color: #FFFFFF; width: 60%;\">" + payment.getRemark() + "</td>");
             sb.append("</tr>");
         }
 

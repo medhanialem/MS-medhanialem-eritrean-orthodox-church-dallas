@@ -23,6 +23,7 @@ public class PaymentlogDTORowMapper implements RowMapper<PaymentlogDTO> {
 		 paymentlogDTO.setRegistrationDate(rs.getDate("registrationDate"));
 		 paymentlogDTO.setTier(rs.getLong("tierId"));
 		 paymentlogDTO.setAmount(rs.getDouble("Amount"));
+		 paymentlogDTO.setForgiven(rs.getBoolean("forgiven"));
 		 
 		return paymentlogDTO;
 		

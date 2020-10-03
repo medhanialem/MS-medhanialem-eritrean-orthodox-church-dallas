@@ -63,6 +63,8 @@ public class PaymentLog implements Serializable {
     @JoinColumn(name = "receiptId")
     private Payment payment;
 
+	private boolean forgiven;
+
 	public Long getId() {
 		return id;
 	}
@@ -111,9 +113,17 @@ public class PaymentLog implements Serializable {
 		this.payment = payment;
 	}
 
+	public void setForgiven(boolean forgiven) {
+		this.forgiven = forgiven;
+	}
+
+	public boolean isForgiven() {
+		return this.forgiven;
+	}
+
 	@Override
 	public String toString() {
 		return "PaymentJournal [id=" + id + ", member=" + member + ", amount=" + amount + ", createdAt=" + createdAt
-				+ ", paymentLookupfee=" + paymentLookupfee + ", payment=" + payment + "]";
+				+ ", paymentLookupfee=" + paymentLookupfee + ", payment=" + payment + ", forgiven=" + forgiven +"]";
 	}
 }

@@ -2,8 +2,10 @@ package com.Medhanialem.service.Impl;
 
 import com.Medhanialem.exception.ApplicationException;
 import com.Medhanialem.exception.BackendException;
+import com.Medhanialem.model.payment.Payment;
 import com.Medhanialem.model.payment.objects.MembershipReceiptHistory;
 import com.Medhanialem.repository.MembershipReceiptHistoryRepository;
+import com.Medhanialem.repository.PaymentRepository;
 import com.Medhanialem.service.PdfViewerService;
 import com.Medhanialem.utils.BuildReceiptByEmailUtility;
 import com.Medhanialem.utils.PaymentReceiptConstants;
@@ -33,6 +35,8 @@ public class PdfViewerServiceImpl implements PdfViewerService {
     @Autowired
     BuildReceiptByEmailUtility buildReceiptByEmailUtility;
 
+    @Autowired
+    PaymentRepository paymentRepository;
 
     @Override
     public byte[] generatePdf(Long receiptId) {
@@ -281,6 +285,41 @@ public class PdfViewerServiceImpl implements PdfViewerService {
             originalReceiptValue.setPhrase(new Phrase("" + membershipReceiptHistory.getParentReceipt()));
             originalReceiptValue.setPaddingLeft(4);
             table.addCell(originalReceiptValue);
+        }
+
+        if (membershipReceiptHistory.isForgiven()) {
+            PdfPCell forgiven = new PdfPCell();
+            forgiven.setBorderWidth(1);
+            forgiven.setBorderColor(new BaseColor(173, 216, 230));
+            forgiven.setPhrase(new Phrase("Forgiven", memberDetailsFont));
+            forgiven.setPaddingLeft(4);
+            table.addCell(forgiven);
+
+            PdfPCell forgivenValue = new PdfPCell();
+            forgivenValue.setBackgroundColor(BaseColor.WHITE);
+            forgivenValue.setBorderColor(new BaseColor(173, 216, 230));
+            forgivenValue.setPhrase(new Phrase("TRUE"));
+            forgivenValue.setPaddingLeft(4);
+            table.addCell(forgivenValue);
+        }
+
+        if (membershipReceiptHistory.isForgiven()) {
+            Long receiptId = membershipReceiptHistory.getReceiptId();
+            Payment payment = paymentRepository.findById(receiptId).orElseThrow(
+                    () -> new BackendException("There is no receipt found with receiptId = " + receiptId));
+            PdfPCell forgiven = new PdfPCell();
+            forgiven.setBorderWidth(1);
+            forgiven.setBorderColor(new BaseColor(173, 216, 230));
+            forgiven.setPhrase(new Phrase("Remark", memberDetailsFont));
+            forgiven.setPaddingLeft(4);
+            table.addCell(forgiven);
+
+            PdfPCell forgivenValue = new PdfPCell();
+            forgivenValue.setBackgroundColor(BaseColor.WHITE);
+            forgivenValue.setBorderColor(new BaseColor(173, 216, 230));
+            forgivenValue.setPhrase(new Phrase(payment.getRemark()));
+            forgivenValue.setPaddingLeft(4);
+            table.addCell(forgivenValue);
         }
 
         if (membershipReceiptHistory.isVoided() && null == membershipReceiptHistory.getParentReceipt()) {

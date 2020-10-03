@@ -25,7 +25,7 @@ public class PaymentlogRepositoryjdbc {
 //		  		"               PaymentLog l on (p.id=l.paymentLookupId and l.memberId=m.memberId) where p.year=?",  new Object[] { year }, new PaymentlogDTORowMapper());
 
 		  return jdbcTemplate.query("select m.memberId as memberId, m.ChurchId, m.FirstName, m.MiddleName, m.LastName, m.homePhoneNo, m.registrationDate, " +
-				  "m.tierId, l.id as PaymentlogId, p.Year, p.month, p.Amount from Member m left outer join PaymentLog l on m.memberId = l.memberId left outer join " +
+				  "m.tierId, l.id as PaymentlogId, p.Year, p.month, p.Amount, l.forgiven from Member m left outer join PaymentLog l on m.memberId = l.memberId left outer join " +
 				  "PaymentLookup p on(p.id = l.paymentLookupId) where p.year = ?",new Object[]{year}, new PaymentlogDTORowMapper());
 	  }
 

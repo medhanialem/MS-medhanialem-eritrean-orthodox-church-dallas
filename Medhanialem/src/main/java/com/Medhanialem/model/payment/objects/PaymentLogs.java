@@ -6,6 +6,7 @@ public class PaymentLogs {
 	private int month;
 	private int year;
 	private double amount;
+	private boolean forgiven;
 
 	public int getMonth() {
 		return month;
@@ -37,6 +38,14 @@ public class PaymentLogs {
 
 	public void setAmount(double amount) {
 		this.amount = amount;
+	}
+
+	public boolean isForgiven() {
+		return this.forgiven;
+	}
+
+	public void setForgiven(boolean forgiven) {
+		this.forgiven = forgiven;
 	}
 
 }

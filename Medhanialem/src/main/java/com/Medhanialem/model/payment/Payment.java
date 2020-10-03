@@ -53,6 +53,11 @@ public class Payment {
 	
 	private Long parentReceiptId;
 
+	@NotNull
+	private boolean forgiven;
+
+	private String remark;
+
 	public Long getId() {
 		return id;
 	}
@@ -101,10 +106,26 @@ public class Payment {
 		this.parentReceiptId = parentReceiptId;
 	}
 
+	public void setForgiven(boolean forgiven) {
+		this.forgiven = forgiven;
+	}
+
+	public boolean isForgiven() {
+		return this.forgiven;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
 	@Override
 	public String toString() {
 		return "Payment [id=" + id + ", member=" + member + ", total=" + total + ", paymentDate=" + paymentDate
-				+ ", createdBy=" + createdBy + ", parentReceiptId=" + parentReceiptId + "]";
+				+ ", createdBy=" + createdBy + ", parentReceiptId=" + parentReceiptId + "forgiven=" + forgiven + "remark=" + remark + "]";
 	}
 
 }

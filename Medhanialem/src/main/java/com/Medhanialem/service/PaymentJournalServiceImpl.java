@@ -38,6 +38,8 @@ import com.Medhanialem.repository.PaymentLookUpRepository;
 import com.Medhanialem.repository.PaymentRepository;
 import com.Medhanialem.repository.PaymentlogRepositoryjdbc;
 
+import javax.validation.constraints.Null;
+
 @Service
 public class PaymentJournalServiceImpl implements PaymentJournalService {
 
@@ -101,6 +103,7 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 			response.setTier(member.getTier().getId());
 			response.setRegistrationDate(member.getRegistrationDate());
 			response.setPaymentStartDate(member.getPaymentStartDate());
+			response.setStatus(member.getStatus());
 
 			List<PaymentLogs> journals = getPaymentLogs(listPaymentdto, member);
 			response.setPaymentLogs(journals);
@@ -118,7 +121,7 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		Map<String, Double> amountsPaidPerMonth = new HashMap<>();
 		
 		if (null == member) {
-			throw new BackendException("Member doesnot exist");
+			throw new BackendException("Member doesn't exist");
 		}
 		
 		paymentResponse.setMemberId(member.getMemberId());
@@ -132,11 +135,14 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		payment.setMember(member);
 		payment.setTotal(paymentRequest.getTotal());
 		payment.setCreatedBy(createdBy);
+		payment.setForgiven(paymentRequest.isForgiven());
+
+		payment.setRemark(paymentRequest.isForgiven() ? paymentRequest.getRemark() : null);
 
 		payment = paymentRepository.save(payment);
 		
 		if (null == payment) {
-			throw new BackendException("Payment didnot get saved to Receipt table.");
+			throw new BackendException("Payment didn't get saved to Receipt table.");
 		}
 
 		int membershipReceiptHistoryYear = 0;
@@ -155,13 +161,15 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 			amountsPaidPerMonth.put(intToMonth(paymentLookup.getMonth()), (Double)paymentLookup.getAmount());
 			
 			paymentLog.setPaymentLookupfee(paymentLookup);
+
+			paymentLog.setForgiven(paymentRequest.isForgiven());
 			
 			membershipReceiptHistoryYear = paymentLookup.getYear();
 			monthBuilder.append(intToMonth(paymentLookup.getMonth()) + ",");
 			
 
 			if (null == paymentLogRepository.save(paymentLog)) {
-				throw new BackendException("Payment didnot get saved to PaymentLog table.");
+				throw new BackendException("Payment didn't get saved to PaymentLog table.");
 			}
 		}
 		
@@ -349,6 +357,7 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 				paylog.setMonth(paymentdto.getMonth());
 				paylog.setYear(paymentdto.getYear());
 				paylog.setAmount(paymentdto.getAmount());
+				paylog.setForgiven(paymentdto.isForgiven());
 
 				paymentLoglist.add(paylog);
 			}
@@ -371,7 +380,8 @@ public class PaymentJournalServiceImpl implements PaymentJournalService {
 		membershipReceiptHistory.setYear(membershipReceiptHistoryYear);
 		membershipReceiptHistory.setMonthsDetail(removeLastChar(monthBuilder.toString()));
 		membershipReceiptHistory.setCreatedBy(createdBy);
-		membershipReceiptHistory.setEmail(member.getEmail());
+		membershipReceiptHistory.setForgiven(paymentRequest.isForgiven());
+
 		
 		return membershipReceiptHistory;
 	}

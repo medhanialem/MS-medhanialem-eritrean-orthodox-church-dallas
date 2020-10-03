@@ -74,6 +74,8 @@ public class MembershipReceiptHistory {
 	
 	private String email;
 
+	private boolean forgiven;
+
 	public Long getId() {
 		return id;
 	}
@@ -210,13 +212,21 @@ public class MembershipReceiptHistory {
 		this.email = email;
 	}
 
+	public void setForgiven(boolean forgiven) {
+		this.forgiven = forgiven;
+	}
+
+	public boolean isForgiven() {
+		return this.forgiven;
+	}
+
 	@Override
 	public String toString() {
 		return "MembershipReceiptHistory [id=" + id + ", receiptId=" + receiptId + ", memberId=" + memberId
 				+ ", fullName=" + fullName + ", churchId=" + churchId + ", phone=" + phone + ", tierDescription="
 				+ tierDescription + ", total=" + total + ", months=" + months + ", year=" + year + ", monthsDetail="
 				+ monthsDetail + ", createdDate=" + createdDate + ", createdBy=" + createdBy + ", remarks=" + remarks
-				+ ", voided=" + voided + ", parentReceipt=" + parentReceipt + ", email=" + email + "]";
+				+ ", voided=" + voided + ", parentReceipt=" + parentReceipt + ", email=" + email + ", forgiven=" + forgiven +"]";
 	}
 
 }
