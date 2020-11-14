@@ -60,7 +60,7 @@ public class JwtController {
 	}
 
 	@PostMapping("/signup")
-	//@PreAuthorize("hasAnyAuthority('ADMIN', 'ABO_WENBER_SEBEKA_GUBAE')")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'ABO_WENBER_SEBEKA_GUBAE')")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody Signup signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!"),

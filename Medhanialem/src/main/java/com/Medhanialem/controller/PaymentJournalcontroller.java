@@ -32,7 +32,7 @@ import com.Medhanialem.utils.TypicalResponses;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/monthlyPayment")
+@RequestMapping("/api/monthlyPayment")
 public class PaymentJournalcontroller {
 	
 	Logger logger = LoggerFactory.getLogger(PaymentJournalcontroller.class);

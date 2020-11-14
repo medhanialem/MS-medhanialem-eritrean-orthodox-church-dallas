@@ -28,7 +28,7 @@ import com.Medhanialem.service.MemberService;
 
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/api/members")
 public class MemberController {
 
 	private final Logger logger = LoggerFactory.getLogger(MemberController.class.getName());

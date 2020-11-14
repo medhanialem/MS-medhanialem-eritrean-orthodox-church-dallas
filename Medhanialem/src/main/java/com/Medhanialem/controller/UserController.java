@@ -37,7 +37,7 @@ import com.Medhanialem.repository.UserRepository;
 import com.Medhanialem.service.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
 	Logger logger = LoggerFactory.getLogger(UserController.class);
