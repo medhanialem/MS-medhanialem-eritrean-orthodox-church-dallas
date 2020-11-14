@@ -15,7 +15,7 @@ import com.Medhanialem.jwtauthentication.model.Role;
 import com.Medhanialem.service.RolesService;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/api/roles")
 public class RolesController {
 
 	Logger logger = LoggerFactory.getLogger(RolesController.class);

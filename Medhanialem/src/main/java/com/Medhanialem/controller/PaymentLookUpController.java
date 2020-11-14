@@ -26,7 +26,7 @@ import com.Medhanialem.service.PaymentLookUpService;
 import com.Medhanialem.utils.TypicalResponses;
 
 @RestController
-@RequestMapping("/paymentlookups")
+@RequestMapping("/api/paymentlookups")
 public class PaymentLookUpController {
 	
 	private final Logger logger = LoggerFactory.getLogger(PaymentLookUpController.class.getName());

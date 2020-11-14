@@ -28,7 +28,7 @@ import com.Medhanialem.utils.TypicalResponses;
 
 
 @RestController
-@RequestMapping("/tiers")
+@RequestMapping("/api/tiers")
 public class TierController {
 
 	Logger logger = LoggerFactory.getLogger(TierController.class);
