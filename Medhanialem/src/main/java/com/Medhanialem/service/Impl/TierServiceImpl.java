@@ -44,8 +44,8 @@ public class TierServiceImpl implements TierService {
 		if (count > 0) {
 			throw new BackendException("Tier exists with same description: " + tierDetails.getDescription());
 		}
-		
-		tierDetails.setTierType("Tier" + (this.tierRepository.getMaxTierId() + 1));
+		int tierId = (null != this.tierRepository.getMaxTierId())? this.tierRepository.getMaxTierId(): 0;
+		tierDetails.setTierType("Tier" + (tierId + 1));
 		tierDetails.setCreatedBy(userService.getCurrentUserDetails().getUsername());
 		System.out.println(tierDetails.getTierType());
 		return this.tierRepository.save(tierDetails);
