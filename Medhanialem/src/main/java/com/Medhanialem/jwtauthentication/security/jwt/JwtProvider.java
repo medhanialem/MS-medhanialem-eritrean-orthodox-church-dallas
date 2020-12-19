@@ -42,7 +42,7 @@ public class JwtProvider {
 		                .setAudience((userPrincipal.getAuthorities().toString()))
 		                .setId((userPrincipal.getAuthorities().toString()))
 		                .setIssuedAt(new Date())
-		                .setExpiration(new Date((new Date()).getTime() + jwtExpiration*1000))
+		                .setExpiration(new Date((new Date()).getTime() + jwtExpiration))
 		                .signWith(SignatureAlgorithm.HS512, jwtSecret)
 		                .compact();
     }
