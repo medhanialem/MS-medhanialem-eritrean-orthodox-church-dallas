@@ -17,7 +17,7 @@ public class Memberdto {
     @NotBlank
     private String firstName;
 
-    @NotBlank
+//    @NotBlank
     private String middleName;
 
     @NotBlank

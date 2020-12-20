@@ -95,11 +95,10 @@ public class MemberServiceImpl implements MemberService{
 		UserDetails currentUserDetails = userService.getCurrentUserDetails();
 
 		Member member = new Member();
-//		member.setFirstName(memberdto.getFirstName());
 		member.setHomePhoneNo(memberdto.getHomePhoneNo());
 		member.setEmail(memberdto.getEmail());
 		member.setFirstName(memberdto.getFirstName());
-		member.setMiddleName(memberdto.getMiddleName());
+		member.setMiddleName(null != memberdto.getMiddleName() ? memberdto.getMiddleName() : "");
 		member.setLastName(memberdto.getLastName());
 		member.setGender(memberdto.getGender());
 		member.setEmail(StringUtils.isEmpty(memberdto.getEmail()) ? null : memberdto.getEmail());

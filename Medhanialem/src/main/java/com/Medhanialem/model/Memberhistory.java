@@ -49,7 +49,7 @@ public class Memberhistory implements Serializable {
 	@NotBlank
 	private String firstName;
 
-	@NotBlank
+//	@NotBlank
 	private String middleName;
 
 	@NotBlank

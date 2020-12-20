@@ -36,7 +36,7 @@ public class Member implements Serializable {
 	@NotBlank
 	private String firstName;
 
-	@NotBlank
+//	@NotBlank
 	private String middleName;
 
 	@NotBlank
