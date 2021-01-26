@@ -1,6 +1,7 @@
 package com.Medhanialem.service.Impl;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +41,8 @@ public class MemberServiceImpl implements MemberService{
 
 	@Autowired
 	PaymentlogRepositoryjdbc paymentlogRepositoryjdbc;
+
+	private List<String> validPriestNames = Arrays.asList(new String [] {"PRIEST PAYING", "PRIEST NON-PAYING", "PRIEST"});
 	
 	@Autowired
 	public MemberServiceImpl(MemberRepository memberRepository, MemberHistRepository memberHistRepository) {
@@ -162,7 +165,7 @@ public class MemberServiceImpl implements MemberService{
 				//Throw exception saying parent Id is missing
 			}
 		}  else if (preset.equalsIgnoreCase("priests")){ // Get all priests
-			memberList = memberRepository.findAll().stream().filter(m -> "Priest".equalsIgnoreCase(m.getTier().getDescription())).collect(Collectors.toList());
+			memberList = memberRepository.findAll().stream().filter(m -> validPriestNames.contains(m.getTier().getDescription().toUpperCase())).collect(Collectors.toList());
 		}
 		return memberList;
 	}
